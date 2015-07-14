@@ -1,0 +1,11 @@
+int number1
+
+int number2
+
+string str
+
+string str2
+
+float f1
+
+float f2

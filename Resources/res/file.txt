@@ -1,0 +1,13 @@
+//
+//
+
+#C
+    set.bgm.name="bgm.mp3"
+    set.bg.name="bg.png"
+
+
+#T
+    set.text.content="文本"
+    set.text.begin="00001"
+    set.text.end="00002"
+    set.text.show

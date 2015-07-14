@@ -1,0 +1,82 @@
+//
+//
+//00001
+
+    set.globalint.number1.equal="5"
+    get.globalint.number1
+    set.globalint.number1.add="1"
+    get.globalint.number1
+    set.globalint.number1.minus="2"
+    get.globalint.number1
+
+    set.bgp.name="bg1.png"
+    set.bgm.name="bgm1.mp3"
+
+    set.text.content="文本1"
+    set.ch01.name="人物1.png"
+
+    get.touch
+
+    set.text.content="文本2"
+
+    get.touch
+
+    set.text.content="文本3"
+    set.ch01.name="人物2.png"
+
+    get.touch
+
+//00002
+    set.bgp.name="bg2.png"
+
+    set.text.content="文本"
+    set.ch01.name="人物1"
+
+    get.touch
+
+//00003
+
+    set.cg.name="cg1.png"
+    get.touch
+
+//00004
+    set.bgp.name="bg4.png"
+    set.bgm.name="bgm4.mp3"
++++
+    set.choicetable.number="2"
+    set.choice01.text="choice01"
+    set.choice01.enable="true"
+
+    set.choice02.text="choice02"
+    set.choice02.enable="false"
+
+    get.choice
+
+    set.choice01.result
+    set.favor.add="1"
+    set.choice02.result
+    set.favor.min="1"
+
+    if.favor.equalto."5"
+        set.nextscript.name="script2"
+    else
+        set.nextscript.name="script3"
+    fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
