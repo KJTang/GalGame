@@ -37,6 +37,7 @@ bool ButtonSprite::init()
     
     visibleSize = Director::getInstance()->getVisibleSize();
     clicked = false;
+    callbackFunc = NULL;
     
     touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);
@@ -73,7 +74,7 @@ bool ButtonSprite::init()
         if (rect.containsPoint(locationInNode))
         {
             target->clicked = true;
-            log("clicked");
+            target->onClicked();
         }
         
         return true;
@@ -86,4 +87,16 @@ void ButtonSprite::onEnter()
 {
     Sprite::onEnter();
     _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+}
+
+void ButtonSprite::onClicked()
+{
+    if (callbackFunc) {
+        callbackFunc();
+    }
+}
+
+void ButtonSprite::setCallbackFunc(void (*func)())
+{
+    callbackFunc = func;
 }

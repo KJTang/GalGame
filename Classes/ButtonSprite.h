@@ -18,6 +18,7 @@ class ButtonSprite : public Sprite
 private:
     Size visibleSize;
     EventListenerTouchOneByOne* touchListener;
+    void (*callbackFunc)();
 public:
     ButtonSprite();
     ~ButtonSprite();
@@ -28,6 +29,8 @@ public:
     virtual void onEnter();
     
     bool clicked;
+    virtual void onClicked();
+    void setCallbackFunc(void (*func)());
 };
 
 #endif /* ButtonSprite_cpp */
