@@ -27,7 +27,7 @@ bool StartScene::init()
     
     auto configBtn = ButtonSprite::create("CloseNormal.png");
     background->addChild(configBtn);
-    configBtn->setScale(3);
+    configBtn->setScale(3.5);
     configBtn->setPosition(Point(visibleSize.width*0.25, visibleSize.height/2));
     configBtn->setCallbackFunc([](){
         log("try to enter ConfigScene");
@@ -35,17 +35,18 @@ bool StartScene::init()
     });
     auto button2 = ButtonSprite::create("CloseNormal.png");
     background->addChild(button2);
-    button2->setScale(3);
+    button2->setScale(3.5);
     button2->setPosition(Point(visibleSize.width*0.5, visibleSize.height/2));
     button2->setCallbackFunc([](){
         log("test2");
     });
-    auto button3 = ButtonSprite::create("CloseNormal.png");
-    background->addChild(button3);
-    button3->setScale(3);
-    button3->setPosition(Point(visibleSize.width*0.75, visibleSize.height/2));
-    button3->setCallbackFunc([](){
-        log("test3");
+    auto exitBtn = ButtonSprite::create("CloseNormal.png");
+    background->addChild(exitBtn);
+    exitBtn->setScale(3.5);
+    exitBtn->setPosition(Point(visibleSize.width*0.75, visibleSize.height/2));
+    exitBtn->setCallbackFunc([](){
+        log("exit");
+        GameController::getInstance()->exitGame();
     });
     
     return true;

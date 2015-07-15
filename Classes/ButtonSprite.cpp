@@ -48,8 +48,7 @@ bool ButtonSprite::init()
         Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
         if (rect.containsPoint(locationInNode))
         {
-            log("begin");
-            target->runAction(ScaleBy::create(0.05, 0.5));
+            target->runAction(ScaleTo::create(0.05, 2));
             return true;
         }
         return false;
@@ -58,9 +57,8 @@ bool ButtonSprite::init()
     touchListener->onTouchMoved = [](Touch* touch, Event* event){};
     
     touchListener->onTouchEnded = [](Touch* touch, Event* event){
-        log("end");
         auto target = static_cast<ButtonSprite*>(event->getCurrentTarget());
-        target->runAction(ScaleBy::create(0.05, 2));
+        target->runAction(ScaleTo::create(0.05, 3.5));
         Point locationInNode = target->convertToNodeSpace(touch->getLocation());
         Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
         if (rect.containsPoint(locationInNode))

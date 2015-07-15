@@ -30,19 +30,12 @@ bool ConfigScene::init()
     
     auto button1 = ButtonSprite::create("CloseNormal.png");
     background->addChild(button1);
-    button1->setScale(3);
+    button1->setScale(3.5);
     button1->setPosition(Point(visibleSize.width*0.5, visibleSize.height/2));
     button1->setCallbackFunc([](){
         log("try to go back to StartScene");
         GameController::getInstance()->enterStartScene();
     });
-    
-//    this->runAction(Sequence::create(
-//                                     DelayTime::create(3),
-//                                     CallFunc::create([](){
-//        GameController::getInstance()->enterStartScene();
-//    }),
-//                                     NULL));
     
     return true;
 }

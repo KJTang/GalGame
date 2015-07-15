@@ -55,6 +55,8 @@ public:
     void enterMemoryScene();
     void enterDataLoadScene();
     void enterDataSaveScene();
+    
+    void exitGame();
 };
 
 #endif /* GameController_cpp */

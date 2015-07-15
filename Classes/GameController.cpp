@@ -44,3 +44,8 @@ void GameController::enterConfigScene()
     Director::getInstance()->pushScene(TransitionFade::create(1, ConfigScene::create()));
     currentState = STATE_CONFIG_SCENE;
 }
+
+void GameController::exitGame()
+{
+    Director::getInstance()->end();
+}
