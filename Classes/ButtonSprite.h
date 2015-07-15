@@ -28,7 +28,6 @@ public:
     virtual bool init();
     virtual void onEnter();
     
-    bool clicked;
     virtual void onClicked();
     void setCallbackFunc(void (*func)());
 };

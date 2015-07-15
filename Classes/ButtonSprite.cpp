@@ -36,7 +36,6 @@ bool ButtonSprite::init()
 //    }
     
     visibleSize = Director::getInstance()->getVisibleSize();
-    clicked = false;
     callbackFunc = NULL;
     
     touchListener = EventListenerTouchOneByOne::create();
@@ -44,15 +43,12 @@ bool ButtonSprite::init()
     
     touchListener->onTouchBegan = [](Touch* touch, Event* event){
         auto target = static_cast<ButtonSprite*>(event->getCurrentTarget());
-        if (target->clicked) {
-            return false;
-        }
         // relative position
         Point locationInNode = target->convertToNodeSpace(touch->getLocation());
         Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
-        // 点击范围判断检测
         if (rect.containsPoint(locationInNode))
         {
+            log("begin");
             target->runAction(ScaleBy::create(0.05, 0.5));
             return true;
         }
@@ -62,23 +58,24 @@ bool ButtonSprite::init()
     touchListener->onTouchMoved = [](Touch* touch, Event* event){};
     
     touchListener->onTouchEnded = [](Touch* touch, Event* event){
+        log("end");
         auto target = static_cast<ButtonSprite*>(event->getCurrentTarget());
-        if (target->clicked) {
-            return false;
-        }
         target->runAction(ScaleBy::create(0.05, 2));
-        
         Point locationInNode = target->convertToNodeSpace(touch->getLocation());
         Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
-        
         if (rect.containsPoint(locationInNode))
         {
-            target->clicked = true;
             target->onClicked();
         }
-        
         return true;
     };
+    
+    /* when use popScene to go back to the scene which add ButtonSprite,
+     * it'll call ButtonSprite::onEnter once more,
+     * so we should add eventlistener in ButtonSprite::init()
+     * to make sure eventlistener only is registered once
+     */
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
     
     return true;
 }
@@ -86,13 +83,15 @@ bool ButtonSprite::init()
 void ButtonSprite::onEnter()
 {
     Sprite::onEnter();
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+    // when enter ButtonSprite, enable the eventlistener
+    touchListener->setEnabled(true);
 }
 
 void ButtonSprite::onClicked()
 {
     if (callbackFunc) {
         callbackFunc();
+        touchListener->setEnabled(false);
     }
 }
 
