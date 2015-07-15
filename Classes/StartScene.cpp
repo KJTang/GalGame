@@ -22,15 +22,16 @@ bool StartScene::init()
     background = Layer::create();
     this->addChild(background);
     
-    auto pic = Sprite::create("HelloWorld.png");
+    auto pic = GyroBackground::create("HelloWorld.png", 2);
     background->addChild(pic, -1);
-    pic->setPosition(visibleSize.width/2, visibleSize.height/2);
-    pic->setScale(visibleSize.width/pic->getContentSize().width);
     
     auto button = ButtonSprite::create("CloseNormal.png");
     background->addChild(button);
     button->setScale(3);
     button->setPosition(Point(visibleSize.width/2, visibleSize.height/2));
+    button->setCallbackFunc([](){
+        log("testtestest");
+    });
     
     return true;
 }

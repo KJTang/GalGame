@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include "cocos2d.h"
+#include "GyroBackground.h"
 #include "ButtonSprite.h"
 
 using namespace cocos2d;
