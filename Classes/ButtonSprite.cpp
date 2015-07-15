@@ -43,13 +43,16 @@ bool ButtonSprite::init()
     
     touchListener->onTouchBegan = [](Touch* touch, Event* event){
         auto target = static_cast<ButtonSprite*>(event->getCurrentTarget());
+        if (target->clicked) {
+            return false;
+        }
         // relative position
         Point locationInNode = target->convertToNodeSpace(touch->getLocation());
         Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
         // 点击范围判断检测
         if (rect.containsPoint(locationInNode))
         {
-            target->runAction(ScaleTo::create(0.2, 0.5));
+            target->runAction(ScaleBy::create(0.05, 0.5));
             return true;
         }
         return false;
@@ -59,7 +62,10 @@ bool ButtonSprite::init()
     
     touchListener->onTouchEnded = [](Touch* touch, Event* event){
         auto target = static_cast<ButtonSprite*>(event->getCurrentTarget());
-        target->runAction(ScaleTo::create(0.2, 2));
+        if (target->clicked) {
+            return false;
+        }
+        target->runAction(ScaleBy::create(0.05, 2));
         
         Point locationInNode = target->convertToNodeSpace(touch->getLocation());
         Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
@@ -67,7 +73,7 @@ bool ButtonSprite::init()
         if (rect.containsPoint(locationInNode))
         {
             target->clicked = true;
-            return true;
+            log("clicked");
         }
         
         return true;

@@ -32,10 +32,5 @@ bool StartScene::init()
     button->setScale(3);
     button->setPosition(Point(visibleSize.width/2, visibleSize.height/2));
     
-//    auto button = Sprite::create("CloseNormal.png");
-//    background->addChild(button);
-//    button->setScale(3);
-//    button->setPosition(Point(visibleSize.width/2, visibleSize.height/2));
-    
     return true;
 }
