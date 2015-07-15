@@ -23,9 +23,19 @@ bool StartScene::init()
     this->addChild(background);
     
     auto pic = Sprite::create("HelloWorld.png");
-    background->addChild(pic);
+    background->addChild(pic, -1);
     pic->setPosition(visibleSize.width/2, visibleSize.height/2);
     pic->setScale(visibleSize.width/pic->getContentSize().width);
+    
+    auto button = ButtonSprite::create("CloseNormal.png");
+    background->addChild(button);
+    button->setScale(3);
+    button->setPosition(Point(visibleSize.width/2, visibleSize.height/2));
+    
+//    auto button = Sprite::create("CloseNormal.png");
+//    background->addChild(button);
+//    button->setScale(3);
+//    button->setPosition(Point(visibleSize.width/2, visibleSize.height/2));
     
     return true;
 }
