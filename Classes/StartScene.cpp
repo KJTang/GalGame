@@ -25,20 +25,20 @@ bool StartScene::init()
     auto pic = GyroBackground::create("HelloWorld.png", 2);
     background->addChild(pic, -1);
     
+    auto startBtn = ButtonSprite::create("CloseNormal.png");
+    background->addChild(startBtn);
+    startBtn->setScale(3.5);
+    startBtn->setPosition(Point(visibleSize.width*0.25, visibleSize.height/2));
+    startBtn->setCallbackFunc([](){
+        log("start Game");
+    });
     auto configBtn = ButtonSprite::create("CloseNormal.png");
     background->addChild(configBtn);
     configBtn->setScale(3.5);
-    configBtn->setPosition(Point(visibleSize.width*0.25, visibleSize.height/2));
+    configBtn->setPosition(Point(visibleSize.width*0.50, visibleSize.height/2));
     configBtn->setCallbackFunc([](){
-        log("try to enter ConfigScene");
+        log("enter ConfigScene");
         GameController::getInstance()->enterConfigScene();
-    });
-    auto button2 = ButtonSprite::create("CloseNormal.png");
-    background->addChild(button2);
-    button2->setScale(3.5);
-    button2->setPosition(Point(visibleSize.width*0.5, visibleSize.height/2));
-    button2->setCallbackFunc([](){
-        log("test2");
     });
     auto exitBtn = ButtonSprite::create("CloseNormal.png");
     background->addChild(exitBtn);
