@@ -21,7 +21,7 @@ bool GameScene::init()
     
     visibleSize = Director::getInstance()->getVisibleSize();
     
-    bgp = NULL, ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
+    bgp = nullptr, ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
     
     background = Layer::create();
     this->addChild(background);
@@ -52,15 +52,16 @@ void GameScene::startSavedGame()
 
 bool GameScene::setBackgroundPicture(std::string filename)
 {
-//    if (bgp) {
-//        log("remove bgp");
-//        bgp->removeFromParentAndCleanup(true);
-//    }
-//    bgp = Sprite::create(filename);
-//    if (!bgp) {
-//        return false;
-//    }
-//    background->addChild(bgp);
+    if (bgp) {
+        log("remove bgp");
+        bgp->removeFromParentAndCleanup(true);
+    }
+    bgp = Sprite::create(filename);
+    if (!bgp) {
+        return false;
+    }
+    background->addChild(bgp);
+    return true;
 }
 
 bool GameScene::setCh01Picture(std::string filename)
