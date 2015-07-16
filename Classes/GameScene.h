@@ -19,9 +19,10 @@ using namespace cocos2d;
 class GameScene : public Scene
 {
 private:
+    static GameScene* sharedGameScene;
     Size visibleSize;
     
-    Layer *background;
+    Layer *backgroundLayer, *menuLayer;
     Sprite *bgp;
     Sprite *ch01, *ch02, *ch03, *ch04;
 public:
@@ -30,6 +31,14 @@ public:
     
     virtual bool init();
     CREATE_FUNC(GameScene);
+    static GameScene* getInstance()
+    {
+        if (!sharedGameScene) {
+            sharedGameScene = new GameScene();
+            sharedGameScene->init();
+        }
+        return sharedGameScene;
+    }
     
     void startNewGame();
     void startSavedGame();

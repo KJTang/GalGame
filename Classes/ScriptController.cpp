@@ -143,7 +143,7 @@ void ScriptController::stateCommand(std::string cmd)
             if (str == "name") {
                 std::string str = getString();
                 log("set bgp name = %s", str.c_str());
-                static_cast<GameScene*>(GameController::getInstance()->getGameScene())->setBackgroundPicture(str);
+                GameScene::getInstance()->setBackgroundPicture(str);
             } else if (str == "effect") {
                 std::string str = getString();
                 log("set bgp effect = %s", str.c_str());

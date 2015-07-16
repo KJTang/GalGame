@@ -23,8 +23,6 @@ private:
     static GameController* sharedGameController;
     bool init();
     
-    Scene* sharedGameScene;
-    
     // state
     int currentState;
     enum
@@ -50,10 +48,6 @@ public:
             sharedGameController->init();
         }
         return sharedGameController;
-    }
-    
-    Scene* getGameScene() {
-        return sharedGameScene;
     }
     
     void enterStartScene();

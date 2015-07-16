@@ -17,7 +17,6 @@ GameController::~GameController(){}
 bool GameController::init()
 {
     currentState = STATE_PREPARING;
-    sharedGameScene = nullptr;
     return true;
 }
 
@@ -49,9 +48,8 @@ void GameController::enterGameScene()
     switch (currentState) {
         case STATE_START_SCENE: {
             Director::getInstance()->purgeCachedData();
-            auto sharedGameScene = GameScene::create();
-            Director::getInstance()->replaceScene(TransitionFade::create(1, sharedGameScene));
-            static_cast<GameScene*>(sharedGameScene)->startNewGame();
+            Director::getInstance()->replaceScene(TransitionFade::create(1, GameScene::getInstance()));
+            GameScene::getInstance()->startNewGame();
             break;
         }
             
@@ -70,5 +68,8 @@ void GameController::enterConfigScene()
 
 void GameController::exitGame()
 {
-    Director::getInstance()->end();
+    // used on android
+//    Director::getInstance()->end();
+    // used on iOS
+    exit(0);
 }

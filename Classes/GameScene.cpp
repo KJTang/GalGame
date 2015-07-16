@@ -9,6 +9,8 @@
 
 #include "GameScene.h"
 
+GameScene* GameScene::sharedGameScene = nullptr;
+
 GameScene::GameScene(){}
 
 GameScene::~GameScene(){}
@@ -21,14 +23,17 @@ bool GameScene::init()
     
     visibleSize = Director::getInstance()->getVisibleSize();
     
-    bgp = nullptr, ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
+    backgroundLayer = Layer::create();
+    this->addChild(backgroundLayer, -1);
     
-    background = Layer::create();
-    this->addChild(background);
+    menuLayer = Layer::create();
+    this->addChild(menuLayer, 1);
+    
+    bgp = nullptr, ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
     
     // temp
     auto button1 = ButtonSprite::create("CloseNormal.png");
-    background->addChild(button1);
+    menuLayer->addChild(button1);
     button1->setScale(3.5);
     button1->setPosition(Point(visibleSize.width*0.75, visibleSize.height/2));
     button1->setCallbackFunc([](){
@@ -60,7 +65,7 @@ bool GameScene::setBackgroundPicture(std::string filename)
     if (!bgp) {
         return false;
     }
-    background->addChild(bgp);
+    backgroundLayer->addChild(bgp);
     return true;
 }
 
@@ -73,7 +78,7 @@ bool GameScene::setCh01Picture(std::string filename)
     if (!ch01) {
         return false;
     }
-    background->addChild(ch01);
+    backgroundLayer->addChild(ch01);
     return true;
 }
 
@@ -86,7 +91,7 @@ bool GameScene::setCh02Picture(std::string filename)
     if (!ch02) {
         return false;
     }
-    background->addChild(ch02);
+    backgroundLayer->addChild(ch02);
     return true;
 }
 
@@ -99,7 +104,7 @@ bool GameScene::setCh03Picture(std::string filename)
     if (!ch03) {
         return false;
     }
-    background->addChild(ch03);
+    backgroundLayer->addChild(ch03);
     return true;
 }
 
@@ -112,6 +117,6 @@ bool GameScene::setCh04Picture(std::string filename)
     if (!ch04) {
         return false;
     }
-    background->addChild(ch04);
+    backgroundLayer->addChild(ch04);
     return true;
 }
