@@ -40,7 +40,26 @@ bool GameScene::init()
         log("back to StartScene");
         GameController::getInstance()->enterStartScene();
     });
+    
+    // touch listener
+    isTouched = false;
 
+    touchListener = EventListenerTouchOneByOne::create();
+    touchListener->setSwallowTouches(true);
+    
+    touchListener->onTouchBegan = [](Touch* touch, Event* event){
+        return true;
+    };
+    
+    touchListener->onTouchEnded = [](Touch* touch, Event* event){
+        log("Touch Ended");
+        auto target = static_cast<GameScene*>(event->getCurrentTarget());
+        target->isTouched = true;
+        return false;
+    };
+    touchListener->setEnabled(false);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, backgroundLayer);
+    
     return true;
 }
 
@@ -119,4 +138,10 @@ bool GameScene::setCh04Picture(std::string filename)
     }
     backgroundLayer->addChild(ch04);
     return true;
+}
+
+void GameScene::waitForAScreenTouch()
+{
+    isTouched = false;
+    touchListener->setEnabled(true);
 }

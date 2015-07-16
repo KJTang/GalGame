@@ -25,6 +25,8 @@ private:
     Layer *backgroundLayer, *menuLayer;
     Sprite *bgp;
     Sprite *ch01, *ch02, *ch03, *ch04;
+    
+    EventListenerTouchOneByOne* touchListener;
 public:
     GameScene();
     ~GameScene();
@@ -48,6 +50,9 @@ public:
     bool setCh02Picture(std::string filename);
     bool setCh03Picture(std::string filename);
     bool setCh04Picture(std::string filename);
+    
+    void waitForAScreenTouch();
+    bool isTouched;
 };
 
 #endif /* GameScene_cpp */
