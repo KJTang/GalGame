@@ -31,6 +31,7 @@ bool StartScene::init()
     startBtn->setPosition(Point(visibleSize.width*0.25, visibleSize.height/2));
     startBtn->setCallbackFunc([](){
         log("start Game");
+        GameController::getInstance()->enterGameScene();
     });
     auto configBtn = ButtonSprite::create("CloseNormal.png");
     background->addChild(configBtn);

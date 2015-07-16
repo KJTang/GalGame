@@ -17,25 +17,48 @@ GameController::~GameController(){}
 bool GameController::init()
 {
     currentState = STATE_PREPARING;
+    sharedGameScene = nullptr;
     return true;
 }
 
 void GameController::enterStartScene()
 {
     switch (currentState) {
-        case STATE_PREPARING:
+        case STATE_PREPARING: {
             Director::getInstance()->runWithScene(StartScene::create());
             break;
-        case STATE_START_SCENE:
+        }
+        case STATE_GAME_SCENE: {
+            Director::getInstance()->purgeCachedData();
+            Director::getInstance()->replaceScene(TransitionFade::create(1, StartScene::create()));
             break;
-        case STATE_CONFIG_SCENE:
+        }
+        case STATE_CONFIG_SCENE: {
             Director::getInstance()->popScene();
             break;
+        }
         default:
             //
             break;
     }
     currentState = STATE_START_SCENE;
+}
+
+void GameController::enterGameScene()
+{
+    switch (currentState) {
+        case STATE_START_SCENE: {
+            Director::getInstance()->purgeCachedData();
+            auto sharedGameScene = GameScene::create();
+            Director::getInstance()->replaceScene(TransitionFade::create(1, sharedGameScene));
+            static_cast<GameScene*>(sharedGameScene)->startNewGame();
+            break;
+        }
+            
+        default:
+            break;
+    }
+    currentState = STATE_GAME_SCENE;
 }
 
 void GameController::enterConfigScene()

@@ -13,6 +13,7 @@
 
 #include "cocos2d.h"
 
+#include "GameController.h"
 #include "VariableController.h"
 
 using namespace cocos2d;

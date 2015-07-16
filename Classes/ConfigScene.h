@@ -10,7 +10,7 @@
 #define ConfigScene_cpp
 
 #include "cocos2d.h"
-#include "gameController.h"
+#include "GameController.h"
 #include "ButtonSprite.h"
 
 using namespace cocos2d;

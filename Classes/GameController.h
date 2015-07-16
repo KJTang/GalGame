@@ -12,6 +12,7 @@
 #include "cocos2d.h"
 
 #include "StartScene.h"
+#include "GameScene.h"
 #include "ConfigScene.h"
 
 using namespace cocos2d;
@@ -21,6 +22,8 @@ class GameController
 private:
     static GameController* sharedGameController;
     bool init();
+    
+    Scene* sharedGameScene;
     
     // state
     int currentState;
@@ -47,6 +50,10 @@ public:
             sharedGameController->init();
         }
         return sharedGameController;
+    }
+    
+    Scene* getGameScene() {
+        return sharedGameScene;
     }
     
     void enterStartScene();
