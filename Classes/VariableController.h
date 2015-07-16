@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "cocos2d.h"
+#include "GameScene.h"
 
 using namespace::cocos2d;
 

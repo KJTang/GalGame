@@ -22,6 +22,7 @@ bool GameScene::init()
     }
     
     visibleSize = Director::getInstance()->getVisibleSize();
+    isMissionCompleted = true;
     
     backgroundLayer = Layer::create();
     this->addChild(backgroundLayer, -1);
@@ -42,8 +43,6 @@ bool GameScene::init()
     });
     
     // touch listener
-    isTouched = false;
-
     touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);
     
@@ -52,21 +51,29 @@ bool GameScene::init()
     };
     
     touchListener->onTouchEnded = [](Touch* touch, Event* event){
-        log("Touch Ended");
         auto target = static_cast<GameScene*>(event->getCurrentTarget());
-        target->isTouched = true;
+        // got touch
+        target->isMissionCompleted = true;
+        target->enableScreenTouchEventListener(false);
         return false;
     };
     touchListener->setEnabled(false);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, backgroundLayer);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
     
     return true;
 }
 
 void GameScene::startNewGame()
 {
+    this->clear();
+    std::thread scriptControl(&GameScene::scriptControlThread, this);
+    scriptControl.detach();
+}
+
+void GameScene::scriptControlThread()
+{
     VariableController::getInstance()->readFromScript();
-    ScriptController::getInstance()->runWithFile("file.txt");
+    ScriptController::getInstance()->runWithFile("file.txt", 1);
 }
 
 void GameScene::startSavedGame()
@@ -85,6 +92,9 @@ bool GameScene::setBackgroundPicture(std::string filename)
         return false;
     }
     backgroundLayer->addChild(bgp);
+    this->runAction(Sequence::create(DelayTime::create(3),
+                                     CallFunc::create([&](){isMissionCompleted=true;}),
+                                     NULL));
     return true;
 }
 
@@ -140,8 +150,7 @@ bool GameScene::setCh04Picture(std::string filename)
     return true;
 }
 
-void GameScene::waitForAScreenTouch()
+void GameScene::enableScreenTouchEventListener(bool b)
 {
-    isTouched = false;
-    touchListener->setEnabled(true);
+    touchListener->setEnabled(b);
 }

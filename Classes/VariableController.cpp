@@ -88,7 +88,7 @@ void VariableController::readFromScript()
 {
     data = FileUtils::getInstance()->getStringFromFile("global.txt");
     pos = 0;
-    
+    log("sometest");
     // create variables
     std::string str = getString();
     while (str.size()) {

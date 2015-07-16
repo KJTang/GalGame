@@ -9,6 +9,8 @@
 #ifndef GameScene_cpp
 #define GameScene_cpp
 
+#include <thread>
+
 #include "cocos2d.h"
 
 #include "GameController.h"
@@ -32,7 +34,6 @@ public:
     ~GameScene();
     
     virtual bool init();
-    CREATE_FUNC(GameScene);
     static GameScene* getInstance()
     {
         if (!sharedGameScene) {
@@ -41,18 +42,25 @@ public:
         }
         return sharedGameScene;
     }
+    void clear() {
+        this->removeAllChildren();
+        this->init();
+    }
+    
+    // mission completed
+    bool isMissionCompleted;
     
     void startNewGame();
+    void scriptControlThread();
     void startSavedGame();
-    
+    // set
     bool setBackgroundPicture(std::string filename);
     bool setCh01Picture(std::string filename);
     bool setCh02Picture(std::string filename);
     bool setCh03Picture(std::string filename);
     bool setCh04Picture(std::string filename);
-    
-    void waitForAScreenTouch();
-    bool isTouched;
+    // get
+    void enableScreenTouchEventListener(bool b);
 };
 
 #endif /* GameScene_cpp */

@@ -23,8 +23,14 @@ bool ScriptController::init()
     return true;
 }
 
-void ScriptController::runWithFile(std::string filename)
+void ScriptController::runWithFile(std::string filename, int linePosition)
 {
+    lineID = linePosition;
+    if (lineID <= 1) {
+        lineID = 1;
+        pos = 0;
+        hasErr = false;
+    }
     data = FileUtils::getInstance()->getStringFromFile(filename.c_str());
     //    log("test:\n%s", data.c_str());
     
@@ -119,7 +125,12 @@ int ScriptController::transStringToInt(std::string num)
 
 void ScriptController::stateBegin()
 {
+    while (!GameScene::getInstance()->isMissionCompleted) {
+        // wait
+    }
+    GameScene::getInstance()->isMissionCompleted = false;
     std::string str = getString();
+    log("get through, line %d", lineID);
     if (str.size()) {
         if (str=="set" || str=="get" || str=="if") {
             stateCommand(str);
@@ -349,12 +360,16 @@ void ScriptController::stateCommand(std::string cmd)
             int num = transStringToInt(getString());
             if (opr == "equal") {
                 VariableController::getInstance()->setInt(var, num);
+                // for variables calculations, we don't need to wait
+                GameScene::getInstance()->isMissionCompleted = true;
             } else if (opr == "add") {
                 int temp = VariableController::getInstance()->getInt(var);
                 VariableController::getInstance()->setInt(var, temp+num);
+                GameScene::getInstance()->isMissionCompleted = true;
             } else if (opr == "minus") {
                 int temp = VariableController::getInstance()->getInt(var);
                 VariableController::getInstance()->setInt(var, temp-num);
+                GameScene::getInstance()->isMissionCompleted = true;
             } else {
                 showError(UNKNOWN_COMMAND);
             }
@@ -372,10 +387,7 @@ void ScriptController::stateCommand(std::string cmd)
         // touch event
         if (str == "touch") {
             log("waiting for a screen touch");
-            GameScene::getInstance()->waitForAScreenTouch();
-            while (!GameScene::getInstance()->isTouched) {
-                // wait util screen is touched
-            }
+            GameScene::getInstance()->enableScreenTouchEventListener(true);
         }
         // get info of bgp
         else if (str == "bgp") {
@@ -538,6 +550,7 @@ void ScriptController::stateCommand(std::string cmd)
             std::string var = getString();
             int value = VariableController::getInstance()->getInt(var);
             log("%s = %d", var.c_str(), value);
+            GameScene::getInstance()->isMissionCompleted = true;
         }
         else {
             showError(UNKNOWN_COMMAND);

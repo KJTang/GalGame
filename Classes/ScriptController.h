@@ -62,7 +62,7 @@ public:
         return sharedScriptController;
     }
     
-    void runWithFile(std::string filename);
+    void runWithFile(std::string filename, int linePosition);
 };
 
 #endif /* ScriptController_cpp */
