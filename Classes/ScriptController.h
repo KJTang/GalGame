@@ -28,6 +28,7 @@ private:
     bool init();
     std::string getString();
     int transStringToInt(std::string num);
+    float transStringToFloat(std::string num);
     
     // state
     void stateBegin();

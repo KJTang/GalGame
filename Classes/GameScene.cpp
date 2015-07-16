@@ -30,7 +30,10 @@ bool GameScene::init()
     menuLayer = Layer::create();
     this->addChild(menuLayer, 1);
     
-    bgp = nullptr, ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
+    bgp = nullptr;
+    bgpDuration = 0, bgpScale = 1;
+    
+    ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
     
     // temp
     auto button1 = ButtonSprite::create("CloseNormal.png");
@@ -81,18 +84,20 @@ void GameScene::startSavedGame()
     log("load saved game");
 }
 
-bool GameScene::setBackgroundPicture(std::string filename)
+bool GameScene::setBgpStart()
 {
     if (bgp) {
-        log("remove bgp");
         bgp->removeFromParentAndCleanup(true);
     }
-    bgp = Sprite::create(filename);
+    bgp = Sprite::create(bgpFilename);
     if (!bgp) {
+        bgpDuration = 0;
+        bgpScale = 1;
         return false;
     }
+    bgp->setScale(visibleSize.width/bgp->getContentSize().width*bgpScale);
     backgroundLayer->addChild(bgp);
-    this->runAction(Sequence::create(DelayTime::create(3),
+    this->runAction(Sequence::create(DelayTime::create(bgpDuration),
                                      CallFunc::create([&](){isMissionCompleted=true;}),
                                      NULL));
     return true;

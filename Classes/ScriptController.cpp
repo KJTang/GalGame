@@ -123,6 +123,22 @@ int ScriptController::transStringToInt(std::string num)
     return result;
 }
 
+float ScriptController::transStringToFloat(std::string num)
+{
+    float result = 0;
+    int dot = 0;
+    for (int i = 0; i != num.size(); ++i) {
+        if (num[i] == '.') {
+            dot = 1;
+            continue;
+        }
+        dot *= 10;
+        result *= 10;
+        result += num[i]-'0';
+    }
+    return result/dot;
+}
+
 void ScriptController::stateBegin()
 {
     while (!GameScene::getInstance()->isMissionCompleted) {
@@ -154,7 +170,7 @@ void ScriptController::stateCommand(std::string cmd)
             if (str == "name") {
                 std::string str = getString();
                 log("set bgp name = %s", str.c_str());
-                GameScene::getInstance()->setBackgroundPicture(str);
+                GameScene::getInstance()->setBgpFilename(str);
             } else if (str == "effect") {
                 std::string str = getString();
                 log("set bgp effect = %s", str.c_str());
@@ -170,9 +186,13 @@ void ScriptController::stateCommand(std::string cmd)
             } else if (str == "Yposition") {
                 std::string str = getString();
                 log("set bgp yposition = %s", str.c_str());
-            } else if (str == "start") {
+            } else if (str == "duration") {
                 std::string str = getString();
-                log("set bgp start = %s", str.c_str());
+                log("set bgp duration = %s", str.c_str());
+                GameScene::getInstance()->setBgpDuration(transStringToFloat(str));
+            } else if (str == "start") {
+                log("set bgp start");
+                GameScene::getInstance()->setBgpStart();
             } else {
                 showError(UNKNOWN_COMMAND);
             }

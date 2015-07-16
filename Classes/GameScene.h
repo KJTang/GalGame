@@ -25,7 +25,11 @@ private:
     Size visibleSize;
     
     Layer *backgroundLayer, *menuLayer;
+    // bgp
     Sprite *bgp;
+    std::string bgpFilename;
+    float bgpDuration;
+    float bgpScale;
     Sprite *ch01, *ch02, *ch03, *ch04;
     
     EventListenerTouchOneByOne* touchListener;
@@ -54,7 +58,11 @@ public:
     void scriptControlThread();
     void startSavedGame();
     // set
-    bool setBackgroundPicture(std::string filename);
+    bool setBgpStart();
+    void setBgpFilename(std::string filename) { bgpFilename = filename; isMissionCompleted = true;}
+    void setBgpDuration(float duration) { bgpDuration = duration; isMissionCompleted = true;}
+    void setBgpScale(float scale) { bgpScale = scale; isMissionCompleted = true;}
+    
     bool setCh01Picture(std::string filename);
     bool setCh02Picture(std::string filename);
     bool setCh03Picture(std::string filename);

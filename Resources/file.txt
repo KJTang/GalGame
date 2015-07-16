@@ -2,14 +2,23 @@
 //
 //00001
 
-    set.globalint.number1.equal="5"
-    get.globalint.number1
-    set.globalint.number1.add="1"
-    get.globalint.number1
-    set.globalint.number1.minus="2"
-    get.globalint.number1
+//    set.globalint.number1.equal="5"
+//    get.globalint.number1
+//    set.globalint.number1.add="1"
+//    get.globalint.number1
+//    set.globalint.number1.minus="2"
+//    get.globalint.number1
 
-    set.bgp.name="bg1.png"
+    set.bgp.name="HelloWorld.png"
+    set.bgp.duration="3.5"
+    set.bgp.start
+
+    get.touch
+
+    set.bgp.name="CloseNormal.png"
+
+    set.bgp.start
+++
     set.bgm.name="bgm1.mp3"
 
     set.text.content="文本1"
@@ -53,7 +62,7 @@
     get.choice
 
     set.choice01.result
-    set.favor.add="1"
+    set.globalint.a.equal="1"
     set.choice02.result
     set.favor.min="1"
 
