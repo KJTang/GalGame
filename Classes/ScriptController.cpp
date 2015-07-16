@@ -1,4 +1,3 @@
-
 //
 //  ScriptController.cpp
 //  Test
@@ -136,7 +135,7 @@ float ScriptController::transStringToFloat(std::string num)
         result *= 10;
         result += num[i]-'0';
     }
-    return result/dot;
+    return dot?result/dot:result;
 }
 
 void ScriptController::stateBegin()
@@ -174,18 +173,10 @@ void ScriptController::stateCommand(std::string cmd)
             } else if (str == "effect") {
                 std::string str = getString();
                 log("set bgp effect = %s", str.c_str());
-            } else if (str == "Xscale") {
+            } else if (str == "scale") {
                 std::string str = getString();
-                log("set bgp xscale = %s", str.c_str());
-            } else if (str == "Yscale") {
-                std::string str = getString();
-                log("set bgp yscale = %s", str.c_str());
-            } else if (str == "Xposition") {
-                std::string str = getString();
-                log("set bgp xposition = %s", str.c_str());
-            } else if (str == "Yposition") {
-                std::string str = getString();
-                log("set bgp yposition = %s", str.c_str());
+                log("set bgp scale = %s", str.c_str());
+                GameScene::getInstance()->setBgpScale(transStringToFloat(str));
             } else if (str == "duration") {
                 std::string str = getString();
                 log("set bgp duration = %s", str.c_str());

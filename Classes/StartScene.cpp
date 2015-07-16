@@ -50,5 +50,18 @@ bool StartScene::init()
         GameController::getInstance()->exitGame();
     });
     
+    auto text = Label::createWithSystemFont("wenzi文字", "AppleGothic", 200);
+    text->setPosition(Point(visibleSize.width/2, visibleSize.height/4));
+    background->addChild(text);
+    text->enableShadow(Color4B::BLACK, Size(10, -10));
+//    text->enableOutline(Color4B::GREEN, -10);
+//    text->enableGlow(Color4B::YELLOW);
+    
+    auto text2 = Label::createWithTTF("ABCabc", "fonts/arial.ttf", 200);
+    text2->setPosition(Point(visibleSize.width/2, visibleSize.height*0.75));
+    background->addChild(text2);
+//    text2->enableOutline(Color4B::BLACK, -10);
+    text2->enableGlow(Color4B::YELLOW);
+    
     return true;
 }
