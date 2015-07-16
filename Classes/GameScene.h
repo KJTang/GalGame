@@ -30,6 +30,7 @@ private:
     std::string bgpFilename;
     float bgpDuration;
     float bgpScale;
+    float bgpPositionX, bgpPositionY;
     Sprite *ch01, *ch02, *ch03, *ch04;
     
     EventListenerTouchOneByOne* touchListener;
@@ -62,6 +63,10 @@ public:
     void setBgpFilename(std::string filename) { bgpFilename = filename; isMissionCompleted = true;}
     void setBgpDuration(float duration) { bgpDuration = duration; isMissionCompleted = true;}
     void setBgpScale(float scale) { bgpScale = scale; isMissionCompleted = true;}
+    void setBgpPosition(float x, float y) {
+        bgpPositionX = x, bgpPositionY = y;
+        isMissionCompleted = true;
+    }
     
     bool setCh01Picture(std::string filename);
     bool setCh02Picture(std::string filename);

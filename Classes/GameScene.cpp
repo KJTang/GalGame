@@ -31,7 +31,7 @@ bool GameScene::init()
     this->addChild(menuLayer, 1);
     
     bgp = nullptr;
-    bgpDuration = 0, bgpScale = 1;
+    bgpDuration = 0, bgpScale = 1, bgpPositionX = 0.5, bgpPositionY = 0.5;
     
     ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
     
@@ -96,6 +96,7 @@ bool GameScene::setBgpStart()
         return false;
     }
     bgp->setScale(visibleSize.width/bgp->getContentSize().width*bgpScale);
+    bgp->setPosition(Point(visibleSize.width*bgpPositionX, visibleSize.height*bgpPositionY));
     backgroundLayer->addChild(bgp);
     this->runAction(Sequence::create(DelayTime::create(bgpDuration),
                                      CallFunc::create([&](){isMissionCompleted=true;}),

@@ -190,6 +190,11 @@ void ScriptController::stateCommand(std::string cmd)
                 std::string str = getString();
                 log("set bgp duration = %s", str.c_str());
                 GameScene::getInstance()->setBgpDuration(transStringToFloat(str));
+            } else if (str == "position") {
+                std::string x = getString();
+                std::string y = getString();
+                log("set bgp position = %s, %s", x.c_str(), y.c_str());
+                GameScene::getInstance()->setBgpPosition(transStringToFloat(x), transStringToFloat(y));
             } else if (str == "start") {
                 log("set bgp start");
                 GameScene::getInstance()->setBgpStart();

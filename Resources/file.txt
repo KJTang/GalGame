@@ -11,6 +11,7 @@
 
     set.bgp.name="HelloWorld.png"
     set.bgp.duration="3.5"
+    set.bgp.position="0.5""0.25"
     set.bgp.start
 
     get.touch
