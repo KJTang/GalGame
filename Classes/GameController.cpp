@@ -20,6 +20,16 @@ bool GameController::init()
     return true;
 }
 
+void GameController::saveData()
+{
+    
+}
+
+void GameController::loadData()
+{
+    
+}
+
 void GameController::enterStartScene()
 {
     switch (currentState) {
@@ -73,6 +83,11 @@ void GameController::exitGame()
 //    Director::getInstance()->end();
     // used on iOS
     exit(0);
+}
+
+void GameController::loadBGM(std::string filename)
+{
+    CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic(filename.c_str());
 }
 
 void GameController::playBGM(std::string filename)

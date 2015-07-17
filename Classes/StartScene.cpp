@@ -51,7 +51,7 @@ bool StartScene::init()
     });
     
     // test
-    GameController::getInstance()->playBGM("title01.wav");
+//    GameController::getInstance()->loadBGM("title01.wav");
     
     return true;
 }

@@ -51,6 +51,10 @@ public:
         return sharedGameController;
     }
     
+    // Data
+    void saveData();
+    void loadData();
+    
     // Scene Control
     void enterStartScene();
     void enterGameScene();
@@ -61,6 +65,7 @@ public:
     void exitGame();
     
     // Audio Control
+    void loadBGM(std::string filename);
     void playBGM(std::string filename);
     void pauseBGM();
     void resumeBGM();

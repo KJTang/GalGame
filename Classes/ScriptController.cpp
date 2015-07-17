@@ -240,10 +240,13 @@ void ScriptController::stateCommand(std::string cmd)
             std::string str = getString();
             if (str == "name") {
                 std::string str = getString();
-                log("set bgm name = %s", str.c_str());
+                GameController::getInstance()->loadBGM(str);
+                GameScene::getInstance()->isMissionCompleted = true;
             } else if (str == "start") {
-                std::string str = getString();
+                std::string str = getString();                
                 log("set bgm start = %s", str.c_str());
+                GameController::getInstance()->playBGM(str);
+                GameScene::getInstance()->isMissionCompleted = true;
             } else {
                 showError(UNKNOWN_COMMAND);
             }
