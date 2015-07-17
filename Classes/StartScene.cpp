@@ -50,5 +50,8 @@ bool StartScene::init()
         GameController::getInstance()->exitGame();
     });
     
+    // test
+    GameController::getInstance()->playBGM("title01.wav");
+    
     return true;
 }

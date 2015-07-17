@@ -74,3 +74,18 @@ void GameController::exitGame()
     // used on iOS
     exit(0);
 }
+
+void GameController::playBGM(std::string filename)
+{
+    CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(filename.c_str());
+}
+
+void GameController::pauseBGM()
+{
+    CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+}
+
+void GameController::resumeBGM()
+{
+    CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+}

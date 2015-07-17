@@ -10,6 +10,7 @@
 #define GameController_cpp
 
 #include "cocos2d.h"
+#include "SimpleAudioEngine.h"
 
 #include "StartScene.h"
 #include "GameScene.h"
@@ -50,14 +51,19 @@ public:
         return sharedGameController;
     }
     
+    // Scene Control
     void enterStartScene();
     void enterGameScene();
     void enterConfigScene();
     void enterMemoryScene();
     void enterDataLoadScene();
     void enterDataSaveScene();
-    
     void exitGame();
+    
+    // Audio Control
+    void playBGM(std::string filename);
+    void pauseBGM();
+    void resumeBGM();
 };
 
 #endif /* GameController_cpp */
