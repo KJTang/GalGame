@@ -64,6 +64,7 @@ public:
      */
     // bgp
     bool setBgpStart();
+    void setBgpClear();
     void setBgpFilename(std::string filename) { bgpFilename = filename; isMissionCompleted = true;}
     void setBgpDuration(float duration) { bgpDuration = duration; isMissionCompleted = true;}
     void setBgpScale(float scale) { bgpScale = scale; isMissionCompleted = true;}

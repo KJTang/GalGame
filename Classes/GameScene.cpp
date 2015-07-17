@@ -141,6 +141,13 @@ bool GameScene::setBgpStart()
     return true;
 }
 
+void GameScene::setBgpClear()
+{
+//    if (bpg) {
+//        bgp->removeFromParentAndCleanup(true);
+//    }
+}
+
 /** 
  * ch01-ch04
  */
