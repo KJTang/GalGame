@@ -29,6 +29,8 @@ public:
     
     virtual bool init();
     CREATE_FUNC(StartScene);
+    
+    Label* text;
 };
 
 #endif /* StartScene_cpp */

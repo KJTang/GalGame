@@ -50,18 +50,42 @@ bool StartScene::init()
         GameController::getInstance()->exitGame();
     });
     
-    auto text = Label::createWithSystemFont("wenzi文字", "AppleGothic", 200);
-    text->setPosition(Point(visibleSize.width/2, visibleSize.height/4));
-    background->addChild(text);
-    text->enableShadow(Color4B::BLACK, Size(10, -10));
-//    text->enableOutline(Color4B::GREEN, -10);
-//    text->enableGlow(Color4B::YELLOW);
     
-    auto text2 = Label::createWithTTF("ABCabc", "fonts/arial.ttf", 200);
-    text2->setPosition(Point(visibleSize.width/2, visibleSize.height*0.75));
-    background->addChild(text2);
-//    text2->enableOutline(Color4B::BLACK, -10);
-    text2->enableGlow(Color4B::YELLOW);
+    //////////////////////////////////////////////////////
+    std::string str1 = "中abca,，文中文中文";
+    std::string str2;
+    
+    text = Label::createWithSystemFont(str2, "AppleGothic", 50, Size(100, 300));
+    text->setPosition(Point(visibleSize.width*0.25, visibleSize.height*0.50));
+    text->setColor(Color3B::BLACK);
+    background->addChild(text, 5);
+    
+    for (int i = 0; i != str1.size(); ) {
+        if (str1[i] <= 127 && str1[i] >= 0) {
+            str2 += str1[i];
+            ++i;
+        }
+        else {
+            str2 += str1[i];
+            str2 += str1[i+1];
+            str2 += str1[i+2];
+            i += 3;
+        }
+        log("str=%s，size=%d", str2.c_str(), (int)str2.size());
+    }
+
+//    this->runAction(DelayTime::create(5));
+//    this->runAction(CallFunc::create([&](){text->setString("中文中文测试中文");}));
+//    
+//    this->runAction(Sequence::create(DelayTime::create(1),
+//                                     CallFunc::create([&](){text->setString("中");}),
+//                                     DelayTime::create(1),
+//                                     CallFunc::create([&](){text->setString("中文");}),
+//                                     DelayTime::create(1),
+//                                     CallFunc::create([&](){text->setString("中文测");}),
+//                                     DelayTime::create(1),
+//                                     CallFunc::create([&](){text->setString("中文测试");}),
+//                                     NULL));
     
     return true;
 }
