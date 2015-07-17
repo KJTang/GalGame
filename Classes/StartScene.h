@@ -15,7 +15,6 @@
 #include "GameController.h"
 #include "GyroBackground.h"
 #include "ButtonSprite.h"
-#include "TextLayer.h"
 
 using namespace cocos2d;
 
@@ -24,7 +23,6 @@ class StartScene : public Scene
 private:
     Size visibleSize;
     Layer *backgroundLayer;
-    TextLayer *textLayer;
 public:
     StartScene();
     ~StartScene();

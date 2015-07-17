@@ -50,10 +50,5 @@ bool StartScene::init()
         GameController::getInstance()->exitGame();
     });
     
-    textLayer = TextLayer::create();
-    this->addChild(textLayer);
-    textLayer->setText("中文中文abc中文");
-    textLayer->showText(0.5);
-    
     return true;
 }

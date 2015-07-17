@@ -30,6 +30,8 @@ public:
     void setText(std::string s) {strSave = s;}
     void showText(float interval);
     void stopText();
+    
+    void postStopedMsg();
     void textUpdate(float dt);
 };
 

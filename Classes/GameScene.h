@@ -15,6 +15,7 @@
 
 #include "GameController.h"
 #include "ScriptController.h"
+#include "TextLayer.h"
 
 using namespace cocos2d;
 
@@ -31,9 +32,13 @@ private:
     float bgpDuration;
     float bgpScale;
     float bgpPositionX, bgpPositionY;
+    // charactors
     Sprite *ch01, *ch02, *ch03, *ch04;
+    // text
+    TextLayer *textLayer;
     
-    EventListenerTouchOneByOne* touchListener;
+    EventListenerTouchOneByOne *touchListener;
+    EventListenerCustom *textFinishListener;
 public:
     GameScene();
     ~GameScene();
@@ -58,7 +63,10 @@ public:
     void startNewGame();
     void scriptControlThread();
     void startSavedGame();
-    // set
+    /**
+     * set
+     */
+    // bgp
     bool setBgpStart();
     void setBgpFilename(std::string filename) { bgpFilename = filename; isMissionCompleted = true;}
     void setBgpDuration(float duration) { bgpDuration = duration; isMissionCompleted = true;}
@@ -67,12 +75,20 @@ public:
         bgpPositionX = x, bgpPositionY = y;
         isMissionCompleted = true;
     }
-    
+    // ch01-ch04
     bool setCh01Picture(std::string filename);
     bool setCh02Picture(std::string filename);
     bool setCh03Picture(std::string filename);
     bool setCh04Picture(std::string filename);
-    // get
+    // text
+    bool isTextShowing;
+    void setTextShow(float speed);
+    void setTextStop() { textLayer->stopText();}
+    void setTextContent(std::string str) { textLayer->setText(str); isMissionCompleted = true;}
+    void enableTextFinishedEventListener(bool b);
+    /**
+     * get
+     */
     void enableScreenTouchEventListener(bool b);
 };
 

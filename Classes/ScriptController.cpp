@@ -230,6 +230,9 @@ void ScriptController::stateCommand(std::string cmd)
             if (str == "content") {
                 std::string str = getString();
                 log("set text content = %s", str.c_str());
+                GameScene::getInstance()->setTextContent(str);
+            } else if (str == "start") {
+                GameScene::getInstance()->setTextShow(transStringToFloat(getString()));
             } else {
                 showError(UNKNOWN_COMMAND);
             }

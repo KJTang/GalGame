@@ -23,16 +23,21 @@ bool GameScene::init()
     
     visibleSize = Director::getInstance()->getVisibleSize();
     isMissionCompleted = true;
+    isTextShowing = false;
     
     backgroundLayer = Layer::create();
     this->addChild(backgroundLayer, -1);
     
     menuLayer = Layer::create();
-    this->addChild(menuLayer, 1);
+    this->addChild(menuLayer, 2);
     
+    textLayer = TextLayer::create();
+    this->addChild(textLayer, 1);
+    
+    // bgp
     bgp = nullptr;
     bgpDuration = 0, bgpScale = 1, bgpPositionX = 0.5, bgpPositionY = 0.5;
-    
+    // ch01-04
     ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
     
     // temp
@@ -48,20 +53,37 @@ bool GameScene::init()
     // touch listener
     touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);
-    
     touchListener->onTouchBegan = [](Touch* touch, Event* event){
         return true;
     };
-    
-    touchListener->onTouchEnded = [](Touch* touch, Event* event){
+    touchListener->onTouchEnded = [&](Touch* touch, Event* event){
         auto target = static_cast<GameScene*>(event->getCurrentTarget());
         // got touch
+        // if text is showing, stop it right now
+        if (target->isTextShowing) {
+            // post a "TextFinished" event
+            target->isTextShowing = false;
+            target->setTextStop();
+            target->enableTextFinishedEventListener(false);
+        }
         target->isMissionCompleted = true;
         target->enableScreenTouchEventListener(false);
         return false;
     };
     touchListener->setEnabled(false);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+    
+    // text finish listener
+    textFinishListener = EventListenerCustom::create("TextFinished", [&](Event* event){
+        auto target = static_cast<GameScene*>(event->getCurrentTarget());
+        target->isTextShowing = false;
+        target->setTextStop();
+        target->isMissionCompleted = true;
+        target->enableScreenTouchEventListener(false);
+        target->enableTextFinishedEventListener(false);
+    });
+    textFinishListener->setEnabled(false);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(textFinishListener, this);
     
     return true;
 }
@@ -84,6 +106,9 @@ void GameScene::startSavedGame()
     log("load saved game");
 }
 
+/**
+ *   bgp
+ */
 bool GameScene::setBgpStart()
 {
     if (bgp) {
@@ -104,6 +129,9 @@ bool GameScene::setBgpStart()
     return true;
 }
 
+/** 
+ * ch01-ch04
+ */
 bool GameScene::setCh01Picture(std::string filename)
 {
     if (ch01) {
@@ -156,6 +184,25 @@ bool GameScene::setCh04Picture(std::string filename)
     return true;
 }
 
+/**
+ * text
+ */
+void GameScene::setTextShow(float speed)
+{
+    textLayer->showText(speed);
+    isTextShowing = true;
+    touchListener->setEnabled(true);
+    textFinishListener->setEnabled(true);
+}
+
+void GameScene::enableTextFinishedEventListener(bool b)
+{
+    textFinishListener->setEnabled(b);
+}
+
+/**
+ * get Touch
+ */
 void GameScene::enableScreenTouchEventListener(bool b)
 {
     touchListener->setEnabled(b);

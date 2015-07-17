@@ -37,12 +37,22 @@ void TextLayer::showText(float interval)
 void TextLayer::stopText()
 {
     this->unschedule(schedule_selector(TextLayer::textUpdate));
+    // show all the text immediately
+    text->setString(strSave);
+}
+
+void TextLayer::postStopedMsg()
+{
+    EventCustom event("TextFinished");
+    _eventDispatcher->dispatchEvent(&event);
 }
 
 void TextLayer::textUpdate(float dt)
 {
     if (pos == strSave.size()) {
         stopText();
+        // post a "TextFinished" event
+        postStopedMsg();
         return;
     }
     
