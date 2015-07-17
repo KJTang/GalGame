@@ -18,15 +18,11 @@
     set.text.start="0.1"
 
 get.touch
-    set.text.content="文本切换一"
+    set.text.content="文本切换一：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
     set.text.start="0.1"
 
 get.touch
-    set.text.content="文本切换二"
-    set.text.start="0.1"
-
-get.touch
-    set.text.content="文本切换三"
+    set.text.content="文本切换二：测试中英文混合输入：ABC中文abc中文123数字"
     set.text.start="0.1"
 
 get.touch
@@ -49,21 +45,14 @@ get.touch
     set.bgp.name="CloseNormal.png"
     set.bgp.start
 
-    set.text.content="文本和图片一"
+    set.text.content="文本和图片一：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
     set.text.start="0.1"
 
 get.touch
     set.bgp.name="HelloWorld.png"
     set.bgp.start
 
-    set.text.content="文本和图片二"
-    set.text.start="0.1"
-
-get.touch
-    set.bgp.name="CloseNormal.png"
-    set.bgp.start
-
-    set.text.content="文本和图片三"
+    set.text.content="文本和图片二：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
     set.text.start="0.1"
 
 get.touch
