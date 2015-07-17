@@ -31,8 +31,8 @@ bool GameScene::init()
     menuLayer = Layer::create();
     this->addChild(menuLayer, 2);
     
-    textLayer = TextLayer::create();
-    this->addChild(textLayer, 1);
+    // text
+    textLayer = nullptr;
     
     // bgp
     bgp = nullptr;
@@ -189,7 +189,14 @@ bool GameScene::setCh04Picture(std::string filename)
  */
 void GameScene::setTextShow(float speed)
 {
+    if (textLayer) {
+        textLayer->removeFromParentAndCleanup(true);
+    }
+    textLayer = TextLayer::create();
+    this->addChild(textLayer);
+    textLayer->setText(textToShow);
     textLayer->showText(speed);
+    
     isTextShowing = true;
     touchListener->setEnabled(true);
     textFinishListener->setEnabled(true);
@@ -198,6 +205,13 @@ void GameScene::setTextShow(float speed)
 void GameScene::enableTextFinishedEventListener(bool b)
 {
     textFinishListener->setEnabled(b);
+}
+
+void GameScene::setTextClear()
+{
+    textLayer->removeFromParentAndCleanup(true);
+    textLayer = nullptr;
+    isMissionCompleted = true;
 }
 
 /**

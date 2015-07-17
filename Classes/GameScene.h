@@ -36,6 +36,7 @@ private:
     Sprite *ch01, *ch02, *ch03, *ch04;
     // text
     TextLayer *textLayer;
+    std::string textToShow;
     
     EventListenerTouchOneByOne *touchListener;
     EventListenerCustom *textFinishListener;
@@ -84,7 +85,8 @@ public:
     bool isTextShowing;
     void setTextShow(float speed);
     void setTextStop() { textLayer->stopText();}
-    void setTextContent(std::string str) { textLayer->setText(str); isMissionCompleted = true;}
+    void setTextContent(std::string str) { textToShow = str; isMissionCompleted = true;}
+    void setTextClear();
     void enableTextFinishedEventListener(bool b);
     /**
      * get

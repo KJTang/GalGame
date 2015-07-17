@@ -145,7 +145,7 @@ void ScriptController::stateBegin()
     }
     GameScene::getInstance()->isMissionCompleted = false;
     std::string str = getString();
-    log("get through, line %d", lineID);
+    log("ready to next command, line %d", lineID);
     if (str.size()) {
         if (str=="set" || str=="get" || str=="if") {
             stateCommand(str);
@@ -233,6 +233,8 @@ void ScriptController::stateCommand(std::string cmd)
                 GameScene::getInstance()->setTextContent(str);
             } else if (str == "start") {
                 GameScene::getInstance()->setTextShow(transStringToFloat(getString()));
+            } else if (str == "clear") {
+                GameScene::getInstance()->setTextClear();
             } else {
                 showError(UNKNOWN_COMMAND);
             }

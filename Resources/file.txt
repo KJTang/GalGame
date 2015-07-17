@@ -18,14 +18,26 @@
     get.touch
 
     set.bgp.name="CloseNormal.png"
-    set.bgp.duration="2"
+    set.bgp.duration="0"
     set.bgp.start
 
     set.text.content="这里需要一句文本长度足够的文本，用来测试文本显示效果，最好还包括一部分英文字母abc；先这样"
     set.text.start="0.1"
 
-    set.bgp.name="HelloWorld.png"
     get.touch
+
+    set.text.clear
+
+    set.bgp.name="HelloWorld.png"
+    set.bgp.duration="2"
+    set.bgp.start
+
+    set.text.content="文本2:测试文本"
+    set.text.start="0.1"
+
+    get.touch
+
+    set.text.clear
 
 ++
     set.bgm.name="bgm1.mp3"
