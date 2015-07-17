@@ -25,15 +25,9 @@ private:
     std::string data;
     int pos;
     
-    bool init();
     std::string getString();
     int transStringToInt(std::string num);
     float transStringToFloat(std::string num);
-    
-    // state
-    void stateBegin();
-    void stateCommand(std::string cmd);
-    void stateEnd();
     
     // error box
     int lineID; // used for err info collect
@@ -53,6 +47,7 @@ public:
     ~ScriptController();
 
 public:
+    bool init();
     static ScriptController* getInstance()
     {
         if(!sharedScriptController)
@@ -64,6 +59,11 @@ public:
     }
     
     void runWithFile(std::string filename, int linePosition);
+    
+    // state
+    void stateBegin();
+    void stateCommand(std::string cmd);
+    void stateEnd();
 };
 
 #endif /* ScriptController_cpp */

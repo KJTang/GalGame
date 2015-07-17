@@ -48,6 +48,7 @@ void GameController::enterGameScene()
     switch (currentState) {
         case STATE_START_SCENE: {
             Director::getInstance()->purgeCachedData();
+            GameScene::getInstance()->clear();
             Director::getInstance()->replaceScene(TransitionFade::create(1, GameScene::getInstance()));
             GameScene::getInstance()->startNewGame();
             break;

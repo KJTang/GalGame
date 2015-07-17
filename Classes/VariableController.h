@@ -42,7 +42,6 @@ private:
     std::string data;
     int pos;
     
-    bool init();
     std::string getString();
     
     std::vector<globalInt> Ints;
@@ -54,6 +53,7 @@ public:
     ~VariableController();
     
 public:
+    bool init();
     static VariableController* getInstance()
     {
         if (!sharedVariableController) {

@@ -31,9 +31,6 @@ void ScriptController::runWithFile(std::string filename, int linePosition)
         hasErr = false;
     }
     data = FileUtils::getInstance()->getStringFromFile(filename.c_str());
-    //    log("test:\n%s", data.c_str());
-    
-    stateBegin();
 }
 
 std::string ScriptController::getString()
@@ -140,14 +137,10 @@ float ScriptController::transStringToFloat(std::string num)
 
 void ScriptController::stateBegin()
 {
-    while (!GameScene::getInstance()->isMissionCompleted) {
-        // wait
-    }
-    GameScene::getInstance()->isMissionCompleted = false;
     std::string str = getString();
-    log("ready to next command, line %d", lineID);
     if (str.size()) {
         if (str=="set" || str=="get" || str=="if") {
+            log("ready to next command, line %d", lineID);
             stateCommand(str);
         } else {
             showError(UNKNOWN_COMMAND);
@@ -157,7 +150,7 @@ void ScriptController::stateBegin()
 
 void ScriptController::stateCommand(std::string cmd)
 {
-    /* **********************
+    /** **********************
      *          set
      * **********************
      */
@@ -399,7 +392,7 @@ void ScriptController::stateCommand(std::string cmd)
             showError(UNKNOWN_COMMAND);
         }
     }
-    /* **********************
+    /** **********************
      *          get
      * **********************
      */
@@ -577,15 +570,13 @@ void ScriptController::stateCommand(std::string cmd)
             showError(UNKNOWN_COMMAND);
         }
     }
-    /* **********************
+    /** **********************
      *          if
      * **********************
      */
     else if (cmd == "if") {
         
     }
-    if (!hasErr)
-        stateBegin();
 }
 
 void ScriptController::stateEnd()

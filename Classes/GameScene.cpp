@@ -88,17 +88,29 @@ bool GameScene::init()
     return true;
 }
 
+void GameScene::update(float dt)
+{
+    if (!isMissionCompleted) {
+        return;
+    }
+    isMissionCompleted = false;
+    ScriptController::getInstance()->stateBegin();
+}
+
+void GameScene::clear()
+{
+    this->removeAllChildren();
+    this->unscheduleUpdate();
+    this->init();
+}
+
 void GameScene::startNewGame()
 {
     this->clear();
-    std::thread scriptControl(&GameScene::scriptControlThread, this);
-    scriptControl.detach();
-}
-
-void GameScene::scriptControlThread()
-{
     VariableController::getInstance()->readFromScript();
     ScriptController::getInstance()->runWithFile("file.txt", 1);
+    
+    this->scheduleUpdate();
 }
 
 void GameScene::startSavedGame()
@@ -209,8 +221,11 @@ void GameScene::enableTextFinishedEventListener(bool b)
 
 void GameScene::setTextClear()
 {
-    textLayer->removeFromParentAndCleanup(true);
+    if (textLayer) {
+        textLayer->removeFromParentAndCleanup(true);
+    }
     textLayer = nullptr;
+
     isMissionCompleted = true;
 }
 

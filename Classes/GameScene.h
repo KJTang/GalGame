@@ -9,8 +9,6 @@
 #ifndef GameScene_cpp
 #define GameScene_cpp
 
-#include <thread>
-
 #include "cocos2d.h"
 
 #include "GameController.h"
@@ -45,6 +43,7 @@ public:
     ~GameScene();
     
     virtual bool init();
+    virtual void update(float dt);
     static GameScene* getInstance()
     {
         if (!sharedGameScene) {
@@ -53,16 +52,12 @@ public:
         }
         return sharedGameScene;
     }
-    void clear() {
-        this->removeAllChildren();
-        this->init();
-    }
+    void clear();
     
     // mission completed
     bool isMissionCompleted;
-    
+    // different way to start game
     void startNewGame();
-    void scriptControlThread();
     void startSavedGame();
     /**
      * set
