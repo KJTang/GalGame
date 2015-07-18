@@ -186,9 +186,6 @@ void ScriptController::stateCommand(std::string cmd)
             } else if (str == "start") {
                 log("set bgp start");
                 GameScene::getInstance()->setBgpStart();
-            } else if (str == "clear") {
-                log("set bgp clear");
-                GameScene::getInstance()->setBgpClear();
             } else {
                 showError(UNKNOWN_COMMAND);
             }

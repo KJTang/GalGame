@@ -1,91 +1,89 @@
-//    set.globalint.number1.equal="5"
-//    get.globalint.number1
-//    set.globalint.number1.add="1"
-//    get.globalint.number1
-//    set.globalint.number1.minus="2"
-//    get.globalint.number1
-
-
 // start
 
-    set.globalint.number1.equal="5"
-if.globalint.number1.equalto="3"
-    set.globalint.number1.equal="1"
-elif.globalint.number1.equalto="5"
-    set.globalint.number1.equal="2"
-else
-    set.globalint.number1.equal="3"
-endif
-    get.globalint.number1
-
-    set.globalint.number2.equal="3"
-if.globalint.number2.biggerthan="1"
-    set.globalint.number2.add="5"
-endif
-    get.globalint.number2
-
-
-    set.choice.number="4"
-    set.choice.content="0""选项一"
-    set.choice.content="1""选项二"
-    set.choice.content="2""选项三"
-    set.choice.choosable="2""false"
-    set.choice.content="3""选项四"
-    set.choice.show
+set.choice.number="4"
+set.choice.content="0""测试一"
+set.choice.content="1""测试二"
+set.choice.content="2""测试三"
+set.choice.choosable="3""false"
+set.choice.content="3""不可选"
+set.choice.show
 
 get.choice.result
 
-    set.bgp.name="HelloWorld.png"
-    set.bgp.start
+if.globalint.choiceresult.equalto="0"
 
-    set.text.content="测试一：只切换文本不切换背景"
-    set.text.start="0.1"
-
-get.touch
-    set.text.content="文本切换一：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
-    set.text.start="0.1"
+set.bgp.name="HelloWorld.png"
+set.bgp.start
+set.text.content="测试一：只切换文本不切换背景"
+set.text.start="0.1"
 
 get.touch
-    set.text.content="文本切换二：测试中英文混合输入：ABC中文abc中文123数字"
-    set.text.start="0.1"
+
+set.text.content="文本切换一：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
+set.text.start="0.1"
 
 get.touch
-    set.text.content="测试二：只切换背景不切换文字"
-    set.text.start="0.1"
+
+set.text.content="文本切换二：测试中英文混合输入：ABC中文abc中文123数字"
+set.text.start="0.1"
+
+elif.globalint.choiceresult.equalto="1"
+
+set.bgp.name="HelloWorld.png"
+set.bgp.start
+set.text.content="测试二：只切换背景不切换文字"
+set.text.start="0.1"
 
 get.touch
-    set.bgp.name="CloseNormal.png"
-    set.bgp.start
+
+set.bgp.name="CloseNormal.png"
+set.bgp.start
 
 get.touch
-    set.bgp.name="HelloWorld.png"
-    set.bgp.start
+
+set.bgp.name="HelloWorld.png"
+set.bgp.start
 
 get.touch
-    set.bgm.start="title01.wav"
 
-    set.text.content="测试三：背景和文字同时切换"
-    set.text.start="0.1"
+set.bgp.name="CloseNormal.png"
+set.bgp.start
 
-get.touch
-    set.bgp.name="CloseNormal.png"
-    set.bgp.start
+elif.globalint.choiceresult.equalto="2"
 
-    set.text.content="文本和图片一：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
-    set.text.start="0.1"
-
-get.touch
-    set.bgp.name="HelloWorld.png"
-    set.bgp.start
-
-    set.text.content="文本和图片二：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
-    set.text.start="0.1"
+set.bgp.name="HelloWorld.png"
+set.bgp.start
+set.text.content="测试三：背景和文字同时切换"
+set.text.start="0.1"
 
 get.touch
-    set.text.clear
 
-    set.text.content="测试结束"
-    set.text.start="0.1"
+set.bgp.name="CloseNormal.png"
+set.bgp.start
+set.text.content="文本和图片一：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
+set.text.start="0.1"
+
+get.touch
+
+set.bgp.name="HelloWorld.png"
+set.bgp.start
+set.text.content="文本和图片二：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
+set.text.start="0.1"
+
+get.touch
+
+set.bgp.name="CloseNormal.png"
+set.bgp.start
+set.text.content="文本和图片三：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
+set.text.start="0.1"
+
+endif
+
+get.touch
+
+set.text.clear
+set.text.content="测试结束"
+set.text.start="0.1"
 
 
 
@@ -94,13 +92,29 @@ get.touch
 +++++++++ // 以下为暂不测试部分
 
 
-if.globalint.choiceresult.equalto="0"
-    balabala
-fi
+set.globalint.number1.equal="5"
+get.globalint.number1
+set.globalint.number1.add="1"
+get.globalint.number1
+set.globalint.number1.minus="2"
+get.globalint.number1
 
-if.globalint.choiceresult.equalto="1"
-    balabala
-fi
+
+set.globalint.number1.equal="5"
+if.globalint.number1.equalto="3"
+set.globalint.number1.equal="1"
+elif.globalint.number1.equalto="5"
+set.globalint.number1.equal="2"
+else
+set.globalint.number1.equal="3"
+endif
+get.globalint.number1
+
+set.globalint.number2.equal="3"
+if.globalint.number2.biggerthan="1"
+set.globalint.number2.add="5"
+endif
+get.globalint.number2
 
 
 
