@@ -19,31 +19,11 @@ bool ChoiceTableLayer::init()
     }
  
     visibleSize = Director::getInstance()->getVisibleSize();
+    choiceNumber = 0;
     
-    choice01 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 80);
-    choice01->setPosition(visibleSize.width*0.5, visibleSize.height*0.9);
-    choice01->setVisible(false);
-    this->addChild(choice01);
-    
-    choice02 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 80);
-    choice02->setPosition(visibleSize.width*0.5, visibleSize.height*0.80);
-    choice02->setVisible(false);
-    this->addChild(choice02);
-    
-    choice03 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 80);
-    choice03->setPosition(visibleSize.width*0.5, visibleSize.height*0.70);
-    choice03->setVisible(false);
-    this->addChild(choice03);
-    
-    choice04 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 80);
-    choice04->setPosition(visibleSize.width*0.5, visibleSize.height*0.60);
-    choice04->setVisible(false);
-    this->addChild(choice04);
-    
-    
-    touchListener01 = EventListenerTouchOneByOne::create();
-    touchListener01->setSwallowTouches(true);
-    touchListener01->onTouchBegan = [](Touch *touch, Event *event) {
+    touchListener = EventListenerTouchOneByOne::create();
+    touchListener->setSwallowTouches(true);
+    touchListener->onTouchBegan = [](Touch *touch, Event *event) {
         auto target = static_cast<Label*>(event->getCurrentTarget());
         // relative position
         Point locationInNode = target->convertToNodeSpace(touch->getLocation());
@@ -56,77 +36,53 @@ bool ChoiceTableLayer::init()
         }
         return false;
     };
-    touchListener01->onTouchEnded = [](Touch* touch, Event* event){
+    touchListener->onTouchEnded = [](Touch* touch, Event* event){
         auto target = static_cast<Label*>(event->getCurrentTarget());
         target->runAction(MoveBy::create(0.05, Vec2(-10, 10)));
         log("TOUCH ENDED");
         return true;
     };
-    
-    touchListener02 = touchListener01->clone();
-    touchListener03 = touchListener01->clone();
-    touchListener04 = touchListener01->clone();
-    
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener01, choice01);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener02, choice02);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener03, choice03);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener04, choice04);
+
     
     return true;
 }
 
+void ChoiceTableLayer::setChoiceNumber(int number)
+{
+    if (number < 0) {
+        return;
+    }
+    choiceNumber = number;
+    for (int i = 0; i != choiceNumber; ++i) {
+        Label *newChoice = Label::createWithTTF("", "fonts/PingFang_5.ttf", visibleSize.height/10);
+        choices.pushBack(newChoice);
+        newChoice->setPosition(visibleSize.width*0.5, visibleSize.height*(0.90-0.10*i));
+        
+        auto newTouchListener = touchListener->clone();
+        listeners.pushBack(newTouchListener);
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(newTouchListener, newChoice);
+    }
+}
+
+void ChoiceTableLayer::setChoiceContent(int id, std::string content)
+{
+    if (id >= choiceNumber || id < 0) {
+        return;
+    }
+    choices.at(id)->setString(content);
+}
+
+void ChoiceTableLayer::setChoiceChoosable(int id, bool choosable)
+{
+    if (id >= choiceNumber || id < 0) {
+        return;
+    }
+    listeners.at(id)->setEnabled(choosable);
+}
+
 void ChoiceTableLayer::showChoiceTable()
 {
-    choice01->setVisible(showChoice01);
-    choice02->setVisible(showChoice02);
-    choice03->setVisible(showChoice03);
-    choice04->setVisible(showChoice04);
-}
-
-// choice01
-void ChoiceTableLayer::setChoice01Content(std::string str)
-{
-    choice01->setString(str);
-    showChoice01 = true;
-}
-
-void ChoiceTableLayer::setChoice01Choosable(bool b)
-{
-    touchListener01->setEnabled(b);
-}
-
-// choice02
-void ChoiceTableLayer::setChoice02Content(std::string str)
-{
-    choice02->setString(str);
-    showChoice02 = true;
-}
-
-void ChoiceTableLayer::setChoice02Choosable(bool b)
-{
-    touchListener02->setEnabled(b);
-}
-
-// choice03
-void ChoiceTableLayer::setChoice03Content(std::string str)
-{
-    choice03->setString(str);
-    showChoice03 = true;
-}
-
-void ChoiceTableLayer::setChoice03Choosable(bool b)
-{
-    touchListener03->setEnabled(b);
-}
-
-// choice04
-void ChoiceTableLayer::setChoice04Content(std::string str)
-{
-    choice04->setString(str);
-    showChoice04 = true;
-}
-
-void ChoiceTableLayer::setChoice04Choosable(bool b)
-{
-    touchListener04->setEnabled(b);
+    for (int i = 0; i != choices.size(); ++i) {
+        this->addChild(choices.at(i));
+    }
 }

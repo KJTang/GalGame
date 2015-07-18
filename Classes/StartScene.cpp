@@ -53,12 +53,16 @@ bool StartScene::init()
     // test
     auto choiceTable = ChoiceTableLayer::create();
     this->addChild(choiceTable);
-    choiceTable->setChoice01Content("选项一");
-    choiceTable->setChoice02Content("选项二");
-    choiceTable->setChoice03Content("选项三");
+    
+    choiceTable->setChoiceNumber(4);
+    
+    choiceTable->setChoiceContent(0, "选项一");
+    choiceTable->setChoiceContent(1, "选项二");
+    choiceTable->setChoiceContent(2, "选项三");
+    choiceTable->setChoiceContent(3, "选项四");
+    
+    choiceTable->setChoiceChoosable(2, false);
+    
     choiceTable->showChoiceTable();
-    
-//    choiceTable->setChoice01Choosable(false);
-    
     return true;
 }
