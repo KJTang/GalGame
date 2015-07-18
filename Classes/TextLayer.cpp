@@ -21,30 +21,32 @@ bool TextLayer::init()
     visibleSize = Director::getInstance()->getVisibleSize();
     pos = 0;
     
-    text = Label::createWithTTF("", "fonts/PingFang_5.ttf", 40, Size(800, 200));
+    std::string fontFile = "fonts/PingFang_7.ttf";
+    
+    text = Label::createWithTTF("", fontFile, 40, Size(800, 200));
     text->setAnchorPoint(Point(0, 0));
     text->setPosition(Point(0, 0));
     this->addChild(text, 5);
     
-    outline01 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 40, Size(800, 200));
+    outline01 = Label::createWithTTF("", fontFile, 40, Size(800, 200));
     outline01->setAnchorPoint(Point(0, 0));
     outline01->setPosition(Point(1, 0));
     outline01->setColor(Color3B::RED);
     this->addChild(outline01, 1);
     
-    outline02 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 40, Size(800, 200));
+    outline02 = Label::createWithTTF("", fontFile, 40, Size(800, 200));
     outline02->setAnchorPoint(Point(0, 0));
     outline02->setPosition(Point(-1, 0));
     outline02->setColor(Color3B::RED);
     this->addChild(outline02, 2);
     
-    outline03 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 40, Size(800, 200));
+    outline03 = Label::createWithTTF("", fontFile, 40, Size(800, 200));
     outline03->setAnchorPoint(Point(0, 0));
     outline03->setPosition(Point(0, 1));
     outline03->setColor(Color3B::RED);
     this->addChild(outline03, 3);
     
-    outline04 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 40, Size(800, 200));
+    outline04 = Label::createWithTTF("", fontFile, 40, Size(800, 200));
     outline04->setAnchorPoint(Point(0, 0));
     outline04->setPosition(Point(0, -1));
     outline04->setColor(Color3B::RED);
