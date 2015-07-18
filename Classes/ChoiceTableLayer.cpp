@@ -50,7 +50,7 @@ bool ChoiceTableLayer::init()
         Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
         if (rect.containsPoint(locationInNode))
         {
-//            target->runAction(ScaleTo::create(0.05, 2));
+            target->runAction(MoveBy::create(0.05, Vec2(10, -10)));
             log("TOUCHED");
             return true;
         }
@@ -58,7 +58,7 @@ bool ChoiceTableLayer::init()
     };
     touchListener01->onTouchEnded = [](Touch* touch, Event* event){
         auto target = static_cast<Label*>(event->getCurrentTarget());
-
+        target->runAction(MoveBy::create(0.05, Vec2(-10, 10)));
         log("TOUCH ENDED");
         return true;
     };

@@ -58,7 +58,7 @@ bool StartScene::init()
     choiceTable->setChoice03Content("选项三");
     choiceTable->showChoiceTable();
     
-    choiceTable->setChoice01Choosable(false);
+//    choiceTable->setChoice01Choosable(false);
     
     return true;
 }
