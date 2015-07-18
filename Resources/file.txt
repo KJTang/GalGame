@@ -1,11 +1,16 @@
 // start
 
+gobackmark
+
+set.bgp.name="CloseSelected.png"
+set.bgp.start
+set.text.clear
+
 set.choice.number="4"
 set.choice.content="0""测试一"
 set.choice.content="1""测试二"
 set.choice.content="2""测试三"
-set.choice.choosable="3""false"
-set.choice.content="3""不可选"
+set.choice.content="3""结束测试"
 set.choice.show
 
 get.choice.result
@@ -26,6 +31,10 @@ get.touch
 
 set.text.content="文本切换二：测试中英文混合输入：ABC中文abc中文123数字"
 set.text.start="0.1"
+
+get.touch
+
+goback
 
 elif.globalint.choiceresult.equalto="1"
 
@@ -48,6 +57,10 @@ get.touch
 
 set.bgp.name="CloseNormal.png"
 set.bgp.start
+
+get.touch
+
+goback
 
 elif.globalint.choiceresult.equalto="2"
 
@@ -77,9 +90,13 @@ set.bgp.start
 set.text.content="文本和图片三：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
 set.text.start="0.1"
 
-endif
-
 get.touch
+
+goback
+
+elif.globalint.choiceresult.equalto="3"
+
+endif
 
 set.text.clear
 set.text.content="测试结束"

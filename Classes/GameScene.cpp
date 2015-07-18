@@ -259,6 +259,7 @@ void GameScene::setChoiceChoosable(int id, bool choosable)
 void GameScene::setChoiceShow()
 {
     choiceTable->showChoiceTable();
+    VariableController::getInstance()->setInt("choiceresult", -1);
     isMissionCompleted = true;
 }
 
@@ -274,6 +275,7 @@ void GameScene::waitForChoiceResult(float dt)
         return;
     }
     VariableController::getInstance()->setInt("choiceresult", result);
+    log("get choice result = %d", result);
     isMissionCompleted = true;
     choiceTable->removeFromParentAndCleanup(true);
     this->unschedule(schedule_selector(GameScene::waitForChoiceResult));

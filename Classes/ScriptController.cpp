@@ -16,9 +16,8 @@ ScriptController::~ScriptController(){}
 
 bool ScriptController::init()
 {
-    pos = 0;
-    lineID = 1;
-    
+    pos = 0, lineID = 1;
+    goBackPosMark = -1, goBackLineMark = -1;
     isConditionFullFilled = false;
     hasErr = false;
     return true;
@@ -27,9 +26,10 @@ bool ScriptController::init()
 void ScriptController::runWithFile(std::string filename, int linePosition)
 {
     lineID = linePosition;
-    if (lineID <= 1) {
-        lineID = 1;
-        pos = 0;
+    if (lineID < 1) {
+        pos = 0, lineID = 1;
+        goBackPosMark = -1, goBackLineMark = -1;
+        isConditionFullFilled = false;
         hasErr = false;
     }
     data = FileUtils::getInstance()->getStringFromFile(filename.c_str());
@@ -141,11 +141,28 @@ void ScriptController::stateBegin()
 {
     std::string str = getString();
     if (str.size()) {
-        if (str=="set" || str=="get") {
+        if (str == "set" || str == "get") {
             log("ready to next command, line %d", lineID);
             stateCommand(str);
-        } else if (str=="if" || str=="elif" || str=="else" || str=="endif") {
+        } else if (str == "if" || str == "elif" || str == "else" || str == "endif") {
             stateCondition(str);
+        } else if (str == "goback") {
+            if (goBackPosMark == -1) {
+                showError(GO_BACK_MARK_DOES_NOT_EXIST);
+            }
+            else {
+                pos = goBackPosMark;
+                lineID = goBackLineMark;
+                // when we goback, we need break the "if"
+                isConditionFullFilled = false;
+                log("goback %d", lineID);
+                stateBegin();
+            }
+        } else if (str == "gobackmark") {
+            log("set gobackmark = %d", lineID);
+            goBackPosMark = pos;
+            goBackLineMark = lineID;
+            stateBegin();
         } else {
             showError(UNKNOWN_COMMAND);
         }
@@ -612,7 +629,7 @@ void ScriptController::stateCommand(std::string cmd)
 }
 
 void ScriptController::stateCondition(std::string cmd)
-{
+{   
     std::string str = cmd;
     if (isConditionFullFilled) {
         while (str != "endif") {
@@ -710,6 +727,9 @@ void ScriptController::showError(int errID)
             break;
         case VARIABLE_DOES_NOT_EXIST:
             log("err: variable does not exist, line %d", lineID);
+            break;
+        case GO_BACK_MARK_DOES_NOT_EXIST:
+            log("err: gobackmark does not exist, line %d", lineID);
             break;
         case XXX:
             log("XXX");

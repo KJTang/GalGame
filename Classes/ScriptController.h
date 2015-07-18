@@ -23,14 +23,14 @@ class ScriptController
 private:
     static ScriptController *sharedScriptController;
     std::string data;
-    int pos;
+    int pos, lineID;
+    int goBackPosMark, goBackLineMark;
     
     std::string getString();
     int transStringToInt(std::string num);
     float transStringToFloat(std::string num);
     
     // error box
-    int lineID; // used for err info collect
     bool hasErr;
     enum errorID
     {
@@ -39,6 +39,7 @@ private:
         INVALID_EXPRESSION,
         UNKNOWN_COMMAND,
         VARIABLE_DOES_NOT_EXIST,
+        GO_BACK_MARK_DOES_NOT_EXIST,
         XXX
     };
     void showError(int errID);
