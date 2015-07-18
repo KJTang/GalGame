@@ -16,8 +16,6 @@
 #include "GyroBackground.h"
 #include "ButtonSprite.h"
 
-#include "ChoiceTableLayer.h"
-
 using namespace cocos2d;
 
 class StartScene : public Scene

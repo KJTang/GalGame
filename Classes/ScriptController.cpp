@@ -18,6 +18,8 @@ bool ScriptController::init()
 {
     pos = 0;
     lineID = 1;
+    
+    isConditionFullFilled = false;
     hasErr = false;
     return true;
 }
@@ -139,9 +141,11 @@ void ScriptController::stateBegin()
 {
     std::string str = getString();
     if (str.size()) {
-        if (str=="set" || str=="get" || str=="if") {
-            log("ready to next command, line %d", lineID);
+        if (str=="set" || str=="get") {
+//            log("ready to next command, line %d", lineID);
             stateCommand(str);
+        } else if (str=="if" || str=="elif" || str=="else" || str=="endif") {
+            stateCondition(str);
         } else {
             showError(UNKNOWN_COMMAND);
         }
@@ -608,12 +612,81 @@ void ScriptController::stateCommand(std::string cmd)
             showError(UNKNOWN_COMMAND);
         }
     }
-    /** **********************
-     *          if
-     * **********************
-     */
-    else if (cmd == "if") {
-        
+}
+
+void ScriptController::stateCondition(std::string cmd)
+{
+    std::string str = cmd;
+    if (isConditionFullFilled) {
+        while (str != "endif") {
+            str = getString();
+        }
+        isConditionFullFilled = false;
+        stateBegin();
+        return;
+    }
+    
+    // if the condition is not fullfilled, keep judge utill it's fullfilled
+    if (str == "if" || str == "elif") {
+        std::string type = getString();
+        if (type == "globalint") {
+            int value = VariableController::getInstance()->getInt(getString());
+            if (value == -1) {
+                showError(VARIABLE_DOES_NOT_EXIST);
+                return;
+            }
+            std::string str = getString();
+            if (str == "equalto") {
+                if (value == transStringToInt(getString())) {
+                    isConditionFullFilled = true;
+                    stateBegin();
+                } else {
+                    std::string str;
+                    while (true) {
+                        str = getString();
+                        if (str == "elif" || str == "else" || str == "endif") {
+                            stateCondition(str);
+                            return;
+                        }
+                    }
+                }
+            } else if (str == "biggerthan") {
+                if (value > transStringToInt(getString())) {
+                    isConditionFullFilled = true;
+                    stateBegin();
+                } else {
+                    std::string str;
+                    while (true) {
+                        str = getString();
+                        if (str == "elif" || str == "else" || str == "endif") {
+                            stateCondition(str);
+                            return;
+                        }
+                    }
+                }
+            } else if (str == "lessthan") {
+                if (value < transStringToInt(getString())) {
+                    isConditionFullFilled = true;
+                    stateBegin();
+                } else {
+                    std::string str;
+                    while (true) {
+                        str = getString();
+                        if (str == "elif" || str == "else" || str == "endif") {
+                            stateCondition(str);
+                            return;
+                        }
+                    }
+                }
+            } else {
+                showError(UNKNOWN_COMMAND);
+            }
+        } else {
+            showError(UNKNOWN_COMMAND);
+        }
+    } else if (str == "else") {
+        isConditionFullFilled = true;
+        stateBegin();
     }
 }
 
@@ -637,6 +710,9 @@ void ScriptController::showError(int errID)
             break;
         case UNKNOWN_COMMAND:
             log("err: unknown command, line %d", lineID);
+            break;
+        case VARIABLE_DOES_NOT_EXIST:
+            log("err: variable does not exist, line %d", lineID);
             break;
         case XXX:
             log("XXX");

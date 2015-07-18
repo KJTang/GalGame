@@ -38,6 +38,7 @@ private:
         MISSED_ANOTHER_QUATATION_MARK,
         INVALID_EXPRESSION,
         UNKNOWN_COMMAND,
+        VARIABLE_DOES_NOT_EXIST,
         XXX
     };
     void showError(int errID);
@@ -62,7 +63,12 @@ public:
     
     // state
     void stateBegin();
+    
     void stateCommand(std::string cmd);
+    
+    bool isConditionFullFilled;  // used to judge if condition is fullfilled or not
+    void stateCondition(std::string cmd);
+    
     void stateEnd();
 };
 

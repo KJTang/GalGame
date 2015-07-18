@@ -8,6 +8,23 @@
 
 // start
 
+    set.globalint.number1.equal="5"
+if.globalint.number1.equalto="3"
+    set.globalint.number1.equal="1"
+elif.globalint.number1.equalto="5"
+    set.globalint.number1.equal="2"
+else
+    set.globalint.number1.equal="3"
+endif
+    get.globalint.number1
+
+    set.globalint.number2.equal="3"
+if.globalint.number2.biggerthan="1"
+    set.globalint.number2.add="5"
+endif
+    get.globalint.number2
+
+
     set.choice.number="4"
     set.choice.content="0""选项一"
     set.choice.content="1""选项二"
@@ -71,71 +88,19 @@ get.touch
     set.text.start="0.1"
 
 
-++++
-    set.globalint.number1.equal="5"
-
-    set.choice01.content="选项一"
-    set.choice02.content="选项二"
-
-get.choice
-
-    if.choice.result="choice01"
-    set.globalint.number1.add="1"
-    fi
-
-    if.choice.result="choice02"
-    set.globalint.number1.minus="1"
-    fi
-
-    get.globalint.number1
 
 
 
 +++++++++ // 以下为暂不测试部分
 
-    set.text.content="这里需要一句文本长度足够的文本，用来测试文本显示效果，最好还包括一部分英文字母abcdefg"
-    set.text.start="0.1"
 
-    get.touch
-    set.text.clear
+if.globalint.choiceresult.equalto="0"
+    balabala
+fi
 
-    set.bgp.name="HelloWorld.png"
-    set.bgp.duration="0"
-    set.bgp.start
-
-    set.text.content="这里是第二句用来测试的长文本，这里是第二句用来测试的长文本，这里是第二句用来测试的长文本"
-    set.text.start="0.1"
-
-    get.touch
-    set.text.clear
-
-    set.text.content="测试结束"
-    set.text.start="0.1"
-
-    set.choicetable.number="2"
-    set.choice01.text="choice01"
-    set.choice01.enable="true"
-
-    set.choice02.text="choice02"
-    set.choice02.enable="false"
-
-    get.choice
-
-    set.choice01.result
-    set.globalint.a.equal="1"
-    set.choice02.result
-    set.favor.min="1"
-
-    if.favor.equalto."5"
-        set.nextscript.name="script2"
-    else
-        set.nextscript.name="script3"
-    fi
-
-
-
-
-
+if.globalint.choiceresult.equalto="1"
+    balabala
+fi
 
 
 

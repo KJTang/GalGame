@@ -49,20 +49,6 @@ bool StartScene::init()
         log("exit");
         GameController::getInstance()->exitGame();
     });
-    
-    // test
-    auto choiceTable = ChoiceTableLayer::create();
-    this->addChild(choiceTable);
-    
-    choiceTable->setChoiceNumber(4);
-    
-    choiceTable->setChoiceContent(0, "选项一");
-    choiceTable->setChoiceContent(1, "选项二");
-    choiceTable->setChoiceContent(2, "选项三");
-    choiceTable->setChoiceContent(3, "选项四");
-    
-    choiceTable->setChoiceChoosable(2, false);
-    
-    choiceTable->showChoiceTable();
+
     return true;
 }
