@@ -8,7 +8,7 @@
 
 // start
 
-    set.bgm.start="title01.wav"
+//    set.bgm.start="title01.wav"
 
     set.bgp.name="HelloWorld.png"
     set.bgp.start
@@ -62,6 +62,24 @@ get.touch
     set.text.content="测试结束"
     set.text.start="0.1"
 
+
+++++
+    set.globalint.number1.equal="5"
+
+    set.choice01.content="选项一"
+    set.choice02.content="选项二"
+
+get.choice
+
+    if.choice.result="choice01"
+    set.globalint.number1.add="1"
+    fi
+
+    if.choice.result="choice02"
+    set.globalint.number1.minus="1"
+    fi
+
+    get.globalint.number1
 
 
 

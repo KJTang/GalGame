@@ -33,7 +33,6 @@ bool GameScene::init()
     
     // text
     textLayer = nullptr;
-    
     // bgp
     bgp = nullptr;
     bgpDuration = 0, bgpScale = 1, bgpPositionX = 0.5, bgpPositionY = 0.5;
