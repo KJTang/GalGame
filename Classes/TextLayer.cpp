@@ -21,10 +21,34 @@ bool TextLayer::init()
     visibleSize = Director::getInstance()->getVisibleSize();
     pos = 0;
     
-    text = Label::createWithSystemFont("", "AppleGothic", 50, Size(800, 200));
+    text = Label::createWithTTF("", "fonts/PingFang_5.ttf", 40, Size(800, 200));
     text->setAnchorPoint(Point(0, 0));
     text->setPosition(Point(0, 0));
-    this->addChild(text);
+    this->addChild(text, 5);
+    
+    outline01 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 40, Size(800, 200));
+    outline01->setAnchorPoint(Point(0, 0));
+    outline01->setPosition(Point(1, 0));
+    outline01->setColor(Color3B::RED);
+    this->addChild(outline01, 1);
+    
+    outline02 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 40, Size(800, 200));
+    outline02->setAnchorPoint(Point(0, 0));
+    outline02->setPosition(Point(-1, 0));
+    outline02->setColor(Color3B::RED);
+    this->addChild(outline02, 2);
+    
+    outline03 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 40, Size(800, 200));
+    outline03->setAnchorPoint(Point(0, 0));
+    outline03->setPosition(Point(0, 1));
+    outline03->setColor(Color3B::RED);
+    this->addChild(outline03, 3);
+    
+    outline04 = Label::createWithTTF("", "fonts/PingFang_5.ttf", 40, Size(800, 200));
+    outline04->setAnchorPoint(Point(0, 0));
+    outline04->setPosition(Point(0, -1));
+    outline04->setColor(Color3B::RED);
+    this->addChild(outline04, 4);
     
     return true;
 }
@@ -39,6 +63,11 @@ void TextLayer::stopText()
     this->unschedule(schedule_selector(TextLayer::textUpdate));
     // show all the text immediately
     text->setString(strSave);
+    
+    outline01->setString(strSave);
+    outline02->setString(strSave);
+    outline03->setString(strSave);
+    outline04->setString(strSave);
 }
 
 void TextLayer::postStopedMsg()
@@ -69,4 +98,9 @@ void TextLayer::textUpdate(float dt)
     
 //    log("string = %s", strShow.c_str());
     text->setString(strShow);
+    
+    outline01->setString(strShow);
+    outline02->setString(strShow);
+    outline03->setString(strShow);
+    outline04->setString(strShow);
 }
