@@ -67,6 +67,8 @@ public:
     
     void stateCommand(std::string cmd);
     
+    void stateJump(std::string cmd);
+    
     bool isConditionFullFilled;  // used to judge if condition is fullfilled or not
     void stateCondition(std::string cmd);
     

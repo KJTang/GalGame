@@ -26,7 +26,7 @@ bool ScriptController::init()
 void ScriptController::runWithFile(std::string filename, int linePosition)
 {
     lineID = linePosition;
-    if (lineID < 1) {
+    if (lineID <= 1) {
         pos = 0, lineID = 1;
         goBackPosMark = -1, goBackLineMark = -1;
         isConditionFullFilled = false;
@@ -66,6 +66,15 @@ std::string ScriptController::getString()
                 showError(UNRECOGNIZED_CHARACTOR);
                 return "";
             }
+        }
+        else if (data[pos] == '#') {
+            str += data[pos];
+            ++pos;
+            while (isalpha(data[pos]) || isnumber(data[pos])) {
+                str += data[pos];
+                ++pos;
+            }
+            return str;
         }
         // get string between " "
         else if (data[pos] == '\"') {
@@ -140,32 +149,47 @@ float ScriptController::transStringToFloat(std::string num)
 void ScriptController::stateBegin()
 {
     std::string str = getString();
+    log("---------------------------------------------%s", str.c_str());
     if (str.size()) {
-        if (str == "set" || str == "get") {
-            log("ready to next command, line %d", lineID);
+        if (str[0] == '#') {
+            stateJump(str);
+        } else if (str == "set" || str == "get") {
             stateCommand(str);
         } else if (str == "if" || str == "elif" || str == "else" || str == "endif") {
             stateCondition(str);
-        } else if (str == "goback") {
-            if (goBackPosMark == -1) {
-                showError(GO_BACK_MARK_DOES_NOT_EXIST);
-            }
-            else {
-                pos = goBackPosMark;
-                lineID = goBackLineMark;
-                // when we goback, we need break the "if"
-                isConditionFullFilled = false;
-                log("goback %d", lineID);
-                stateBegin();
-            }
-        } else if (str == "gobackmark") {
-            log("set gobackmark = %d", lineID);
-            goBackPosMark = pos;
-            goBackLineMark = lineID;
-            stateBegin();
         } else {
             showError(UNKNOWN_COMMAND);
         }
+    }
+}
+
+void ScriptController::stateJump(std::string cmd)
+{
+    if (cmd == "#goback") {
+        if (goBackPosMark == -1) {
+            showError(GO_BACK_MARK_DOES_NOT_EXIST);
+        }
+        else {
+            pos = goBackPosMark;
+            lineID = goBackLineMark;
+            // when we goback, we need break the "if"
+            isConditionFullFilled = false;
+            stateBegin();
+        }
+    } else if (cmd == "#gobackmark") {
+        goBackPosMark = pos;
+        goBackLineMark = lineID;
+        stateBegin();
+    } else if (cmd == "#goto") {
+        std::string id = getString();
+        std::string next = getString();
+        while (next != ("#"+id)) {
+            next = getString();
+        }
+        stateBegin();
+    } else {
+        // do nothing
+        stateEnd();
     }
 }
 

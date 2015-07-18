@@ -1,6 +1,6 @@
 // start
 
-gobackmark
+#gobackmark
 
 set.bgp.name="CloseSelected.png"
 set.bgp.start
@@ -34,7 +34,7 @@ set.text.start="0.1"
 
 get.touch
 
-goback
+#goback
 
 elif.globalint.choiceresult.equalto="1"
 
@@ -60,7 +60,7 @@ set.bgp.start
 
 get.touch
 
-goback
+#goback
 
 elif.globalint.choiceresult.equalto="2"
 
@@ -92,18 +92,56 @@ set.text.start="0.1"
 
 get.touch
 
-goback
+#goback
 
 elif.globalint.choiceresult.equalto="3"
 
 endif
 
+//set.text.clear
+//set.text.content="测试结束"
+//set.text.start="0.1"
+
+//get.touch
+
 set.text.clear
-set.text.content="测试结束"
+set.choice.number="3"
+set.choice.content="0""Goto #00001"
+set.choice.content="1""Goto #00002"
+set.choice.content="2""Goto #00003"
+set.choice.show
+
+get.choice.result
+
+if.globalint.choiceresult.equalto="0"
+
+#goto 00001
+
+elif.globalint.choiceresult.equalto="1"
+
+#goto 00002
+
+elif.globalint.choiceresult.equalto="2"
+
+#goto 00003
+
+endif
+
+
+#00001
+
+set.text.content="#00001"
 set.text.start="0.1"
 
+#00002
 
+set.text.content="#00002"
+set.text.start="0.1"
 
+#00003
+
+set.text.content="#00003"
+set.text.start="0.1"
 
 
 +++++++++ // 以下为暂不测试部分
