@@ -20,6 +20,7 @@ private:
 
     Vector<Label*> choices;
     int choiceNumber;
+    int choiceResult;
     
     EventListenerTouchOneByOne *touchListener;
     Vector<EventListenerTouchOneByOne*> listeners;
@@ -35,6 +36,9 @@ public:
     void setChoiceChoosable(int id, bool choosable);
     
     void showChoiceTable();
+    
+    void setChoiceResult(int result);
+    int getChoiceReuslt();
 };
 
 #endif /* ChoiceTableLayer_cpp */

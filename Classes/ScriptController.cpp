@@ -394,6 +394,29 @@ void ScriptController::stateCommand(std::string cmd)
                 showError(UNKNOWN_COMMAND);
             }
         }
+        // choices
+        else if (str == "choice") {
+            std::string str = getString();
+            if (str == "number") {
+                GameScene::getInstance()->setChoiceNumber(transStringToInt(getString()));
+            } else if (str == "content") {
+                GameScene::getInstance()->setChoiceContent(transStringToInt(getString()), getString());
+            } else if (str == "choosable") {
+                int id = transStringToInt(getString());
+                std::string choosable = getString();
+                if (choosable == "true") {
+                    GameScene::getInstance()->setChoiceChoosable(id, true);
+                } else if (choosable == "false") {
+                    GameScene::getInstance()->setChoiceChoosable(id, false);
+                } else {
+                    showError(UNKNOWN_COMMAND);
+                }
+            } else if (str == "show") {
+                GameScene::getInstance()->setChoiceShow();
+            } else {
+                showError(UNKNOWN_COMMAND);
+            }
+        }
         else {
             showError(UNKNOWN_COMMAND);
         }
@@ -571,6 +594,15 @@ void ScriptController::stateCommand(std::string cmd)
             int value = VariableController::getInstance()->getInt(var);
             log("%s = %d", var.c_str(), value);
             GameScene::getInstance()->isMissionCompleted = true;
+        }
+        // choices
+        else if (str == "choice") {
+            std::string str = getString();
+            if (str == "result") {
+                GameScene::getInstance()->getChoiceResult();
+            } else {
+                showError(UNKNOWN_COMMAND);
+            }
         }
         else {
             showError(UNKNOWN_COMMAND);

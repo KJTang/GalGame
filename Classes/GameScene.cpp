@@ -38,6 +38,8 @@ bool GameScene::init()
     bgpDuration = 0, bgpScale = 1, bgpPositionX = 0.5, bgpPositionY = 0.5;
     // ch01-04
     ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
+    // choices
+    choiceTable = nullptr;
     
     // temp
     auto button1 = ButtonSprite::create("CloseNormal.png");
@@ -233,6 +235,53 @@ void GameScene::setTextClear()
     textLayer = nullptr;
 
     isMissionCompleted = true;
+}
+
+/**
+ * choices
+ */
+void GameScene::setChoiceNumber(int number)
+{
+    choiceTable = ChoiceTableLayer::create();
+    this->addChild(choiceTable);
+    
+    choiceTable->setChoiceNumber(number);
+    isMissionCompleted = true;
+}
+
+void GameScene::setChoiceContent(int id, std::string content)
+{
+    choiceTable->setChoiceContent(id, content);
+    isMissionCompleted = true;
+}
+
+void GameScene::setChoiceChoosable(int id, bool choosable)
+{
+    choiceTable->setChoiceChoosable(id, choosable);
+    isMissionCompleted = true;
+}
+
+void GameScene::setChoiceShow()
+{
+    choiceTable->showChoiceTable();
+    isMissionCompleted = true;
+}
+
+void GameScene::getChoiceResult()
+{
+    this->schedule(schedule_selector(GameScene::waitForChoiceResult), 1.0/60);
+}
+
+void GameScene::waitForChoiceResult(float dt)
+{
+    int result = choiceTable->getChoiceReuslt();
+    if (result == -1) {
+        return;
+    }
+    VariableController::getInstance()->setInt("choiceresult", result);
+    isMissionCompleted = true;
+    choiceTable->removeFromParentAndCleanup(true);
+    this->unschedule(schedule_selector(GameScene::waitForChoiceResult));
 }
 
 /**

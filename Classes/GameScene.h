@@ -13,7 +13,10 @@
 
 #include "GameController.h"
 #include "ScriptController.h"
+#include "VariableController.h"
+
 #include "TextLayer.h"
+#include "ChoiceTableLayer.h"
 
 using namespace cocos2d;
 
@@ -35,6 +38,8 @@ private:
     // text
     TextLayer *textLayer;
     std::string textToShow;
+    // choices
+    ChoiceTableLayer *choiceTable;
     
     EventListenerTouchOneByOne *touchListener;
     EventListenerCustom *textFinishListener;
@@ -84,6 +89,13 @@ public:
     void setTextContent(std::string str) { textToShow = str; isMissionCompleted = true;}
     void setTextClear();
     void enableTextFinishedEventListener(bool b);
+    // choices
+    void setChoiceNumber(int number);
+    void setChoiceContent(int id, std::string content);
+    void setChoiceChoosable(int id, bool choosable);
+    void setChoiceShow();
+    void getChoiceResult();
+    void waitForChoiceResult(float dt);
     /**
      * get
      */

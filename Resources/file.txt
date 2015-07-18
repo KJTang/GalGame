@@ -8,7 +8,15 @@
 
 // start
 
-//    set.bgm.start="title01.wav"
+    set.choice.number="4"
+    set.choice.content="0""选项一"
+    set.choice.content="1""选项二"
+    set.choice.content="2""选项三"
+    set.choice.choosable="2""false"
+    set.choice.content="3""选项四"
+    set.choice.show
+
+get.choice.result
 
     set.bgp.name="HelloWorld.png"
     set.bgp.start

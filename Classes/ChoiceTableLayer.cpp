@@ -20,6 +20,7 @@ bool ChoiceTableLayer::init()
  
     visibleSize = Director::getInstance()->getVisibleSize();
     choiceNumber = 0;
+    choiceResult = -1;
     
     touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);
@@ -31,15 +32,19 @@ bool ChoiceTableLayer::init()
         if (rect.containsPoint(locationInNode))
         {
             target->runAction(MoveBy::create(0.05, Vec2(10, -10)));
-            log("TOUCHED");
             return true;
         }
         return false;
     };
-    touchListener->onTouchEnded = [](Touch* touch, Event* event){
+    touchListener->onTouchEnded = [&](Touch* touch, Event* event){
         auto target = static_cast<Label*>(event->getCurrentTarget());
         target->runAction(MoveBy::create(0.05, Vec2(-10, 10)));
-        log("TOUCH ENDED");
+        for (int i = 0; i != choiceNumber; ++i) {
+            if (target == choices.at(i)) {
+                setChoiceResult(i);
+                return true;
+            }
+        }
         return true;
     };
 
@@ -85,4 +90,17 @@ void ChoiceTableLayer::showChoiceTable()
     for (int i = 0; i != choices.size(); ++i) {
         this->addChild(choices.at(i));
     }
+}
+
+void ChoiceTableLayer::setChoiceResult(int result)
+{
+    choiceResult = result;
+    for (int i = 0; i != listeners.size(); ++i) {
+        listeners.at(i)->setEnabled(false);
+    }
+}
+
+int ChoiceTableLayer::getChoiceReuslt()
+{
+    return choiceResult;
 }
