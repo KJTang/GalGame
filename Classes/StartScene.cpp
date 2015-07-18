@@ -51,7 +51,14 @@ bool StartScene::init()
     });
     
     // test
-//    GameController::getInstance()->loadBGM("title01.wav");
+    auto choiceTable = ChoiceTableLayer::create();
+    this->addChild(choiceTable);
+    choiceTable->setChoice01Content("选项一");
+    choiceTable->setChoice02Content("选项二");
+    choiceTable->setChoice03Content("选项三");
+    choiceTable->showChoiceTable();
+    
+    choiceTable->setChoice01Choosable(false);
     
     return true;
 }
