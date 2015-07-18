@@ -102,6 +102,8 @@ void GameScene::clear()
 {
     this->removeAllChildren();
     this->unscheduleUpdate();
+    _eventDispatcher->removeEventListener(touchListener);
+    _eventDispatcher->removeEventListener(textFinishListener);
     this->init();
 }
 
@@ -140,13 +142,6 @@ bool GameScene::setBgpStart()
                                      CallFunc::create([&](){isMissionCompleted=true;}),
                                      NULL));
     return true;
-}
-
-void GameScene::setBgpClear()
-{
-//    if (bpg) {
-//        bgp->removeFromParentAndCleanup(true);
-//    }
 }
 
 /** 

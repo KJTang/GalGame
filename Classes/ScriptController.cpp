@@ -142,7 +142,7 @@ void ScriptController::stateBegin()
     std::string str = getString();
     if (str.size()) {
         if (str=="set" || str=="get") {
-//            log("ready to next command, line %d", lineID);
+            log("ready to next command, line %d", lineID);
             stateCommand(str);
         } else if (str=="if" || str=="elif" || str=="else" || str=="endif") {
             stateCondition(str);

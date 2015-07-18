@@ -84,10 +84,19 @@ std::string VariableController::getString()
     }
 }
 
+void VariableController::clear()
+{
+    pos = 0;
+    Ints.clear();
+    Floats.clear();
+    Strings.clear();
+}
+
 void VariableController::readFromScript()
 {
+    clear();
+    
     data = FileUtils::getInstance()->getStringFromFile("global.txt");
-    pos = 0;
     // create variables
     std::string str = getString();
     while (str.size()) {

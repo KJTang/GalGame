@@ -62,6 +62,7 @@ public:
         }
         return sharedVariableController;
     }
+    void clear();
     
     void readFromScript();
     void readFromData();
