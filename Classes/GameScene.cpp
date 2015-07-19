@@ -1,4 +1,3 @@
-
 //
 //  GameScene.cpp
 //  Test
@@ -25,7 +24,7 @@ bool GameScene::init()
     isMissionCompleted = true;
     isTextShowing = false;
     
-    gameMode = MODE_NORMAL;
+    gameMode = MODE_SKIP;
     
     backgroundLayer = Layer::create();
     this->addChild(backgroundLayer);
@@ -40,7 +39,7 @@ bool GameScene::init()
     textLayer = nullptr;
     // bgp
     bgp = nullptr;
-    bgpDuration = 0, bgpScale = 1, bgpPositionX = 0.5, bgpPositionY = 0.5;
+    bgpDuration = 0, bgpScale = 1, bgpPositionX = 0, bgpPositionY = 0;
     // characters
     for (int i = 0; i != 4; ++i) {
         characters[i] = nullptr;
@@ -170,34 +169,19 @@ void GameScene::setBgpStart()
     if (bgp) {
         bgp->removeFromParentAndCleanup(true);
     }
-    bgp = Sprite::create(bgpFilename);
+//    bgp = Sprite::create(bgpFilename);
+    bgp = GyroBackground::create(bgpFilename, 1.2);
     backgroundLayer->addChild(bgp);
     
     bgp->setScale(visibleSize.width/bgp->getContentSize().width*bgpScale);
     bgp->setPosition(Point(visibleSize.width*bgpPositionX, visibleSize.height*bgpPositionY));
     
-    switch (gameMode) {
-        case MODE_NORMAL:
-            isMissionCompleted = true;
-            break;
-        case MODE_SKIP:
-            this->runAction(Sequence::create(DelayTime::create(bgpDuration*0.2),
-                                             CallFunc::create([&](){isMissionCompleted=true;}),
-                                             NULL));
-            break;
-        case MODE_AUTO:
-            this->runAction(Sequence::create(DelayTime::create(bgpDuration),
-                                             CallFunc::create([&](){isMissionCompleted=true;}),
-                                             NULL));
-            break;
-        default:
-            break;
-    }
+    isMissionCompleted = true;
     
     // set default
     bgpScale = 1;
     bgpDuration = 0;
-    bgpPositionX = 0.5, bgpPositionY = 0.5;
+    bgpPositionX = 0, bgpPositionY = 0;
 }
 
 void GameScene::setBgpDuration(float d)
@@ -402,16 +386,22 @@ void GameScene::setChoiceShow()
 /**
  * get Touch
  */
-void GameScene::enableScreenTouchEventListener(bool btouch)
+void GameScene::enableScreenTouchEventListener(bool btouch, float delay)
 {
     if (btouch) {
-        touchListener->setEnabled(true);
         switch (gameMode) {
+            case MODE_NORMAL:
+                touchListener->setEnabled(true);
+                break;
             case MODE_SKIP:
-                isMissionCompleted = true;
+                this->runAction(Sequence::create(DelayTime::create(delay * 0.2),
+                                                 CallFunc::create([&](){isMissionCompleted=true;}),
+                                                 NULL));
                 break;
             case MODE_AUTO:
-                isMissionCompleted = true;
+                this->runAction(Sequence::create(DelayTime::create(delay),
+                                                 CallFunc::create([&](){isMissionCompleted=true;}),
+                                                 NULL));
             default:
                 break;
         }

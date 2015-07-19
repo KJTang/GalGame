@@ -17,6 +17,7 @@
 
 #include "TextLayer.h"
 #include "ChoiceTableLayer.h"
+#include "GyroBackground.h"
 
 using namespace cocos2d;
 
@@ -35,7 +36,8 @@ private:
     };
     
     // bgp
-    Sprite *bgp;
+//    Sprite *bgp;
+    GyroBackground *bgp;
     std::string bgpFilename;
     float bgpScale;
     float bgpDuration;
@@ -111,7 +113,7 @@ public:
      * get
      */
     // get.touch
-    void enableScreenTouchEventListener(bool btouch);
+    void enableScreenTouchEventListener(bool btouch, float delay=0);
     // get.choice
     void getChoiceResult();
     void waitForChoiceResult(float dt);

@@ -21,17 +21,17 @@ set.bgp.start
 set.text.content="测试一：只切换文本不切换背景"
 set.text.start
 
-get.touch
+get.touch="0"
 
 set.text.content="文本切换一：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
 set.text.start
 
-get.touch
+get.touch="0"
 
 set.text.content="文本切换二：测试中英文混合输入：ABC中文abc中文123数字"
 set.text.start
 
-get.touch
+get.touch="0"
 set.text.clear
 
 #goback
@@ -43,33 +43,29 @@ set.bgp.start
 set.text.content="测试二：只切换背景不切换文字"
 set.text.start
 
-get.touch
+get.touch="0"
 
-//set.bgp.name="CloseNormal.png"
-//set.bgp.duration="1"
-//set.bgp.start
-
+set.bgp.name="CloseNormal.png"
+set.bgp.start
 set.character.name="0""CloseNormal.png"
 set.character.position="0""0.25""0.25"
 set.character.start="0"
 
-get.touch
+get.touch="1"
 
 set.character.name="0""CloseNormal.png"
 set.character.position="0""0.25""0.75"
 set.character.start="0"
 set.bgp.name="HelloWorld.png"
-set.bgp.duration="1"
 set.bgp.start
 
-get.touch
+get.touch="1"
 
 set.character.clear="0"
 set.bgp.name="CloseNormal.png"
-set.bgp.duration="1"
 set.bgp.start
 
-get.touch
+get.touch="1"
 set.text.clear
 
 #goback
@@ -81,7 +77,7 @@ set.bgp.start
 set.text.content="测试三：背景和文字同时切换"
 set.text.start
 
-get.touch
+get.touch="0"
 set.text.clear
 
 set.bgp.name="CloseNormal.png"
@@ -89,7 +85,7 @@ set.bgp.start
 set.text.content="文本和图片一：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
 set.text.start
 
-get.touch
+get.touch="0"
 set.text.clear
 
 set.bgp.name="HelloWorld.png"
@@ -97,7 +93,7 @@ set.bgp.start
 set.text.content="文本和图片二：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
 set.text.start
 
-get.touch
+get.touch="0"
 set.text.clear
 
 set.bgp.name="CloseNormal.png"
@@ -105,7 +101,7 @@ set.bgp.start
 set.text.content="文本和图片三：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
 set.text.start
 
-get.touch
+get.touch="0"
 set.text.clear
 
 #goback
@@ -118,7 +114,7 @@ endif
 //set.text.content="测试结束"
 //set.text.start
 
-//get.touch
+//get.touch="0"
 
 set.text.clear
 set.choice.number="3"

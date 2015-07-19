@@ -383,7 +383,7 @@ void ScriptController::stateCommand(std::string cmd)
         // touch event
         if (str == "touch") {
             log("waiting for a screen touch");
-            GameScene::getInstance()->enableScreenTouchEventListener(true);
+            GameScene::getInstance()->enableScreenTouchEventListener(true, transStringToFloat(getString()));
         }
         // get info of bgp
         else if (str == "bgp") {
