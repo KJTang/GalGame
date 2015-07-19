@@ -45,18 +45,26 @@ set.text.start
 
 get.touch
 
-set.bgp.name="CloseNormal.png"
-set.bgp.duration="1"
-set.bgp.start
+//set.bgp.name="CloseNormal.png"
+//set.bgp.duration="1"
+//set.bgp.start
+
+set.character.name="0""CloseNormal.png"
+set.character.position="0""0.25""0.25"
+set.character.start="0"
 
 get.touch
 
+set.character.name="0""CloseNormal.png"
+set.character.position="0""0.25""0.75"
+set.character.start="0"
 set.bgp.name="HelloWorld.png"
 set.bgp.duration="1"
 set.bgp.start
 
 get.touch
 
+set.character.clear="0"
 set.bgp.name="CloseNormal.png"
 set.bgp.duration="1"
 set.bgp.start

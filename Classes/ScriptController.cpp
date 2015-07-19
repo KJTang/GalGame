@@ -308,111 +308,19 @@ void ScriptController::stateCommand(std::string cmd)
                 showError(UNKNOWN_COMMAND);
             }
         }
-        // setting charactor
-        else if (str == "ch01") {
+        // setting characters
+        else if (str == "character") {
             std::string str = getString();
             if (str == "name") {
-                std::string str = getString();
-                log("set ch01 name = %s", str.c_str());
-            } else if (str == "effect") {
-                std::string str = getString();
-                log("set ch01 effect = %s", str.c_str());
-            } else if (str == "Xscale") {
-                std::string str = getString();
-                log("set ch01 xscale = %s", str.c_str());
-            } else if (str == "Yscale") {
-                std::string str = getString();
-                log("set ch01 yscale = %s", str.c_str());
-            } else if (str == "Xposition") {
-                std::string str = getString();
-                log("set ch01 xposition = %s", str.c_str());
-            } else if (str == "Yposition") {
-                std::string str = getString();
-                log("set ch01 yposition = %s", str.c_str());
+                GameScene::getInstance()->setCharacterFilename(transStringToInt(getString()), getString());
+            } else if (str == "scale") {
+                GameScene::getInstance()->setCharacterScale(transStringToInt(getString()), transStringToFloat(getString()));
+            } else if (str == "position") {
+                GameScene::getInstance()->setCharacterPosition(transStringToInt(getString()), transStringToFloat(getString()), transStringToFloat(getString()));
+            } else if (str == "clear") {
+                GameScene::getInstance()->setCharacterClear(transStringToInt(getString()));
             } else if (str == "start") {
-                std::string str = getString();
-                log("set ch01 start = %s", str.c_str());
-            } else {
-                showError(UNKNOWN_COMMAND);
-            }
-        }
-        else if (str == "ch02") {
-            std::string str = getString();
-            if (str == "name") {
-                std::string str = getString();
-                log("set ch02 name = %s", str.c_str());
-            } else if (str == "effect") {
-                std::string str = getString();
-                log("set ch02 effect = %s", str.c_str());
-            } else if (str == "Xscale") {
-                std::string str = getString();
-                log("set ch02 xscale = %s", str.c_str());
-            } else if (str == "Yscale") {
-                std::string str = getString();
-                log("set ch02 yscale = %s", str.c_str());
-            } else if (str == "Xposition") {
-                std::string str = getString();
-                log("set ch02 xposition = %s", str.c_str());
-            } else if (str == "Yposition") {
-                std::string str = getString();
-                log("set ch02 yposition = %s", str.c_str());
-            } else if (str == "start") {
-                std::string str = getString();
-                log("set ch02 start = %s", str.c_str());
-            } else {
-                showError(UNKNOWN_COMMAND);
-            }
-        }
-        else if (str == "ch03") {
-            std::string str = getString();
-            if (str == "name") {
-                std::string str = getString();
-                log("set ch03 name = %s", str.c_str());
-            } else if (str == "effect") {
-                std::string str = getString();
-                log("set ch03 effect = %s", str.c_str());
-            } else if (str == "Xscale") {
-                std::string str = getString();
-                log("set ch03 xscale = %s", str.c_str());
-            } else if (str == "Yscale") {
-                std::string str = getString();
-                log("set ch03 yscale = %s", str.c_str());
-            } else if (str == "Xposition") {
-                std::string str = getString();
-                log("set ch03 xposition = %s", str.c_str());
-            } else if (str == "Yposition") {
-                std::string str = getString();
-                log("set ch03 yposition = %s", str.c_str());
-            } else if (str == "start") {
-                std::string str = getString();
-                log("set ch03 start = %s", str.c_str());
-            } else {
-                showError(UNKNOWN_COMMAND);
-            }
-        }
-        else if (str == "ch04") {
-            std::string str = getString();
-            if (str == "name") {
-                std::string str = getString();
-                log("set ch04 name = %s", str.c_str());
-            } else if (str == "effect") {
-                std::string str = getString();
-                log("set ch04 effect = %s", str.c_str());
-            } else if (str == "Xscale") {
-                std::string str = getString();
-                log("set ch04 xscale = %s", str.c_str());
-            } else if (str == "Yscale") {
-                std::string str = getString();
-                log("set ch04 yscale = %s", str.c_str());
-            } else if (str == "Xposition") {
-                std::string str = getString();
-                log("set ch04 xposition = %s", str.c_str());
-            } else if (str == "Yposition") {
-                std::string str = getString();
-                log("set ch04 yposition = %s", str.c_str());
-            } else if (str == "start") {
-                std::string str = getString();
-                log("set ch04 start = %s", str.c_str());
+                GameScene::getInstance()->setCharacterStart(transStringToInt(getString()));
             } else {
                 showError(UNKNOWN_COMMAND);
             }
@@ -466,7 +374,8 @@ void ScriptController::stateCommand(std::string cmd)
         }
     }
     /** **********************
-     *          get
+     *          get   
+     * (except "choices" and "variables", gets are not finished)
      * **********************
      */
     else if (cmd == "get") {
@@ -551,8 +460,8 @@ void ScriptController::stateCommand(std::string cmd)
                 showError(UNKNOWN_COMMAND);
             }
         }
-        // get info of charactor
-        else if (str == "ch01") {
+        // get info of character
+        else if (str == "characters") {
             std::string str = getString();
             if (str == "name") {
                 log("ch01 name");
@@ -568,66 +477,6 @@ void ScriptController::stateCommand(std::string cmd)
                 log("ch01 yposition");
             } else if (str == "start") {
                 log("ch01 start");
-            } else {
-                showError(UNKNOWN_COMMAND);
-            }
-        }
-        else if (str == "ch02") {
-            std::string str = getString();
-            if (str == "name") {
-                log("ch02 name");
-            } else if (str == "effect") {
-                log("ch02 effect");
-            } else if (str == "Xscale") {
-                log("ch02 xscale");
-            } else if (str == "Yscale") {
-                log("ch02 yscale");
-            } else if (str == "Xposition") {
-                log("ch02 xposition");
-            } else if (str == "Yposition") {
-                log("ch02 yposition");
-            } else if (str == "start") {
-                log("ch02 start");
-            } else {
-                showError(UNKNOWN_COMMAND);
-            }
-        }
-        else if (str == "ch03") {
-            std::string str = getString();
-            if (str == "name") {
-                log("ch03 name");
-            } else if (str == "effect") {
-                log("ch03 effect");
-            } else if (str == "Xscale") {
-                log("ch03 xscale");
-            } else if (str == "Yscale") {
-                log("ch03 yscale");
-            } else if (str == "Xposition") {
-                log("ch03 xposition");
-            } else if (str == "Yposition") {
-                log("ch03 yposition");
-            } else if (str == "start") {
-                log("ch03 start");
-            } else {
-                showError(UNKNOWN_COMMAND);
-            }
-        }
-        else if (str == "ch04") {
-            std::string str = getString();
-            if (str == "name") {
-                log("ch04 name");
-            } else if (str == "effect") {
-                log("ch04 effect");
-            } else if (str == "Xscale") {
-                log("ch04 xscale");
-            } else if (str == "Yscale") {
-                log("ch04 yscale");
-            } else if (str == "Xposition") {
-                log("ch04 xposition");
-            } else if (str == "Yposition") {
-                log("ch04 yposition");
-            } else if (str == "start") {
-                log("ch04 start");
             } else {
                 showError(UNKNOWN_COMMAND);
             }

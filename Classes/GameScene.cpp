@@ -25,21 +25,30 @@ bool GameScene::init()
     isMissionCompleted = true;
     isTextShowing = false;
     
-    gameMode = MODE_AUTO;
+    gameMode = MODE_NORMAL;
     
     backgroundLayer = Layer::create();
-    this->addChild(backgroundLayer, -1);
+    this->addChild(backgroundLayer);
+    
+    characterLayer = Layer::create();
+    this->addChild(characterLayer);
     
     menuLayer = Layer::create();
-    this->addChild(menuLayer, 2);
+    this->addChild(menuLayer);
     
     // text
     textLayer = nullptr;
     // bgp
     bgp = nullptr;
     bgpDuration = 0, bgpScale = 1, bgpPositionX = 0.5, bgpPositionY = 0.5;
-    // ch01-04
-    ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
+    // characters
+    for (int i = 0; i != 4; ++i) {
+        characters[i] = nullptr;
+        characterDuration[i] = 0;
+        characterScale[i] = 0.2;
+        characterPositionX[i] = 0.5;
+        characterPositionY[i] = 0.5;
+    }
     // choices
     choiceTable = nullptr;
     
@@ -150,7 +159,13 @@ void GameScene::enterAutoMode()
 /**
  *   bgp
  */
-bool GameScene::setBgpStart()
+void GameScene::setBgpFilename(std::string filename)
+{
+    bgpFilename = filename;
+    isMissionCompleted = true;
+}
+
+void GameScene::setBgpStart()
 {
     if (bgp) {
         bgp->removeFromParentAndCleanup(true);
@@ -183,63 +198,104 @@ bool GameScene::setBgpStart()
     bgpScale = 1;
     bgpDuration = 0;
     bgpPositionX = 0.5, bgpPositionY = 0.5;
-    
-    return true;
 }
 
-/** 
- * ch01-ch04
+void GameScene::setBgpDuration(float d)
+{
+    bgpDuration = d;
+    isMissionCompleted = true;
+}
+
+void GameScene::setBgpScale(float scale)
+{
+    bgpScale = scale;
+    isMissionCompleted = true;
+}
+
+void GameScene::setBgpPosition(float x, float y)
+{
+    bgpPositionX = x, bgpPositionY = y;
+    isMissionCompleted = true;
+}
+
+/**
+ * characters
  */
-bool GameScene::setCh01Picture(std::string filename)
+void GameScene::setCharacterFilename(int id, std::string filename)
 {
-    if (ch01) {
-        ch01->removeFromParentAndCleanup(true);
+    if (id > 3 || id < 0) {
+        log("character id wrong");
+        return;
     }
-    ch01 = Sprite::create(filename);
-    if (!ch01) {
-        return false;
-    }
-    backgroundLayer->addChild(ch01);
-    return true;
+    characterFilename[id] = filename;
+    isMissionCompleted = true;
 }
 
-bool GameScene::setCh02Picture(std::string filename)
+void GameScene::setCharacterDuration(int id, float duration)
 {
-    if (ch02) {
-        ch02->removeFromParentAndCleanup(true);
+    if (id > 3 || id < 0) {
+        log("character id wrong");
+        return;
     }
-    ch02 = Sprite::create(filename);
-    if (!ch02) {
-        return false;
-    }
-    backgroundLayer->addChild(ch02);
-    return true;
+    characterDuration[id] = duration;
+    isMissionCompleted = true;
 }
 
-bool GameScene::setCh03Picture(std::string filename)
+void GameScene::setCharacterScale(int id, float scale)
 {
-    if (ch03) {
-        ch03->removeFromParentAndCleanup(true);
+    if (id > 3 || id < 0) {
+        log("character id wrong");
+        return;
     }
-    ch03 = Sprite::create(filename);
-    if (!ch03) {
-        return false;
-    }
-    backgroundLayer->addChild(ch03);
-    return true;
+    characterScale[id] = scale;
+    isMissionCompleted = true;
 }
 
-bool GameScene::setCh04Picture(std::string filename)
+void GameScene::setCharacterPosition(int id, float x, float y)
 {
-    if (ch04) {
-        ch04->removeFromParentAndCleanup(true);
+    if (id > 3 || id < 0) {
+        log("character id wrong");
+        return;
     }
-    ch04 = Sprite::create(filename);
-    if (!ch04) {
-        return false;
+    characterPositionX[id] = x;
+    characterPositionY[id] = y;
+    isMissionCompleted = true;
+}
+
+void GameScene::setCharacterClear(int id)
+{
+    if (id > 3 || id < 0) {
+        log("character id wrong");
+        return;
     }
-    backgroundLayer->addChild(ch04);
-    return true;
+    if (characters[id]) {
+        characters[id]->removeFromParentAndCleanup(true);
+    }
+    characters[id] = nullptr;
+    isMissionCompleted = true;
+}
+
+void GameScene::setCharacterStart(int id)
+{
+    if (id > 3 || id < 0) {
+        log("character id wrong");
+        return;
+    }
+    if (characters[id]) {
+        characters[id]->removeFromParentAndCleanup(true);
+    }
+    characters[id] = Sprite::create(characterFilename[id]);
+    characterLayer->addChild(characters[id]);
+    characters[id]->setScale(visibleSize.width/characters[id]->getContentSize().width * characterScale[id]);
+    characters[id]->setPosition(visibleSize.width * characterPositionX[id],
+                                visibleSize.height * characterPositionY[id]);
+    
+    isMissionCompleted = true;
+    
+    // set default
+    characterScale[id] = 0.2;
+    characterDuration[id] = 0;
+    characterPositionX[id] = 0.5, characterPositionY[id] = 0.5;
 }
 
 /**
@@ -280,9 +336,21 @@ void GameScene::setTextShow()
     }
 }
 
-void GameScene::enableTextFinishedEventListener(bool b)
+void GameScene::setTextStop()
 {
-    textFinishListener->setEnabled(b);
+    textLayer->stopText();
+}
+
+void GameScene::setTextContent(std::string content)
+{
+    textToShow = content;
+    isMissionCompleted = true;
+}
+
+void GameScene::setTextSpeed(float sp)
+{
+    textLayer->setSpeed(sp);
+    isMissionCompleted = true;
 }
 
 void GameScene::setTextClear()
@@ -291,8 +359,13 @@ void GameScene::setTextClear()
         textLayer->removeFromParentAndCleanup(true);
     }
     textLayer = nullptr;
-
+    
     isMissionCompleted = true;
+}
+
+void GameScene::enableTextFinishedEventListener(bool b)
+{
+    textFinishListener->setEnabled(b);
 }
 
 /**
@@ -326,24 +399,6 @@ void GameScene::setChoiceShow()
     isMissionCompleted = true;
 }
 
-void GameScene::getChoiceResult()
-{
-    this->schedule(schedule_selector(GameScene::waitForChoiceResult), 1.0/60);
-}
-
-void GameScene::waitForChoiceResult(float dt)
-{
-    int result = choiceTable->getChoiceReuslt();
-    if (result == -1) {
-        return;
-    }
-    VariableController::getInstance()->setInt("choiceresult", result);
-    log("get choice result = %d", result);
-    isMissionCompleted = true;
-    choiceTable->removeFromParentAndCleanup(true);
-    this->unschedule(schedule_selector(GameScene::waitForChoiceResult));
-}
-
 /**
  * get Touch
  */
@@ -364,4 +419,25 @@ void GameScene::enableScreenTouchEventListener(bool btouch)
     else {
         touchListener->setEnabled(false);
     }
+}
+
+/**
+ * get Choice
+ */
+void GameScene::getChoiceResult()
+{
+    this->schedule(schedule_selector(GameScene::waitForChoiceResult), 1.0/60);
+}
+
+void GameScene::waitForChoiceResult(float dt)
+{
+    int result = choiceTable->getChoiceReuslt();
+    if (result == -1) {
+        return;
+    }
+    VariableController::getInstance()->setInt("choiceresult", result);
+    log("get choice result = %d", result);
+    isMissionCompleted = true;
+    choiceTable->removeFromParentAndCleanup(true);
+    this->unschedule(schedule_selector(GameScene::waitForChoiceResult));
 }

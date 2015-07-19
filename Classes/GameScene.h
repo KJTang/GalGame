@@ -25,7 +25,7 @@ class GameScene : public Scene
 private:
     static GameScene* sharedGameScene;
     Size visibleSize;
-    Layer *backgroundLayer, *menuLayer;
+    Layer *backgroundLayer, *characterLayer, *menuLayer;
     // game mode
     int gameMode;
     enum {
@@ -40,8 +40,12 @@ private:
     float bgpScale;
     float bgpDuration;
     float bgpPositionX, bgpPositionY;
-    // charactors
-    Sprite *ch01, *ch02, *ch03, *ch04;
+    // characters
+    Sprite* characters[4];
+    std::string characterFilename[4];
+    float characterScale[4];
+    float characterDuration[4];
+    float characterPositionX[4], characterPositionY[4];
     // text
     TextLayer *textLayer;
     std::string textToShow;
@@ -78,39 +82,40 @@ public:
      * set
      */
     // bgp
-    bool setBgpStart();
-    void setBgpClear();
-    void setBgpFilename(std::string filename) { bgpFilename = filename; isMissionCompleted = true;}
-    void setBgpDuration(float d) {bgpDuration = d; isMissionCompleted = true;}
-    void setBgpScale(float scale) { bgpScale = scale; isMissionCompleted = true;}
-    void setBgpPosition(float x, float y) {
-        bgpPositionX = x, bgpPositionY = y;
-        isMissionCompleted = true;
-    }
-    // ch01-ch04
-    bool setCh01Picture(std::string filename);
-    bool setCh02Picture(std::string filename);
-    bool setCh03Picture(std::string filename);
-    bool setCh04Picture(std::string filename);
+    void setBgpFilename(std::string filename);
+    void setBgpDuration(float d);
+    void setBgpScale(float scale);
+    void setBgpPosition(float x, float y);
+    void setBgpStart();
+    // characters
+    void setCharacterFilename(int id, std::string filename);
+    void setCharacterDuration(int id, float d);
+    void setCharacterScale(int id, float scale);
+    void setCharacterPosition(int id, float x, float y);
+    void setCharacterClear(int id);
+    void setCharacterStart(int id);
     // text
-    bool isTextShowing;
     void setTextShow();
-    void setTextSpeed(float sp) { textLayer->setSpeed(sp); isMissionCompleted = true;}
-    void setTextStop() { textLayer->stopText();}
-    void setTextContent(std::string str) { textToShow = str; isMissionCompleted = true;}
+    void setTextStop();
+    void setTextContent(std::string str);
+    void setTextSpeed(float sp);
     void setTextClear();
+    bool isTextShowing;
     void enableTextFinishedEventListener(bool btext);
     // choices
     void setChoiceNumber(int number);
     void setChoiceContent(int id, std::string content);
     void setChoiceChoosable(int id, bool choosable);
     void setChoiceShow();
-    void getChoiceResult();
-    void waitForChoiceResult(float dt);
     /**
      * get
      */
+    // get.touch
     void enableScreenTouchEventListener(bool btouch);
+    // get.choice
+    void getChoiceResult();
+    void waitForChoiceResult(float dt);
+
 };
 
 #endif /* GameScene_cpp */
