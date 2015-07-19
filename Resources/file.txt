@@ -46,16 +46,19 @@ set.text.start
 get.touch
 
 set.bgp.name="CloseNormal.png"
+set.bgp.duration="1"
 set.bgp.start
 
 get.touch
 
 set.bgp.name="HelloWorld.png"
+set.bgp.duration="1"
 set.bgp.start
 
 get.touch
 
 set.bgp.name="CloseNormal.png"
+set.bgp.duration="1"
 set.bgp.start
 
 get.touch

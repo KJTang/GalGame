@@ -38,6 +38,7 @@ private:
     Sprite *bgp;
     std::string bgpFilename;
     float bgpScale;
+    float bgpDuration;
     float bgpPositionX, bgpPositionY;
     // charactors
     Sprite *ch01, *ch02, *ch03, *ch04;
@@ -80,6 +81,7 @@ public:
     bool setBgpStart();
     void setBgpClear();
     void setBgpFilename(std::string filename) { bgpFilename = filename; isMissionCompleted = true;}
+    void setBgpDuration(float d) {bgpDuration = d; isMissionCompleted = true;}
     void setBgpScale(float scale) { bgpScale = scale; isMissionCompleted = true;}
     void setBgpPosition(float x, float y) {
         bgpPositionX = x, bgpPositionY = y;

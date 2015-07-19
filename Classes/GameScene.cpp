@@ -37,7 +37,7 @@ bool GameScene::init()
     textLayer = nullptr;
     // bgp
     bgp = nullptr;
-    bgpScale = 1, bgpPositionX = 0.5, bgpPositionY = 0.5;
+    bgpDuration = 0, bgpScale = 1, bgpPositionX = 0.5, bgpPositionY = 0.5;
     // ch01-04
     ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
     // choices
@@ -156,31 +156,33 @@ bool GameScene::setBgpStart()
         bgp->removeFromParentAndCleanup(true);
     }
     bgp = Sprite::create(bgpFilename);
-    if (!bgp) {
-        bgpScale = 1;
-        return false;
-    }
+    backgroundLayer->addChild(bgp);
+    
     bgp->setScale(visibleSize.width/bgp->getContentSize().width*bgpScale);
     bgp->setPosition(Point(visibleSize.width*bgpPositionX, visibleSize.height*bgpPositionY));
-    backgroundLayer->addChild(bgp);
     
     switch (gameMode) {
         case MODE_NORMAL:
             isMissionCompleted = true;
             break;
         case MODE_SKIP:
-            this->runAction(Sequence::create(DelayTime::create(0.3),
+            this->runAction(Sequence::create(DelayTime::create(bgpDuration*0.2),
                                              CallFunc::create([&](){isMissionCompleted=true;}),
                                              NULL));
             break;
         case MODE_AUTO:
-            this->runAction(Sequence::create(DelayTime::create(1),
+            this->runAction(Sequence::create(DelayTime::create(bgpDuration),
                                              CallFunc::create([&](){isMissionCompleted=true;}),
                                              NULL));
             break;
         default:
             break;
     }
+    
+    // set default
+    bgpScale = 1;
+    bgpDuration = 0;
+    bgpPositionX = 0.5, bgpPositionY = 0.5;
     
     return true;
 }
