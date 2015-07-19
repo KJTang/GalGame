@@ -215,10 +215,6 @@ void ScriptController::stateCommand(std::string cmd)
                 std::string str = getString();
                 log("set bgp scale = %s", str.c_str());
                 GameScene::getInstance()->setBgpScale(transStringToFloat(str));
-            } else if (str == "duration") {
-                std::string str = getString();
-                log("set bgp duration = %s", str.c_str());
-                GameScene::getInstance()->setBgpDuration(transStringToFloat(str));
             } else if (str == "position") {
                 std::string x = getString();
                 std::string y = getString();
@@ -270,7 +266,9 @@ void ScriptController::stateCommand(std::string cmd)
                 log("set text content = %s", str.c_str());
                 GameScene::getInstance()->setTextContent(str);
             } else if (str == "start") {
-                GameScene::getInstance()->setTextShow(transStringToFloat(getString()));
+                GameScene::getInstance()->setTextShow();
+            } else if (str == "speed") {
+                GameScene::getInstance()->setTextSpeed(transStringToFloat(getString()));
             } else if (str == "clear") {
                 GameScene::getInstance()->setTextClear();
             } else {

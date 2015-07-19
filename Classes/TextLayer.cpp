@@ -20,6 +20,7 @@ bool TextLayer::init()
     
     visibleSize = Director::getInstance()->getVisibleSize();
     pos = 0;
+    textSpeed = 0.1;
     
     std::string fontFile = "fonts/PingFang_7.ttf";
     
@@ -55,9 +56,13 @@ bool TextLayer::init()
     return true;
 }
 
-void TextLayer::showText(float interval)
+void TextLayer::showText()
 {
-    this->schedule(schedule_selector(TextLayer::textUpdate), interval);
+    if (textSpeed <= 0) {
+        text->setString(strSave);
+        return;
+    }
+    this->schedule(schedule_selector(TextLayer::textUpdate), textSpeed);
 }
 
 void TextLayer::stopText()

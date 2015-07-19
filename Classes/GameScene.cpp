@@ -25,6 +25,8 @@ bool GameScene::init()
     isMissionCompleted = true;
     isTextShowing = false;
     
+    gameMode = MODE_AUTO;
+    
     backgroundLayer = Layer::create();
     this->addChild(backgroundLayer, -1);
     
@@ -35,7 +37,7 @@ bool GameScene::init()
     textLayer = nullptr;
     // bgp
     bgp = nullptr;
-    bgpDuration = 0, bgpScale = 1, bgpPositionX = 0.5, bgpPositionY = 0.5;
+    bgpScale = 1, bgpPositionX = 0.5, bgpPositionY = 0.5;
     // ch01-04
     ch01 = nullptr, ch02 = nullptr, ch03 = nullptr, ch04 = nullptr;
     // choices
@@ -60,15 +62,29 @@ bool GameScene::init()
     touchListener->onTouchEnded = [&](Touch* touch, Event* event){
         auto target = static_cast<GameScene*>(event->getCurrentTarget());
         // got touch
-        // if text is showing, stop it right now
-        if (target->isTextShowing) {
-            // post a "TextFinished" event
-            target->isTextShowing = false;
-            target->setTextStop();
-            target->enableTextFinishedEventListener(false);
+        switch (gameMode) {
+            case MODE_NORMAL:
+                // if text is showing, stop it right now
+                if (target->isTextShowing) {
+                    // post a "TextFinished" event
+                    target->isTextShowing = false;
+                    target->setTextStop();
+                    target->enableTextFinishedEventListener(false);
+                }
+                target->isMissionCompleted = true;
+                target->enableScreenTouchEventListener(false);
+                break;
+            case MODE_SKIP:
+                gameMode = MODE_NORMAL;
+                target->enableScreenTouchEventListener(false);
+                break;
+            case MODE_AUTO:
+                gameMode = MODE_NORMAL;
+                target->enableScreenTouchEventListener(false);
+                break;
+            default:
+                break;
         }
-        target->isMissionCompleted = true;
-        target->enableScreenTouchEventListener(false);
         return false;
     };
     touchListener->setEnabled(false);
@@ -121,6 +137,16 @@ void GameScene::startSavedGame()
     log("load saved game");
 }
 
+void GameScene::enterSkipMode()
+{
+    gameMode = MODE_SKIP;
+}
+
+void GameScene::enterAutoMode()
+{
+    gameMode = MODE_AUTO;
+}
+
 /**
  *   bgp
  */
@@ -131,16 +157,31 @@ bool GameScene::setBgpStart()
     }
     bgp = Sprite::create(bgpFilename);
     if (!bgp) {
-        bgpDuration = 0;
         bgpScale = 1;
         return false;
     }
     bgp->setScale(visibleSize.width/bgp->getContentSize().width*bgpScale);
     bgp->setPosition(Point(visibleSize.width*bgpPositionX, visibleSize.height*bgpPositionY));
     backgroundLayer->addChild(bgp);
-    this->runAction(Sequence::create(DelayTime::create(bgpDuration),
-                                     CallFunc::create([&](){isMissionCompleted=true;}),
-                                     NULL));
+    
+    switch (gameMode) {
+        case MODE_NORMAL:
+            isMissionCompleted = true;
+            break;
+        case MODE_SKIP:
+            this->runAction(Sequence::create(DelayTime::create(0.3),
+                                             CallFunc::create([&](){isMissionCompleted=true;}),
+                                             NULL));
+            break;
+        case MODE_AUTO:
+            this->runAction(Sequence::create(DelayTime::create(1),
+                                             CallFunc::create([&](){isMissionCompleted=true;}),
+                                             NULL));
+            break;
+        default:
+            break;
+    }
+    
     return true;
 }
 
@@ -202,7 +243,7 @@ bool GameScene::setCh04Picture(std::string filename)
 /**
  * text
  */
-void GameScene::setTextShow(float speed)
+void GameScene::setTextShow()
 {
     if (textLayer) {
         textLayer->removeFromParentAndCleanup(true);
@@ -210,11 +251,31 @@ void GameScene::setTextShow(float speed)
     textLayer = TextLayer::create();
     this->addChild(textLayer);
     textLayer->setText(textToShow);
-    textLayer->showText(speed);
     
-    isTextShowing = true;
-    touchListener->setEnabled(true);
-    textFinishListener->setEnabled(true);
+    switch (gameMode) {
+        case MODE_NORMAL:
+            textLayer->showText();
+            isTextShowing = true;
+            touchListener->setEnabled(true);
+            textFinishListener->setEnabled(true);
+            break;
+        case MODE_SKIP:
+            textLayer->setSpeed(0.01);
+            textLayer->showText();
+            isTextShowing = true;
+            touchListener->setEnabled(true);
+            textFinishListener->setEnabled(true);
+            break;
+        case MODE_AUTO:
+            textLayer->setSpeed(0.2);
+            textLayer->showText();
+            isTextShowing = true;
+            touchListener->setEnabled(true);
+            textFinishListener->setEnabled(true);
+            break;
+        default:
+            break;
+    }
 }
 
 void GameScene::enableTextFinishedEventListener(bool b)
@@ -284,7 +345,21 @@ void GameScene::waitForChoiceResult(float dt)
 /**
  * get Touch
  */
-void GameScene::enableScreenTouchEventListener(bool b)
+void GameScene::enableScreenTouchEventListener(bool btouch)
 {
-    touchListener->setEnabled(b);
+    if (btouch) {
+        touchListener->setEnabled(true);
+        switch (gameMode) {
+            case MODE_SKIP:
+                isMissionCompleted = true;
+                break;
+            case MODE_AUTO:
+                isMissionCompleted = true;
+            default:
+                break;
+        }
+    }
+    else {
+        touchListener->setEnabled(false);
+    }
 }

@@ -4,7 +4,6 @@
 
 set.bgp.name="CloseSelected.png"
 set.bgp.start
-set.text.clear
 
 set.choice.number="4"
 set.choice.content="0""测试一"
@@ -20,19 +19,20 @@ if.globalint.choiceresult.equalto="0"
 set.bgp.name="HelloWorld.png"
 set.bgp.start
 set.text.content="测试一：只切换文本不切换背景"
-set.text.start="0.1"
+set.text.start
 
 get.touch
 
 set.text.content="文本切换一：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
-set.text.start="0.1"
+set.text.start
 
 get.touch
 
 set.text.content="文本切换二：测试中英文混合输入：ABC中文abc中文123数字"
-set.text.start="0.1"
+set.text.start
 
 get.touch
+set.text.clear
 
 #goback
 
@@ -41,7 +41,7 @@ elif.globalint.choiceresult.equalto="1"
 set.bgp.name="HelloWorld.png"
 set.bgp.start
 set.text.content="测试二：只切换背景不切换文字"
-set.text.start="0.1"
+set.text.start
 
 get.touch
 
@@ -59,6 +59,7 @@ set.bgp.name="CloseNormal.png"
 set.bgp.start
 
 get.touch
+set.text.clear
 
 #goback
 
@@ -67,30 +68,34 @@ elif.globalint.choiceresult.equalto="2"
 set.bgp.name="HelloWorld.png"
 set.bgp.start
 set.text.content="测试三：背景和文字同时切换"
-set.text.start="0.1"
+set.text.start
 
 get.touch
+set.text.clear
 
 set.bgp.name="CloseNormal.png"
 set.bgp.start
 set.text.content="文本和图片一：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
-set.text.start="0.1"
+set.text.start
 
 get.touch
+set.text.clear
 
 set.bgp.name="HelloWorld.png"
 set.bgp.start
 set.text.content="文本和图片二：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
-set.text.start="0.1"
+set.text.start
 
 get.touch
+set.text.clear
 
 set.bgp.name="CloseNormal.png"
 set.bgp.start
 set.text.content="文本和图片三：给文本增加长度以测试效果：文字文字文字文字文字文字文字文字文字文字"
-set.text.start="0.1"
+set.text.start
 
 get.touch
+set.text.clear
 
 #goback
 
@@ -100,7 +105,7 @@ endif
 
 //set.text.clear
 //set.text.content="测试结束"
-//set.text.start="0.1"
+//set.text.start
 
 //get.touch
 
@@ -131,18 +136,26 @@ endif
 #00001
 
 set.text.content="#00001"
-set.text.start="0.1"
+set.text.start
+#goto 00004
 
 #00002
 
 set.text.content="#00002"
-set.text.start="0.1"
+set.text.start
+#goto 00004
 
 #00003
 
 set.text.content="#00003"
-set.text.start="0.1"
+set.text.start
+#goto 00004
 
+#00004
+
+get.touch
+set.text.content="结束测试"
+set.text.start
 
 +++++++++ // 以下为暂不测试部分
 

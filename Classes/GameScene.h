@@ -25,12 +25,18 @@ class GameScene : public Scene
 private:
     static GameScene* sharedGameScene;
     Size visibleSize;
-    
     Layer *backgroundLayer, *menuLayer;
+    // game mode
+    int gameMode;
+    enum {
+        MODE_NORMAL,
+        MODE_AUTO,
+        MODE_SKIP
+    };
+    
     // bgp
     Sprite *bgp;
     std::string bgpFilename;
-    float bgpDuration;
     float bgpScale;
     float bgpPositionX, bgpPositionY;
     // charactors
@@ -64,6 +70,9 @@ public:
     // different way to start game
     void startNewGame();
     void startSavedGame();
+    // game mode
+    void enterSkipMode();
+    void enterAutoMode();
     /**
      * set
      */
@@ -71,7 +80,6 @@ public:
     bool setBgpStart();
     void setBgpClear();
     void setBgpFilename(std::string filename) { bgpFilename = filename; isMissionCompleted = true;}
-    void setBgpDuration(float duration) { bgpDuration = duration; isMissionCompleted = true;}
     void setBgpScale(float scale) { bgpScale = scale; isMissionCompleted = true;}
     void setBgpPosition(float x, float y) {
         bgpPositionX = x, bgpPositionY = y;
@@ -84,11 +92,12 @@ public:
     bool setCh04Picture(std::string filename);
     // text
     bool isTextShowing;
-    void setTextShow(float speed);
+    void setTextShow();
+    void setTextSpeed(float sp) { textLayer->setSpeed(sp); isMissionCompleted = true;}
     void setTextStop() { textLayer->stopText();}
     void setTextContent(std::string str) { textToShow = str; isMissionCompleted = true;}
     void setTextClear();
-    void enableTextFinishedEventListener(bool b);
+    void enableTextFinishedEventListener(bool btext);
     // choices
     void setChoiceNumber(int number);
     void setChoiceContent(int id, std::string content);
@@ -99,7 +108,7 @@ public:
     /**
      * get
      */
-    void enableScreenTouchEventListener(bool b);
+    void enableScreenTouchEventListener(bool btouch);
 };
 
 #endif /* GameScene_cpp */

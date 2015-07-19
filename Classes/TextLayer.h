@@ -21,6 +21,7 @@ private:
     Label *outline01, *outline02, *outline03, *outline04;
     std::string strSave, strShow;
     int pos;
+    float textSpeed;
 public:
     TextLayer();
     ~TextLayer();
@@ -29,7 +30,8 @@ public:
     CREATE_FUNC(TextLayer);
     
     void setText(std::string s) {strSave = s;}
-    void showText(float interval);
+    void setSpeed(float sp) {textSpeed = sp;}
+    void showText();
     void stopText();
     
     void postStopedMsg();
