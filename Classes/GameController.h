@@ -54,7 +54,7 @@ public:
     }
     
     // Data
-    void saveData();
+    void saveData(std::string dataname);
     void loadData();
     
     // Scene Control

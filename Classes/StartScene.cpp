@@ -50,5 +50,8 @@ bool StartScene::init()
         GameController::getInstance()->exitGame();
     });
 
+    // test
+    DataController::getInstance()->test();
+    
     return true;
 }

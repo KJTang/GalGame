@@ -58,6 +58,10 @@ bool GameScene::init()
     button1->setPosition(Point(visibleSize.width*0.75, visibleSize.height/2));
     button1->setCallbackFunc([](){
         log("back to StartScene");
+        
+        // test
+        DataController::getInstance()->saveData("test");
+        
         GameController::getInstance()->enterStartScene();
     });
     
@@ -122,19 +126,28 @@ void GameScene::update(float dt)
     ScriptController::getInstance()->stateBegin();
 }
 
+void GameScene::saveData()
+{
+    UserData.pos = ScriptController::getInstance()->getPos();
+    UserData.lineID = ScriptController::getInstance()->getLineID();
+}
+
 void GameScene::clear()
 {
     this->removeAllChildren();
     this->unscheduleUpdate();
-    _eventDispatcher->removeEventListener(touchListener);
-    _eventDispatcher->removeEventListener(textFinishListener);
+    GameController::getInstance()->stopBGM();
+    touchListener->setEnabled(false);
+    textFinishListener->setEnabled(false);
+//    _eventDispatcher->removeEventListener(touchListener);
+//    _eventDispatcher->removeEventListener(textFinishListener);
     this->init();
 }
 
 void GameScene::startNewGame()
 {
     this->clear();
-    VariableController::getInstance()->readFromScript();
+    DataController::getInstance()->readFromScript();
     ScriptController::getInstance()->runWithFile("file2.txt", 1);
     
     this->scheduleUpdate();
@@ -169,7 +182,6 @@ void GameScene::setBgpStart()
     if (bgp) {
         bgp->removeFromParentAndCleanup(true);
     }
-//    bgp = Sprite::create(bgpFilename);
     bgp = GyroBackground::create(bgpFilename, bgpScale);
     backgroundLayer->addChild(bgp);
     
@@ -178,10 +190,18 @@ void GameScene::setBgpStart()
     
     isMissionCompleted = true;
     
+    // save data
+    UserData.bgpFilename = bgpFilename;
+    UserData.bgpScale = bgpScale;
+    UserData.bgpPositionX = bgpPositionX;
+    UserData.bgpPositionY = bgpPositionY;
+    
     // set default
     bgpScale = 1.5;
     bgpDuration = 0;
     bgpPositionX = 0, bgpPositionY = 0;
+
+    log("save bgpFilename = %s", UserData.bgpFilename.c_str());
 }
 
 void GameScene::setBgpDuration(float d)
@@ -257,6 +277,12 @@ void GameScene::setCharacterClear(int id)
     }
     characters[id] = nullptr;
     isMissionCompleted = true;
+    
+    // clear data
+    UserData.characterFilename[id] = "";
+    UserData.characterScale[id] = 0.5;
+    UserData.characterPositionX[id] = 0.5;
+    UserData.characterPositionY[id] = 0.5;
 }
 
 void GameScene::setCharacterStart(int id)
@@ -270,12 +296,17 @@ void GameScene::setCharacterStart(int id)
     }
     characters[id] = Sprite::create(characterFilename[id]);
     characterLayer->addChild(characters[id]);
-//    characters[id]->setScale(visibleSize.width/characters[id]->getContentSize().width * characterScale[id]);
-    characters[id]->setScale(0.5);
+    characters[id]->setScale(characterScale[id]);
     characters[id]->setPosition(visibleSize.width * characterPositionX[id],
                                 visibleSize.height * characterPositionY[id]);
     
     isMissionCompleted = true;
+    
+    //save data
+    UserData.characterFilename[id] = characterFilename[id];
+    UserData.characterScale[id] = characterScale[id];
+    UserData.characterPositionX[id] = characterPositionX[id];
+    UserData.characterPositionY[id] = characterPositionY[id];
     
     // set default
     characterScale[id] = 0.5;
@@ -319,6 +350,9 @@ void GameScene::setTextShow()
         default:
             break;
     }
+    
+    // save data
+    UserData.textContent = textToShow;
 }
 
 void GameScene::setTextStop()
@@ -346,6 +380,8 @@ void GameScene::setTextClear()
     textLayer = nullptr;
     
     isMissionCompleted = true;
+    // clear data
+    UserData.textContent = "";
 }
 
 void GameScene::enableTextFinishedEventListener(bool b)
@@ -380,7 +416,7 @@ void GameScene::setChoiceChoosable(int id, bool choosable)
 void GameScene::setChoiceShow()
 {
     choiceTable->showChoiceTable();
-    VariableController::getInstance()->setInt("choiceresult", -1);
+    DataController::getInstance()->setInt("choiceresult", -1);
     isMissionCompleted = true;
 }
 
@@ -426,7 +462,7 @@ void GameScene::waitForChoiceResult(float dt)
     if (result == -1) {
         return;
     }
-    VariableController::getInstance()->setInt("choiceresult", result);
+    DataController::getInstance()->setInt("choiceresult", result);
     log("get choice result = %d", result);
     isMissionCompleted = true;
     choiceTable->removeFromParentAndCleanup(true);

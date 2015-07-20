@@ -14,7 +14,7 @@
 #include "cocos2d.h"
 
 #include "GameController.h"
-#include "VariableController.h"
+#include "DataController.h"
 
 using namespace cocos2d;
 
@@ -25,6 +25,9 @@ private:
     std::string data;
     int pos, lineID;
     int goBackPosMark, goBackLineMark;
+    // used for data saving
+    bool isChoiceTableShowing;
+    int choiceTablePos, choiceTableLineID;
     
     std::string getString();
     int transStringToInt(std::string num);
@@ -73,6 +76,10 @@ public:
     void stateCondition(std::string cmd);
     
     void stateEnd();
+    
+    //
+    int getPos() {return pos;}
+    int getLineID() {return lineID;}
 };
 
 #endif /* ScriptController_cpp */

@@ -12,7 +12,10 @@
 #include <stdio.h>
 
 #include "cocos2d.h"
+
 #include "GameController.h"
+#include "DataController.h"
+
 #include "GyroBackground.h"
 #include "ButtonSprite.h"
 

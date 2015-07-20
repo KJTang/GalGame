@@ -18,6 +18,8 @@ bool ScriptController::init()
 {
     pos = 0, lineID = 1;
     goBackPosMark = -1, goBackLineMark = -1;
+    choiceTablePos = -1, choiceTableLineID = -1;
+    isChoiceTableShowing = false;
     isConditionFullFilled = false;
     hasErr = false;
     return true;
@@ -288,6 +290,7 @@ void ScriptController::stateCommand(std::string cmd)
             if (str == "name") {
                 std::string str = getString();
                 GameController::getInstance()->loadBGM(str);
+                GameScene::getInstance()->UserData.bgmFilename = str;
                 GameScene::getInstance()->isMissionCompleted = true;
             } else if (str == "start") {
                 log("set bgm start");
@@ -346,16 +349,16 @@ void ScriptController::stateCommand(std::string cmd)
             std::string opr = getString();
             int num = transStringToInt(getString());
             if (opr == "equal") {
-                VariableController::getInstance()->setInt(var, num);
+                DataController::getInstance()->setInt(var, num);
                 // for variables calculations, we don't need to wait
                 GameScene::getInstance()->isMissionCompleted = true;
             } else if (opr == "add") {
-                int temp = VariableController::getInstance()->getInt(var);
-                VariableController::getInstance()->setInt(var, temp+num);
+                int temp = DataController::getInstance()->getInt(var);
+                DataController::getInstance()->setInt(var, temp+num);
                 GameScene::getInstance()->isMissionCompleted = true;
             } else if (opr == "minus") {
-                int temp = VariableController::getInstance()->getInt(var);
-                VariableController::getInstance()->setInt(var, temp-num);
+                int temp = DataController::getInstance()->getInt(var);
+                DataController::getInstance()->setInt(var, temp-num);
                 GameScene::getInstance()->isMissionCompleted = true;
             } else {
                 showError(UNKNOWN_COMMAND);
@@ -363,6 +366,11 @@ void ScriptController::stateCommand(std::string cmd)
         }
         // choices
         else if (str == "choice") {
+//            // save data
+//            choiceTablePos = pos - 10;
+//            choiceTableLineID = lineID;
+//            isChoiceTableShowing = true;
+            
             std::string str = getString();
             if (str == "number") {
                 GameScene::getInstance()->setChoiceNumber(transStringToInt(getString()));
@@ -499,7 +507,7 @@ void ScriptController::stateCommand(std::string cmd)
         // variables
         else if (str == "globalint") {
             std::string var = getString();
-            int value = VariableController::getInstance()->getInt(var);
+            int value = DataController::getInstance()->getInt(var);
             log("%s = %d", var.c_str(), value);
             GameScene::getInstance()->isMissionCompleted = true;
         }
@@ -534,7 +542,7 @@ void ScriptController::stateCondition(std::string cmd)
     if (str == "if" || str == "elif") {
         std::string type = getString();
         if (type == "globalint") {
-            int value = VariableController::getInstance()->getInt(getString());
+            int value = DataController::getInstance()->getInt(getString());
             if (value == -1) {
                 showError(VARIABLE_DOES_NOT_EXIST);
                 return;

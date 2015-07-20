@@ -13,7 +13,8 @@
 
 #include "GameController.h"
 #include "ScriptController.h"
-#include "VariableController.h"
+//#include "VariableController.h"
+#include "DataController.h"
 
 #include "TextLayer.h"
 #include "ChoiceTableLayer.h"
@@ -80,6 +81,25 @@ public:
     // game mode
     void enterSkipMode();
     void enterAutoMode();
+    // user data
+    struct
+    {
+        // record the position in script
+        int pos, lineID;
+        // bgm
+        std::string bgmFilename;
+        // bgp
+        std::string bgpFilename;
+        float bgpScale;
+        float bgpPositionX, bgpPositionY;
+        // characters
+        std::string characterFilename[4];
+        float characterScale[4];
+        float characterPositionX[4], characterPositionY[4];
+        // text
+        std::string textContent;
+    }UserData;
+    void saveData();
     /**
      * set
      */

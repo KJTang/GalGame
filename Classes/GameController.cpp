@@ -20,9 +20,9 @@ bool GameController::init()
     return true;
 }
 
-void GameController::saveData()
+void GameController::saveData(std::string dataname)
 {
-    
+    std::string path = FileUtils::getInstance()->getWritablePath()+"dataname";
 }
 
 void GameController::loadData()
@@ -38,6 +38,7 @@ void GameController::enterStartScene()
             break;
         }
         case STATE_GAME_SCENE: {
+            GameScene::getInstance()->clear();
             Director::getInstance()->purgeCachedData();
             Director::getInstance()->replaceScene(TransitionFade::create(1, StartScene::create()));
             break;
