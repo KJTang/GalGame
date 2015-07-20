@@ -51,7 +51,7 @@ set.character.name="0""CloseNormal.png"
 set.character.position="0""0.25""0.25"
 set.character.start="0"
 
-get.touch="1"
+get.touch="1"     // if in Auto Mode, EventListener will wait for 1s than receive a touch event
 
 set.character.name="0""CloseNormal.png"
 set.character.position="0""0.25""0.75"

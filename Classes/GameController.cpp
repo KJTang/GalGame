@@ -87,12 +87,13 @@ void GameController::exitGame()
 
 void GameController::loadBGM(std::string filename)
 {
-    CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic(filename.c_str());
+    bgmFilename = filename;
+    CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic(bgmFilename.c_str());
 }
 
-void GameController::playBGM(std::string filename)
+void GameController::playBGM()
 {
-    CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(filename.c_str());
+    CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(bgmFilename.c_str());
 }
 
 void GameController::pauseBGM()
@@ -103,4 +104,9 @@ void GameController::pauseBGM()
 void GameController::resumeBGM()
 {
     CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+}
+
+void GameController::stopBGM()
+{
+    CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 }

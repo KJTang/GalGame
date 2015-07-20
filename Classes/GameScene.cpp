@@ -24,7 +24,7 @@ bool GameScene::init()
     isMissionCompleted = true;
     isTextShowing = false;
     
-    gameMode = MODE_SKIP;
+    gameMode = MODE_NORMAL;
     
     backgroundLayer = Layer::create();
     this->addChild(backgroundLayer);
@@ -39,12 +39,12 @@ bool GameScene::init()
     textLayer = nullptr;
     // bgp
     bgp = nullptr;
-    bgpDuration = 0, bgpScale = 1, bgpPositionX = 0, bgpPositionY = 0;
+    bgpDuration = 0, bgpScale = 1.5, bgpPositionX = 0, bgpPositionY = 0;
     // characters
     for (int i = 0; i != 4; ++i) {
         characters[i] = nullptr;
         characterDuration[i] = 0;
-        characterScale[i] = 0.2;
+        characterScale[i] = 0.5;
         characterPositionX[i] = 0.5;
         characterPositionY[i] = 0.5;
     }
@@ -135,7 +135,7 @@ void GameScene::startNewGame()
 {
     this->clear();
     VariableController::getInstance()->readFromScript();
-    ScriptController::getInstance()->runWithFile("file.txt", 1);
+    ScriptController::getInstance()->runWithFile("file2.txt", 1);
     
     this->scheduleUpdate();
 }
@@ -170,7 +170,7 @@ void GameScene::setBgpStart()
         bgp->removeFromParentAndCleanup(true);
     }
 //    bgp = Sprite::create(bgpFilename);
-    bgp = GyroBackground::create(bgpFilename, 1.2);
+    bgp = GyroBackground::create(bgpFilename, bgpScale);
     backgroundLayer->addChild(bgp);
     
     bgp->setScale(visibleSize.width/bgp->getContentSize().width*bgpScale);
@@ -179,7 +179,7 @@ void GameScene::setBgpStart()
     isMissionCompleted = true;
     
     // set default
-    bgpScale = 1;
+    bgpScale = 1.5;
     bgpDuration = 0;
     bgpPositionX = 0, bgpPositionY = 0;
 }
@@ -270,14 +270,15 @@ void GameScene::setCharacterStart(int id)
     }
     characters[id] = Sprite::create(characterFilename[id]);
     characterLayer->addChild(characters[id]);
-    characters[id]->setScale(visibleSize.width/characters[id]->getContentSize().width * characterScale[id]);
+//    characters[id]->setScale(visibleSize.width/characters[id]->getContentSize().width * characterScale[id]);
+    characters[id]->setScale(0.5);
     characters[id]->setPosition(visibleSize.width * characterPositionX[id],
                                 visibleSize.height * characterPositionY[id]);
     
     isMissionCompleted = true;
     
     // set default
-    characterScale[id] = 0.2;
+    characterScale[id] = 0.5;
     characterDuration[id] = 0;
     characterPositionX[id] = 0.5, characterPositionY[id] = 0.5;
 }

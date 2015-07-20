@@ -23,6 +23,8 @@ class GameController
 private:
     static GameController* sharedGameController;
     bool init();
+    //bgm
+    std::string bgmFilename;
     
     // state
     int currentState;
@@ -66,9 +68,10 @@ public:
     
     // Audio Control
     void loadBGM(std::string filename);
-    void playBGM(std::string filename);
+    void playBGM();
     void pauseBGM();
     void resumeBGM();
+    void stopBGM();
 };
 
 #endif /* GameController_cpp */

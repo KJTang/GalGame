@@ -161,6 +161,9 @@ void ScriptController::stateBegin()
             showError(UNKNOWN_COMMAND);
         }
     }
+    else {
+        stateEnd();
+    }
 }
 
 void ScriptController::stateJump(std::string cmd)
@@ -287,9 +290,20 @@ void ScriptController::stateCommand(std::string cmd)
                 GameController::getInstance()->loadBGM(str);
                 GameScene::getInstance()->isMissionCompleted = true;
             } else if (str == "start") {
-                std::string str = getString();                
-                log("set bgm start = %s", str.c_str());
-                GameController::getInstance()->playBGM(str);
+                log("set bgm start");
+                GameController::getInstance()->playBGM();
+                GameScene::getInstance()->isMissionCompleted = true;
+            } else if (str == "pause") {
+                log("set bgm pause");
+                GameController::getInstance()->pauseBGM();
+                GameScene::getInstance()->isMissionCompleted = true;
+            } else if (str == "resume") {
+                log("set bgm resume");
+                GameController::getInstance()->resumeBGM();
+                GameScene::getInstance()->isMissionCompleted = true;
+            } else if (str == "stop") {
+                log("set bgm stop");
+                GameController::getInstance()->stopBGM();
                 GameScene::getInstance()->isMissionCompleted = true;
             } else {
                 showError(UNKNOWN_COMMAND);
@@ -310,17 +324,18 @@ void ScriptController::stateCommand(std::string cmd)
         }
         // setting characters
         else if (str == "character") {
+            int id = transStringToInt(getString());
             std::string str = getString();
             if (str == "name") {
-                GameScene::getInstance()->setCharacterFilename(transStringToInt(getString()), getString());
+                GameScene::getInstance()->setCharacterFilename(id, getString());
             } else if (str == "scale") {
-                GameScene::getInstance()->setCharacterScale(transStringToInt(getString()), transStringToFloat(getString()));
+                GameScene::getInstance()->setCharacterScale(id, transStringToFloat(getString()));
             } else if (str == "position") {
-                GameScene::getInstance()->setCharacterPosition(transStringToInt(getString()), transStringToFloat(getString()), transStringToFloat(getString()));
+                GameScene::getInstance()->setCharacterPosition(id, transStringToFloat(getString()), transStringToFloat(getString()));
             } else if (str == "clear") {
-                GameScene::getInstance()->setCharacterClear(transStringToInt(getString()));
+                GameScene::getInstance()->setCharacterClear(id);
             } else if (str == "start") {
-                GameScene::getInstance()->setCharacterStart(transStringToInt(getString()));
+                GameScene::getInstance()->setCharacterStart(id);
             } else {
                 showError(UNKNOWN_COMMAND);
             }
