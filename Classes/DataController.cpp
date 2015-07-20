@@ -1,4 +1,3 @@
-
 //
 //  DataController.cpp
 //  Test
@@ -129,9 +128,10 @@ void DataController::readFromScript()
     }
 }
 
-void DataController::readFromData()
+void DataController::readFromData(std::string datafile)
 {
     log("read variables from game data");
+    
 }
 
 bool DataController::saveData(std::string datafile)
@@ -146,12 +146,15 @@ bool DataController::saveData(std::string datafile)
     using namespace std;
     std::ofstream fout(path.c_str());
     
-    // save the scene
-    GameScene::getInstance()->saveData();
-    
+    // save flags to GameScene::UserData
+    GameScene::getInstance()->saveFlags();
+    // flags
     fout<<"pos "<<GameScene::getInstance()->UserData.pos<<endl;
     fout<<"lineID "<<GameScene::getInstance()->UserData.lineID<<endl;
-    
+    fout<<"gobackPos "<<GameScene::getInstance()->UserData.gobackPos<<endl;
+    fout<<"gobackLineID "<<GameScene::getInstance()->UserData.gobackLineID<<endl;
+    fout<<"condition "<<GameScene::getInstance()->UserData.isConditionFullFilled<<endl;
+    // scene
     if (GameScene::getInstance()->UserData.bgmFilename.size()) {
         log("bgm filename = %s", GameScene::getInstance()->UserData.bgmFilename.c_str());
         fout<<"bgm filename "<<GameScene::getInstance()->UserData.bgmFilename<<endl;

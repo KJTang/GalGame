@@ -28,10 +28,21 @@ bool StartScene::init()
     auto startBtn = ButtonSprite::create("CloseNormal.png");
     backgroundLayer->addChild(startBtn);
     startBtn->setScale(3.5);
-    startBtn->setPosition(Point(visibleSize.width*0.25, visibleSize.height/2));
+    startBtn->setPosition(Point(visibleSize.width*0.25, visibleSize.height*0.75));
     startBtn->setCallbackFunc([](){
         log("start Game");
         GameController::getInstance()->enterGameScene();
+    });
+    auto loadBtn = ButtonSprite::create("CloseNormal.png");
+    backgroundLayer->addChild(loadBtn);
+    loadBtn->setScale(3.5);
+    loadBtn->setPosition(Point(visibleSize.width*0.25, visibleSize.height*0.25));
+    loadBtn->setCallbackFunc([](){
+        log("load Game");
+        Director::getInstance()->purgeCachedData();
+        GameScene::getInstance()->clear();
+        Director::getInstance()->replaceScene(TransitionFade::create(1, GameScene::getInstance()));
+        GameScene::getInstance()->startSavedGame("text");
     });
     auto configBtn = ButtonSprite::create("CloseNormal.png");
     backgroundLayer->addChild(configBtn);

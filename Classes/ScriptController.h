@@ -60,7 +60,7 @@ public:
         return sharedScriptController;
     }
     
-    void runWithFile(std::string filename, int linePosition);
+    void runWithFile(std::string filename, int p, int lineid);
     
     // state
     void stateBegin();
@@ -77,6 +77,8 @@ public:
     //
     int getPos() {return pos;}
     int getLineID() {return lineID;}
+    int getGoBackPosMark() {return goBackPosMark;}
+    int getGoBackLineMark() {return goBackLineMark;}
     // used for data saving
     bool isChoiceTableShowing;
     int choiceTablePos, choiceTableLineID;

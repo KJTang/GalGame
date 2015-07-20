@@ -25,15 +25,17 @@ bool ScriptController::init()
     return true;
 }
 
-void ScriptController::runWithFile(std::string filename, int linePosition)
+void ScriptController::runWithFile(std::string filename, int p, int linep)
 {
-    lineID = linePosition;
-    if (lineID <= 1) {
+    if (linep <= 1) {
         pos = 0, lineID = 1;
         goBackPosMark = -1, goBackLineMark = -1;
         isConditionFullFilled = false;
         hasErr = false;
+    } else {
+        pos = p, lineID = linep;
     }
+    
     data = FileUtils::getInstance()->getStringFromFile(filename.c_str());
 }
 

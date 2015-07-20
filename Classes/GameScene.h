@@ -13,12 +13,12 @@
 
 #include "GameController.h"
 #include "ScriptController.h"
-//#include "VariableController.h"
 #include "DataController.h"
 
 #include "TextLayer.h"
 #include "ChoiceTableLayer.h"
 #include "GyroBackground.h"
+#include "ButtonSprite.h"
 
 using namespace cocos2d;
 
@@ -28,6 +28,7 @@ private:
     static GameScene* sharedGameScene;
     Size visibleSize;
     Layer *backgroundLayer, *characterLayer, *menuLayer;
+    ButtonSprite *quitButton, *saveButton;
     // game mode
     int gameMode;
     enum {
@@ -67,7 +68,7 @@ public:
     {
         if (!sharedGameScene) {
             sharedGameScene = new GameScene();
-            sharedGameScene->init();
+//            sharedGameScene->init();
         }
         return sharedGameScene;
     }
@@ -77,7 +78,7 @@ public:
     bool isMissionCompleted;
     // different way to start game
     void startNewGame();
-    void startSavedGame();
+    void startSavedGame(std::string datafile);
     // game mode
     void enterSkipMode();
     void enterAutoMode();
@@ -86,6 +87,8 @@ public:
     {
         // record the position in script
         int pos, lineID;
+        int gobackPos, gobackLineID;
+        bool isConditionFullFilled;
         // bgm
         std::string bgmFilename;
         // bgp
@@ -99,7 +102,7 @@ public:
         // text
         std::string textContent;
     }UserData;
-    void saveData();
+    void saveFlags();
     /**
      * set
      */

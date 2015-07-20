@@ -66,7 +66,7 @@ public:
     void clear();
     // load
     void readFromScript();
-    void readFromData();
+    void readFromData(std::string datafile);
     // save
     bool saveData(std::string datafile);
     

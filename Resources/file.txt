@@ -2,6 +2,8 @@
 
 #gobackmark
 
+set.bgm.name="title01.wav"
+set.bgm.start
 set.bgp.name="CloseSelected.png"
 set.bgp.start
 
