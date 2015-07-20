@@ -366,10 +366,12 @@ void ScriptController::stateCommand(std::string cmd)
         }
         // choices
         else if (str == "choice") {
-//            // save data
-//            choiceTablePos = pos - 10;
-//            choiceTableLineID = lineID;
-//            isChoiceTableShowing = true;
+            // save data
+            if (!isChoiceTableShowing) {
+                choiceTablePos = pos - 10;
+                choiceTableLineID = lineID;
+                isChoiceTableShowing = true;
+            }
             
             std::string str = getString();
             if (str == "number") {

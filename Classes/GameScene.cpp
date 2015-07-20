@@ -128,8 +128,13 @@ void GameScene::update(float dt)
 
 void GameScene::saveData()
 {
-    UserData.pos = ScriptController::getInstance()->getPos();
-    UserData.lineID = ScriptController::getInstance()->getLineID();
+    if (!ScriptController::getInstance()->isChoiceTableShowing) {
+        UserData.pos = ScriptController::getInstance()->getPos();
+        UserData.lineID = ScriptController::getInstance()->getLineID();
+    } else {
+        UserData.pos = ScriptController::getInstance()->choiceTablePos;
+        UserData.lineID = ScriptController::getInstance()->choiceTableLineID;
+    }
 }
 
 void GameScene::clear()
@@ -137,10 +142,8 @@ void GameScene::clear()
     this->removeAllChildren();
     this->unscheduleUpdate();
     GameController::getInstance()->stopBGM();
-    touchListener->setEnabled(false);
-    textFinishListener->setEnabled(false);
-//    _eventDispatcher->removeEventListener(touchListener);
-//    _eventDispatcher->removeEventListener(textFinishListener);
+    _eventDispatcher->removeEventListener(touchListener);
+    _eventDispatcher->removeEventListener(textFinishListener);
     this->init();
 }
 
@@ -148,7 +151,7 @@ void GameScene::startNewGame()
 {
     this->clear();
     DataController::getInstance()->readFromScript();
-    ScriptController::getInstance()->runWithFile("file2.txt", 1);
+    ScriptController::getInstance()->runWithFile("file.txt", 1);
     
     this->scheduleUpdate();
 }
@@ -416,6 +419,7 @@ void GameScene::setChoiceChoosable(int id, bool choosable)
 void GameScene::setChoiceShow()
 {
     choiceTable->showChoiceTable();
+    // initalize the choose result
     DataController::getInstance()->setInt("choiceresult", -1);
     isMissionCompleted = true;
 }
@@ -458,13 +462,23 @@ void GameScene::getChoiceResult()
 
 void GameScene::waitForChoiceResult(float dt)
 {
+    if (!choiceTable) {
+        return;
+    }
     int result = choiceTable->getChoiceReuslt();
     if (result == -1) {
         return;
     }
     DataController::getInstance()->setInt("choiceresult", result);
     log("get choice result = %d", result);
-    isMissionCompleted = true;
+    // set default
+    ScriptController::getInstance()->isChoiceTableShowing = false;
+    ScriptController::getInstance()->choiceTablePos = -1;
+    ScriptController::getInstance()->choiceTableLineID = -1;
+    
     choiceTable->removeFromParentAndCleanup(true);
+    choiceTable = nullptr;
     this->unschedule(schedule_selector(GameScene::waitForChoiceResult));
+
+    isMissionCompleted = true;
 }

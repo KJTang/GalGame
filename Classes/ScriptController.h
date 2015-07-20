@@ -25,9 +25,6 @@ private:
     std::string data;
     int pos, lineID;
     int goBackPosMark, goBackLineMark;
-    // used for data saving
-    bool isChoiceTableShowing;
-    int choiceTablePos, choiceTableLineID;
     
     std::string getString();
     int transStringToInt(std::string num);
@@ -80,6 +77,10 @@ public:
     //
     int getPos() {return pos;}
     int getLineID() {return lineID;}
+    // used for data saving
+    bool isChoiceTableShowing;
+    int choiceTablePos, choiceTableLineID;
+
 };
 
 #endif /* ScriptController_cpp */

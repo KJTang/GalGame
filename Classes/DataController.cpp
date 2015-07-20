@@ -142,11 +142,11 @@ bool DataController::saveData(std::string datafile)
 //    if (FileUtils::getInstance()->isFileExist(path)) {
 //        return false;
 //    }
-    log("saving------------------------");
     
     using namespace std;
     std::ofstream fout(path.c_str());
     
+    // save the scene
     GameScene::getInstance()->saveData();
     
     fout<<"pos "<<GameScene::getInstance()->UserData.pos<<endl;
@@ -172,6 +172,17 @@ bool DataController::saveData(std::string datafile)
             fout<<"character "<<i<<" positionx "<<GameScene::getInstance()->UserData.characterPositionX[i]<<endl;
             fout<<"character "<<i<<" positiony "<<GameScene::getInstance()->UserData.characterPositionY[i]<<endl;
         }
+    }
+    
+    // save the variables
+    for (int i = 0; i != Ints.size(); ++i) {
+        fout<<"int "<<Ints[i].name<<" "<<Ints[i].value<<endl;
+    }
+    for (int i = 0; i != Floats.size(); ++i) {
+        fout<<"float "<<Floats[i].name<<" "<<Floats[i].value<<endl;
+    }
+    for (int i = 0; i != Strings.size(); ++i) {
+        fout<<"string "<<Strings[i].name<<" "<<Strings[i].value<<endl;
     }
     
     return true;
@@ -224,4 +235,5 @@ void DataController::test()
         log("test---------- %s", str.c_str());
         getline(fin, str);
     }
+    log("test------------------------");
 }
