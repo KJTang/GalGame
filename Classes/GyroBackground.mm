@@ -34,9 +34,9 @@ bool GyroBackground::init(std::string filename, float scaleRate)
     visibleSize = Director::getInstance()->getVisibleSize();
     this->setPosition(0, 0);
     
-    currentXSpeed = 0.0, currentYSpeed = 0.0;
-    initialXSpeed = 0.0, initialYSpeed = 0.0;
-    resistanceX = 5, resistanceY = 5;
+    xSpeed = 0.0, ySpeed = 0.0;
+    xSpeedRate = 1, ySpeedRate = 1;
+    resistanceX = 0.4, resistanceY = 0.4;
     
     bg = Sprite::create(filename);
     this->addChild(bg);
@@ -47,7 +47,7 @@ bool GyroBackground::init(std::string filename, float scaleRate)
     scaleY = bg->getContentSize().height*bg->getScaleY()/visibleSize.height;
     bg->setPosition(visibleSize.width/2, visibleSize.height/2);
     
-    this->schedule(schedule_selector(GyroBackground::bgMove), 1.0/120);
+    this->schedule(schedule_selector(GyroBackground::bgMove), 1.0/60);
     return true;
 }
 
@@ -64,83 +64,60 @@ void GyroBackground::bgMove(float dt)
     pitchAngle.push_back(currentPitch);
     
     int number = 6;
-    // 定义小范围移动时角度差值的最大值
-    float maxRange = 5.0;
     if (yawAngle.size() == number) {
-        /*
-         * X方向的速度来自于yaw和picth两个数据
-         * Y方向的速度来自于roll的数据
-         *
-         */
-        bool ignoreY = false;
-        float yawRange = yawAngle[number-1]-yawAngle[0];
-        float rollRange = rollAngle[number-1]-rollAngle[0];
-        float pitchRange = pitchAngle[number-1]-pitchAngle[0];
+        float yawAcc = yawAngle[number-1]-yawAngle[0];
+        float rollAcc = rollAngle[number-1]-rollAngle[0];
+        float pitchAcc = pitchAngle[number-1]-pitchAngle[0];
+        for (int i = 1; i != number; ++i) {
+            yawAcc += yawAngle[i]-yawAngle[i-1];
+            rollAcc += rollAngle[i]-rollAngle[i-1];
+            pitchAcc += pitchAngle[i]-pitchAngle[i-1];
+        }
+        yawAngle.clear(), rollAngle.clear(), pitchAngle.clear();
+        yawAcc /= (number-1);
+        rollAcc /= (number-1);
+        pitchAcc /= (number-1);
         
-        // X Speed from yaw
-        if (yawRange > -maxRange && yawRange < maxRange) {
-            resistanceX = 0;
-            initialXSpeed = yawRange*2.5;
-        }
-        else {
-            resistanceX = 1;
-            initialXSpeed = yawRange*4;
-            ignoreY = true;
-        }
-        // X Speed from picth
-        if (pitchRange > -maxRange && pitchRange < maxRange) {
-            resistanceX = 0;
-            initialXSpeed += pitchRange*2.5;
-        }
-        else {
-            resistanceX = 1;
-            initialXSpeed += pitchRange*4;
-            ignoreY = true;
-        }
-        directionX = (initialXSpeed > 0);
-        // X方向为主要运动时忽略Y方向
-        if (!ignoreY) {
-            // Y Speed
-            if (rollRange > -maxRange && rollRange < maxRange) {
-                resistanceY = 0;
-                initialYSpeed = rollRange*2;
+        float xAcc = yawAcc + pitchAcc, yAcc = rollAcc;
+//        log("Acceleration: %.2f, %.2f", xAcc, yAcc);
+        
+        if (xSpeed == 0.0) {
+            if (xAcc > resistanceX || xAcc < -resistanceX) {
+                xSpeed += xAcc;
+            } else {
+                xSpeed = 0;
             }
-            else {
-                resistanceY = 1;
-                initialYSpeed = rollRange*3;
-                // Y方向为主要运动时忽略X方向
-                resistanceX = 0;
-                initialXSpeed = 0;
+        } else if (xSpeed > 0.0) {
+            xSpeed += xAcc - resistanceX;
+        } else {
+            xSpeed += xAcc + resistanceX;
+        }
+        if (ySpeed == 0.0) {
+            if (yAcc > resistanceY || yAcc < -resistanceY) {
+                ySpeed += yAcc;
+            } else {
+                ySpeed = 0;
             }
-            directionY = (initialYSpeed > 0);
-        }
-        
-        yawAngle.clear();
-        rollAngle.clear();
-        pitchAngle.clear();
-    }
-    // 计算X方向速度
-    if (directionX) {
-        // 赋予初始速度，并赋予相反方向的加速度，即阻力
-        currentXSpeed = initialXSpeed;
-        initialXSpeed -= resistanceX;
-        // 若速度已经减小到0，修改参数使停止运动
-        if (currentXSpeed < 0) {
-            currentXSpeed = 0;
-            initialXSpeed = 0;
+        } else if (ySpeed > 0.0) {
+            ySpeed += yAcc - resistanceY;
+        } else {
+            ySpeed += yAcc + resistanceY;
         }
     }
-    else
-    {
-        currentXSpeed = initialXSpeed;
-        initialXSpeed += resistanceX;
-        
-        if (currentXSpeed > 0) {
-            currentXSpeed = 0;
-            initialXSpeed = 0;
-        }
+    
+    bg->setPosition(bg->getPosition()+Vec2(xSpeed*xSpeedRate, ySpeed*ySpeedRate));
+    // 速度受阻力影响而变化
+    if (xSpeed >= 0.0) {
+        xSpeed = xSpeed-resistanceX>0 ? xSpeed-resistanceX : 0;
+    } else {
+        xSpeed = xSpeed+resistanceX<0 ? xSpeed+resistanceX : 0;
     }
-    bg->setPositionX(bg->getPositionX()+currentXSpeed);
+    if (ySpeed >= 0.0) {
+        ySpeed = ySpeed-resistanceY>0 ? ySpeed-resistanceY : 0;
+    } else {
+        ySpeed = ySpeed+resistanceY<0 ? ySpeed+resistanceY : 0;
+    }
+    
     // 限制X方向移动范围，避免图像移动出界
     if (bg->getPositionX()+visibleSize.width*scaleX/2 < visibleSize.width) {
         bg->setPositionX(visibleSize.width*(1-scaleX/2));
@@ -148,27 +125,6 @@ void GyroBackground::bgMove(float dt)
     if (bg->getPositionX()-visibleSize.width*scaleX/2 > 0) {
         bg->setPositionX(visibleSize.width*scaleX/2);
     }
-    // 计算Y方向速度
-    if (directionY) {
-        currentYSpeed = initialYSpeed;
-        initialYSpeed -= resistanceY;
-        
-        if (currentYSpeed < 0) {
-            currentYSpeed = 0;
-            initialYSpeed = 0;
-        }
-    }
-    else
-    {
-        currentYSpeed = initialYSpeed;
-        initialYSpeed += resistanceY;
-        
-        if (currentYSpeed > 0) {
-            currentYSpeed = 0;
-            initialYSpeed = 0;
-        }
-    }
-    bg->setPositionY(bg->getPositionY()+currentYSpeed);
     // 限制Y方向移动范围，避免图像移动出界
     if (bg->getPositionY()+visibleSize.height*scaleY/2 < visibleSize.height) {
         bg->setPositionY(visibleSize.height*(1-scaleY/2));
@@ -176,7 +132,6 @@ void GyroBackground::bgMove(float dt)
     if (bg->getPositionY()-visibleSize.height*scaleY/2 > 0) {
         bg->setPositionY(visibleSize.height*scaleY/2);
     }
-    
     // 如果图片尺寸小于屏幕则不移动
     if (scaleX <= 1.0) {
         bg->setPositionX(visibleSize.width/2);

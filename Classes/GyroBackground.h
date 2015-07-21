@@ -26,10 +26,10 @@ private:
     float currentYaw, currentRoll, currentPitch;
     
     std::vector<float> yawAngle, rollAngle, pitchAngle;
-    float currentXSpeed, currentYSpeed;
-    
-    // 初始速度和阻力
-    float initialXSpeed, initialYSpeed;
+    // 速度及速度对应放大到屏幕上所乘的系数
+    float xSpeed, ySpeed;
+    float xSpeedRate, ySpeedRate;
+    // 阻力
     float resistanceX, resistanceY;
     // 运动方向
     bool directionX, directionY;

@@ -24,7 +24,7 @@ bool GameScene::init()
     isMissionCompleted = false;
     isTextShowing = false;
     
-    gameMode = MODE_AUTO;
+    gameMode = MODE_NORMAL;
     // Layers
     backgroundLayer = Layer::create();
     this->addChild(backgroundLayer);
