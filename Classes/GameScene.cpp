@@ -24,14 +24,12 @@ bool GameScene::init()
     isMissionCompleted = false;
     isTextShowing = false;
     
-    gameMode = MODE_NORMAL;
-    
+    gameMode = MODE_AUTO;
+    // Layers
     backgroundLayer = Layer::create();
     this->addChild(backgroundLayer);
-    
     characterLayer = Layer::create();
     this->addChild(characterLayer);
-    
     menuLayer = Layer::create();
     this->addChild(menuLayer);
     
@@ -156,17 +154,25 @@ void GameScene::clear()
 {
     log("GameScene clearing");
     this->removeAllChildren();
-    
-    if (this->isScheduled(schedule_selector(GameScene::update))) {
-        this->unscheduleUpdate();
-    }
+    backgroundLayer = nullptr, characterLayer = nullptr, menuLayer = nullptr;
+    textLayer = nullptr;
+    choiceTable = nullptr;
     
     GameController::getInstance()->stopBGM();
 
-    _eventDispatcher->removeEventListener(touchListener);
-    _eventDispatcher->removeEventListener(textFinishListener);
-    touchListener = nullptr;
-    textFinishListener = nullptr;
+    if (this->isScheduled(schedule_selector(GameScene::update))) {
+        this->unscheduleUpdate();
+    }
+    if (touchListener) {
+        log("remove touchlistener");
+        _eventDispatcher->removeEventListener(touchListener);
+        touchListener = nullptr;
+    }
+    if (textFinishListener) {
+        log("remove textlistener");
+        _eventDispatcher->removeEventListener(textFinishListener);
+        textFinishListener = nullptr;
+    }
 
     log("GameScene cleared");
 }
@@ -293,6 +299,7 @@ void GameScene::startSavedGame(std::string datafile)
     // schedule
     isMissionCompleted = false;
     this->scheduleUpdate();
+    
     touchListener->setEnabled(true);
 }
 
@@ -319,6 +326,7 @@ void GameScene::setBgpStart()
 {
     if (bgp) {
         bgp->removeFromParentAndCleanup(true);
+        bgp = nullptr;
     }
     bgp = GyroBackground::create(bgpFilename, bgpScale);
     backgroundLayer->addChild(bgp);
@@ -410,6 +418,7 @@ void GameScene::setCharacterClear(int id)
     }
     if (characters[id]) {
         characters[id]->removeFromParentAndCleanup(true);
+        characters[id] = nullptr;
     }
     characters[id] = nullptr;
     isMissionCompleted = true;
@@ -429,6 +438,7 @@ void GameScene::setCharacterStart(int id)
     }
     if (characters[id]) {
         characters[id]->removeFromParentAndCleanup(true);
+        characters[id] = nullptr;
     }
     characters[id] = Sprite::create(characterFilename[id]);
     characterLayer->addChild(characters[id]);
@@ -457,6 +467,7 @@ void GameScene::setTextShow()
 {
     if (textLayer) {
         textLayer->removeFromParentAndCleanup(true);
+        textLayer = nullptr;
     }
     textLayer = TextLayer::create();
     this->addChild(textLayer);
@@ -512,12 +523,13 @@ void GameScene::setTextClear()
 {
     if (textLayer) {
         textLayer->removeFromParentAndCleanup(true);
+        textLayer = nullptr;
     }
     textLayer = nullptr;
     
     isMissionCompleted = true;
     // clear data
-    UserData.textContent = "";
+    UserData.textContent.clear();
 }
 
 void GameScene::enableTextFinishedEventListener(bool b)

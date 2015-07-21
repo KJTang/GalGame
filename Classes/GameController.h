@@ -59,7 +59,7 @@ public:
     
     // Scene Control
     void enterStartScene();
-    void enterGameScene();
+    void enterGameScene(std::string dataFilename = "");
     void enterConfigScene();
     void enterMemoryScene();
     void enterDataLoadScene();

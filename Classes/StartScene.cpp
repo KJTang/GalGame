@@ -39,10 +39,7 @@ bool StartScene::init()
     loadBtn->setPosition(Point(visibleSize.width*0.25, visibleSize.height*0.25));
     loadBtn->setCallbackFunc([](){
         log("load Game");
-        Director::getInstance()->purgeCachedData();
-        GameScene::getInstance()->clear();
-        Director::getInstance()->replaceScene(TransitionFade::create(1, GameScene::getInstance()));
-        GameScene::getInstance()->startSavedGame("test");
+        GameController::getInstance()->enterGameScene("test");
     });
     auto configBtn = ButtonSprite::create("CloseNormal.png");
     backgroundLayer->addChild(configBtn);

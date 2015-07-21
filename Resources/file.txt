@@ -1,9 +1,10 @@
 // start
 
-#gobackmark
-
 set.bgm.name="title01.wav"
 set.bgm.start
+
+#gobackmark
+
 set.bgp.name="CloseSelected.png"
 set.bgp.start
 
@@ -30,7 +31,7 @@ set.text.start
 
 get.touch="0"
 
-set.text.content="文本切换二：测试中英文混合输入：ABC中文abc中文123数字"
+set.text.content="文本切换二：测试中英文混合输入：ABC中文 abc中文123数字"
 set.text.start
 
 get.touch="0"
@@ -53,7 +54,7 @@ set.character.0.name="CloseNormal.png"
 set.character.0.position="0.25""0.25"
 set.character.0.start
 
-get.touch="1"     // if in Auto Mode, EventListener will wait for 1s than receive a touch event
+get.touch="1"     // if in Auto Mode, EventListener will wait for 1s then receive a touch event
 
 set.character.0.name="CloseNormal.png"
 set.character.0.position="0.25""0.75"

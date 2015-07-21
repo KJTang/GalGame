@@ -36,7 +36,7 @@ bool ButtonSprite::init()
 //    }
     
     visibleSize = Director::getInstance()->getVisibleSize();
-    callbackFunc = NULL;
+    callbackFunc = nullptr;
     
     touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);

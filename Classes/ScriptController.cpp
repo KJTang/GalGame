@@ -25,20 +25,6 @@ bool ScriptController::init()
     return true;
 }
 
-void ScriptController::runWithFile(std::string filename, int p, int linep)
-{
-    if (linep <= 1) {
-        pos = 0, lineID = 1;
-        goBackPosMark = -1, goBackLineMark = -1;
-        isConditionFullFilled = false;
-        hasErr = false;
-    } else {
-        pos = p, lineID = linep;
-    }
-    
-    data = FileUtils::getInstance()->getStringFromFile(filename.c_str());
-}
-
 void ScriptController::runNew(std::string filename)
 {
     pos = 0, lineID = 1;
@@ -565,7 +551,7 @@ void ScriptController::stateCondition(std::string cmd)
         std::string type = getString();
         if (type == "globalint") {
             int value = DataController::getInstance()->getInt(getString());
-            if (value == -1) {
+            if (value == -2) {
                 showError(VARIABLE_DOES_NOT_EXIST);
                 return;
             }

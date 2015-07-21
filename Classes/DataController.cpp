@@ -104,14 +104,14 @@ void DataController::readFromScript()
             std::string str = getString();
             globalInt var;
             var.name = str;
-            var.value = 0;
+            var.value = -1;
             Ints.push_back(var);
         }
         else if (str == "float") {
             std::string str = getString();
             globalFloat var;
             var.name = str;
-            var.value = 0.0;
+            var.value = -1.0;
             Floats.push_back(var);
         }
         else if (str == "string") {
@@ -143,7 +143,7 @@ void DataController::readFromData(std::string datafile)
             globalInt var;
             fin>>var.name;
             fin>>var.value;
-//            log("int %s %d", var.name.c_str(), var.value);
+//            log("datacontroller : int %s %d", var.name.c_str(), var.value);
             Ints.push_back(var);
         } else if (str == "float") {
             globalFloat var;
@@ -189,7 +189,6 @@ bool DataController::saveData(std::string datafile)
     fout<<"choicetableLine "<<GameScene::getInstance()->UserData.choiceTableLineID<<endl;
     // scene
     if (GameScene::getInstance()->UserData.bgmFilename.size()) {
-        log("bgm filename = %s", GameScene::getInstance()->UserData.bgmFilename.c_str());
         fout<<"bgm filename "<<GameScene::getInstance()->UserData.bgmFilename<<endl;
     }
     if (GameScene::getInstance()->UserData.bgpFilename.size()) {
@@ -245,24 +244,11 @@ int DataController::getInt(std::string name)
         }
     }
     // cannot find
-    return -1;
+    return -2;
 }
 
 void DataController::test()
 {
-//    log("--ints:");
-//    for (int i = 0; i != Ints.size(); ++i) {
-//        log("%s %d", Ints[i].name.c_str(), Ints[i].value);
-//    }
-//    log("--floats:");
-//    for (int i = 0; i != Floats.size(); ++i) {
-//        log("%s %f", Floats[i].name.c_str(), Floats[i].value);
-//    }
-//    log("--strings:");
-//    for (int i = 0; i != Strings.size(); ++i) {
-//        log("%s %s", Strings[i].name.c_str(), Strings[i].value.c_str());
-//    }
-    
     log("test------------------------");
     std::string path = FileUtils::getInstance()->getWritablePath()+"test";
     std::ifstream fin(path.c_str());

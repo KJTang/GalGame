@@ -38,9 +38,9 @@ void GameController::enterStartScene()
             break;
         }
         case STATE_GAME_SCENE: {
-            GameScene::getInstance()->clear();
-            Director::getInstance()->purgeCachedData();
-            Director::getInstance()->replaceScene(TransitionFade::create(1, StartScene::create()));
+//            GameScene::getInstance()->clear();
+//            Director::getInstance()->purgeCachedData();
+            Director::getInstance()->replaceScene(TransitionFade::create(0.5, StartScene::create()));
             break;
         }
         case STATE_CONFIG_SCENE: {
@@ -54,18 +54,30 @@ void GameController::enterStartScene()
     currentState = STATE_START_SCENE;
 }
 
-void GameController::enterGameScene()
+void GameController::enterGameScene(std::string dataFilename)
 {
-    switch (currentState) {
-        case STATE_START_SCENE: {
-            Director::getInstance()->purgeCachedData();
-            Director::getInstance()->replaceScene(TransitionFade::create(1, GameScene::getInstance()));
-            GameScene::getInstance()->startNewGame();
-            break;
+    if (dataFilename.size()) {
+        switch (currentState) {
+            case STATE_START_SCENE:
+                Director::getInstance()->purgeCachedData();
+                Director::getInstance()->replaceScene(TransitionFade::create(0.5, GameScene::getInstance()));
+                GameScene::getInstance()->startSavedGame(dataFilename);
+                break;
+            default:
+                break;
         }
-            
-        default:
-            break;
+    } else {
+        switch (currentState) {
+            case STATE_START_SCENE: {
+                Director::getInstance()->purgeCachedData();
+                Director::getInstance()->replaceScene(TransitionFade::create(0.5, GameScene::getInstance()));
+                GameScene::getInstance()->startNewGame();
+                break;
+            }
+                
+            default:
+                break;
+        }
     }
     currentState = STATE_GAME_SCENE;
 }
@@ -73,7 +85,7 @@ void GameController::enterGameScene()
 void GameController::enterConfigScene()
 {
 //    Director::getInstance()->purgeCachedData();
-    Director::getInstance()->pushScene(TransitionFade::create(1, ConfigScene::create()));
+    Director::getInstance()->pushScene(TransitionFade::create(0.5, ConfigScene::create()));
     currentState = STATE_CONFIG_SCENE;
 }
 

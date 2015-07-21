@@ -60,7 +60,6 @@ public:
         return sharedScriptController;
     }
     
-    void runWithFile(std::string filename, int p, int lineid);
     void runNew(std::string filename);
     void runSaved(std::string filename);
     

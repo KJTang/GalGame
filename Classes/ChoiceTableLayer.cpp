@@ -47,7 +47,6 @@ bool ChoiceTableLayer::init()
         }
         return true;
     };
-
     
     return true;
 }
