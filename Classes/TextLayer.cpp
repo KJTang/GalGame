@@ -60,6 +60,10 @@ void TextLayer::showText()
 {
     if (textSpeed <= 0) {
         text->setString(strSave);
+        outline01->setString(strSave);
+        outline02->setString(strSave);
+        outline03->setString(strSave);
+        outline04->setString(strSave);
         return;
     }
     this->schedule(schedule_selector(TextLayer::textUpdate), textSpeed);

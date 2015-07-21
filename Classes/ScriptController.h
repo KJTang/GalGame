@@ -61,6 +61,8 @@ public:
     }
     
     void runWithFile(std::string filename, int p, int lineid);
+    void runNew(std::string filename);
+    void runSaved(std::string filename);
     
     // state
     void stateBegin();
@@ -76,9 +78,13 @@ public:
     
     //
     int getPos() {return pos;}
+    void setPos(int p) {pos = p;}
     int getLineID() {return lineID;}
+    void setLineID(int l) {lineID = l;}
     int getGoBackPosMark() {return goBackPosMark;}
+    void setGoBackPosMark(int gb) {goBackPosMark = gb;}
     int getGoBackLineMark() {return goBackLineMark;}
+    void setGoBackLineMark(int gb) {goBackLineMark = gb;}
     // used for data saving
     bool isChoiceTableShowing;
     int choiceTablePos, choiceTableLineID;

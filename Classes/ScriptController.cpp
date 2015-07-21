@@ -39,6 +39,24 @@ void ScriptController::runWithFile(std::string filename, int p, int linep)
     data = FileUtils::getInstance()->getStringFromFile(filename.c_str());
 }
 
+void ScriptController::runNew(std::string filename)
+{
+    pos = 0, lineID = 1;
+    goBackPosMark = -1, goBackLineMark = -1;
+    isConditionFullFilled = false;
+    hasErr = false;
+    data = FileUtils::getInstance()->getStringFromFile(filename.c_str());
+}
+
+void ScriptController::runSaved(std::string filename)
+{
+    if (choiceTablePos != -1) {
+        pos = choiceTablePos;
+        lineID = choiceTableLineID;
+    }
+    data = FileUtils::getInstance()->getStringFromFile(filename.c_str());
+}
+
 std::string ScriptController::getString()
 {
     std::string str;
@@ -370,7 +388,7 @@ void ScriptController::stateCommand(std::string cmd)
         else if (str == "choice") {
             // save data
             if (!isChoiceTableShowing) {
-                choiceTablePos = pos - 10;
+                choiceTablePos = pos - 11;
                 choiceTableLineID = lineID;
                 isChoiceTableShowing = true;
             }

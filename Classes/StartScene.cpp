@@ -42,7 +42,7 @@ bool StartScene::init()
         Director::getInstance()->purgeCachedData();
         GameScene::getInstance()->clear();
         Director::getInstance()->replaceScene(TransitionFade::create(1, GameScene::getInstance()));
-        GameScene::getInstance()->startSavedGame("text");
+        GameScene::getInstance()->startSavedGame("test");
     });
     auto configBtn = ButtonSprite::create("CloseNormal.png");
     backgroundLayer->addChild(configBtn);

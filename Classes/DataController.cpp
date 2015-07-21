@@ -118,6 +118,7 @@ void DataController::readFromScript()
             std::string str = getString();
             globalString var;
             var.name = str;
+            var.value = "default";
             Strings.push_back(var);
         }
         else {
@@ -130,8 +131,38 @@ void DataController::readFromScript()
 
 void DataController::readFromData(std::string datafile)
 {
-    log("read variables from game data");
+    std::string path = FileUtils::getInstance()->getWritablePath()+datafile;
+    std::ifstream fin(path);
     
+    std::string str;
+    
+    Ints.clear(), Floats.clear(), Strings.clear();
+    
+    while (fin>>str) {
+        if (str == "int") {
+            globalInt var;
+            fin>>var.name;
+            fin>>var.value;
+//            log("int %s %d", var.name.c_str(), var.value);
+            Ints.push_back(var);
+        } else if (str == "float") {
+            globalFloat var;
+            fin>>var.name;
+            fin>>var.value;
+//            log("float %s %f", var.name.c_str(), var.value);
+            Floats.push_back(var);
+        } else if (str == "string") {
+            globalString var;
+            fin>>var.name;
+            fin>>var.value;
+//            log("string %s -%s-", var.name.c_str(), var.value.c_str());
+            Strings.push_back(var);
+        } else {
+        }
+    }
+    log("variables loaded!");
+    
+    fin.close();
 }
 
 bool DataController::saveData(std::string datafile)
@@ -154,6 +185,8 @@ bool DataController::saveData(std::string datafile)
     fout<<"gobackPos "<<GameScene::getInstance()->UserData.gobackPos<<endl;
     fout<<"gobackLineID "<<GameScene::getInstance()->UserData.gobackLineID<<endl;
     fout<<"condition "<<GameScene::getInstance()->UserData.isConditionFullFilled<<endl;
+    fout<<"choicetablePos "<<GameScene::getInstance()->UserData.choiceTablePos<<endl;
+    fout<<"choicetableLine "<<GameScene::getInstance()->UserData.choiceTableLineID<<endl;
     // scene
     if (GameScene::getInstance()->UserData.bgmFilename.size()) {
         log("bgm filename = %s", GameScene::getInstance()->UserData.bgmFilename.c_str());
@@ -187,6 +220,8 @@ bool DataController::saveData(std::string datafile)
     for (int i = 0; i != Strings.size(); ++i) {
         fout<<"string "<<Strings[i].name<<" "<<Strings[i].value<<endl;
     }
+    
+    fout.close();
     
     return true;
 }
@@ -239,4 +274,6 @@ void DataController::test()
         getline(fin, str);
     }
     log("test------------------------");
+    
+    fin.close();
 }

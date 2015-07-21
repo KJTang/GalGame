@@ -38,7 +38,6 @@ private:
     };
     
     // bgp
-//    Sprite *bgp;
     GyroBackground *bgp;
     std::string bgpFilename;
     float bgpScale;
@@ -101,6 +100,8 @@ public:
         float characterPositionX[4], characterPositionY[4];
         // text
         std::string textContent;
+        // choice table
+        int choiceTablePos, choiceTableLineID;
     }UserData;
     void saveFlags();
     /**

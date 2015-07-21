@@ -49,21 +49,21 @@ get.touch="0"
 
 set.bgp.name="CloseNormal.png"
 set.bgp.start
-set.character.name="0""CloseNormal.png"
-set.character.position="0""0.25""0.25"
-set.character.start="0"
+set.character.0.name="CloseNormal.png"
+set.character.0.position="0.25""0.25"
+set.character.0.start
 
 get.touch="1"     // if in Auto Mode, EventListener will wait for 1s than receive a touch event
 
-set.character.name="0""CloseNormal.png"
-set.character.position="0""0.25""0.75"
-set.character.start="0"
+set.character.0.name="CloseNormal.png"
+set.character.0.position="0.25""0.75"
+set.character.0.start
 set.bgp.name="HelloWorld.png"
 set.bgp.start
 
 get.touch="1"
 
-set.character.clear="0"
+set.character.0.clear
 set.bgp.name="CloseNormal.png"
 set.bgp.start
 

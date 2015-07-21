@@ -21,7 +21,7 @@ bool GameScene::init()
     }
     
     visibleSize = Director::getInstance()->getVisibleSize();
-    isMissionCompleted = true;
+    isMissionCompleted = false;
     isTextShowing = false;
     
     gameMode = MODE_NORMAL;
@@ -73,10 +73,6 @@ bool GameScene::init()
     });
     
     // touch listener
-    if (touchListener) {
-        log("remove touch");
-        _eventDispatcher->removeEventListener(touchListener);
-    }
     touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);
     touchListener->onTouchBegan = [](Touch* touch, Event* event){
@@ -114,10 +110,6 @@ bool GameScene::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
     
     // text finish listener
-    if (textFinishListener) {
-        _eventDispatcher->removeEventListener(textFinishListener);
-        log("remove text");
-    }
     textFinishListener = EventListenerCustom::create("TextFinished", [&](Event* event){
         auto target = static_cast<GameScene*>(event->getCurrentTarget());
         target->isTextShowing = false;
@@ -125,6 +117,9 @@ bool GameScene::init()
         target->isMissionCompleted = true;
         target->enableScreenTouchEventListener(false);
         target->enableTextFinishedEventListener(false);
+        ScriptController::getInstance()->isChoiceTableShowing = false;
+        ScriptController::getInstance()->choiceTablePos = -1;
+        ScriptController::getInstance()->choiceTableLineID = -1;
     });
     textFinishListener->setEnabled(false);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(textFinishListener, this);
@@ -153,25 +148,37 @@ void GameScene::saveFlags()
     UserData.gobackPos = ScriptController::getInstance()->getGoBackPosMark();
     UserData.gobackLineID = ScriptController::getInstance()->getGoBackLineMark();
     UserData.isConditionFullFilled = ScriptController::getInstance()->isConditionFullFilled;
+    UserData.choiceTablePos = ScriptController::getInstance()->choiceTablePos;
+    UserData.choiceTableLineID = ScriptController::getInstance()->choiceTableLineID;
 }
 
 void GameScene::clear()
 {
+    log("GameScene clearing");
     this->removeAllChildren();
-    this->unscheduleUpdate();
+    
+    if (this->isScheduled(schedule_selector(GameScene::update))) {
+        this->unscheduleUpdate();
+    }
+    
     GameController::getInstance()->stopBGM();
-//    touchListener->setEnabled(false);
-//    textFinishListener->setEnabled(false);
+
     _eventDispatcher->removeEventListener(touchListener);
     _eventDispatcher->removeEventListener(textFinishListener);
+    touchListener = nullptr;
+    textFinishListener = nullptr;
+
+    log("GameScene cleared");
 }
 
 void GameScene::startNewGame()
 {
+    log("start new game");
     this->init();
     DataController::getInstance()->readFromScript();
-    ScriptController::getInstance()->runWithFile("file.txt", 0, 1);
+    ScriptController::getInstance()->runNew("file.txt");
     
+    isMissionCompleted = true;
     this->scheduleUpdate();
 }
 
@@ -181,29 +188,53 @@ void GameScene::startSavedGame(std::string datafile)
     this->init();
     // variables
     DataController::getInstance()->readFromData(datafile);
-    // scene
+    // flags and scene
     std::string path = FileUtils::getInstance()->getWritablePath()+datafile;
     std::ifstream fin(path.c_str());
     std::string str;
     fin>>str;
+    bool bgp = false, text = false;
+    bool character[4] = {false, false, false, false};
     while (str.size()) {
         if (str == "pos") {
             int dataPos;
             fin>>dataPos;
+            ScriptController::getInstance()->setPos(dataPos);
         } else if (str == "lineID") {
             int dataLineID;
             fin>>dataLineID;
+            ScriptController::getInstance()->setLineID(dataLineID);
+        } else if (str == "gobackPos") {
+            int gobackPos;
+            fin>>gobackPos;
+            ScriptController::getInstance()->setGoBackPosMark(gobackPos);
+        } else if (str == "gobackLineID") {
+            int gobackLineID;
+            fin>>gobackLineID;
+            ScriptController::getInstance()->setGoBackLineMark(gobackLineID);
+        } else if (str == "condition") {
+            bool condition;
+            fin>>condition;
+            ScriptController::getInstance()->isConditionFullFilled = condition;
+        } else if (str == "choicetablePos") {
+            int pos;
+            fin>>pos;
+            ScriptController::getInstance()->choiceTablePos = pos;
+        } else if (str == "choicetableLine") {
+            int line;
+            fin>>line;
+            ScriptController::getInstance()->choiceTableLineID = line;
         } else if (str == "bgm") {
             fin>>str;
-            log("bgm = %s", str.c_str());
             if (str == "filename") {
                 fin>>str;
                 GameController::getInstance()->loadBGM(str);
                 GameController::getInstance()->playBGM();
+                log("load bgm =%s", str.c_str());
             }
         } else if (str == "bgp") {
+            bgp = true;
             fin>>str;
-            log("bgp = %s", str.c_str());
             if (str == "filename") {
                 fin>>bgpFilename;
             } else if (str == "scale") {
@@ -214,10 +245,9 @@ void GameScene::startSavedGame(std::string datafile)
                 fin>>bgpPositionY;
             }
         } else if (str == "character") {
-            fin>>str;
-            log("character = %s", str.c_str());
             int id;
             fin>>id;
+            character[id] = true;
             fin>>str;
             if (str == "filename") {
                 fin>>characterFilename[id];
@@ -229,14 +259,41 @@ void GameScene::startSavedGame(std::string datafile)
                 fin>>characterPositionY[id];
             }
         } else if (str == "text") {
+            text = true;
             fin>>str;
-            log("text = %s", str.c_str());
-            setTextContent(str);
+            if (str == "content") {
+                fin>>str;
+                textLayer = TextLayer::create();
+                this->addChild(textLayer);
+                textLayer->setText(str);
+                textLayer->setSpeed(0);
+                textLayer->showText();
+                log("load text =%s", str.c_str());
+            }
         } else {
             break;
         }
         fin>>str;
     }
+    
+    // show
+    if (bgp) {
+        this->setBgpStart();
+        log("load bgp =%s", bgpFilename.c_str());
+    }
+    for (int i = 0; i != 4; ++i) {
+        if (character[i]) {
+            this->setCharacterStart(i);
+            log("load character %d =%s", i, characterFilename[i].c_str());
+        }
+    }
+    
+    // next script
+    ScriptController::getInstance()->runSaved("file.txt");
+    // schedule
+    isMissionCompleted = false;
+    this->scheduleUpdate();
+    touchListener->setEnabled(true);
 }
 
 void GameScene::enterSkipMode()
@@ -281,8 +338,6 @@ void GameScene::setBgpStart()
     bgpScale = 1.5;
     bgpDuration = 0;
     bgpPositionX = 0, bgpPositionY = 0;
-
-    log("save bgpFilename = %s", UserData.bgpFilename.c_str());
 }
 
 void GameScene::setBgpDuration(float d)
