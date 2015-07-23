@@ -66,6 +66,7 @@ void TextLayer::showText()
         outline04->setString(strSave);
         return;
     }
+    pos = 0;
     this->schedule(schedule_selector(TextLayer::textUpdate), textSpeed);
 }
 
@@ -81,6 +82,16 @@ void TextLayer::stopText()
     outline04->setString(strSave);
 }
 
+void TextLayer::clearText()
+{
+    pos = 0;
+    text->setString("");
+    outline01->setString("");
+    outline02->setString("");
+    outline03->setString("");
+    outline04->setString("");
+}
+
 void TextLayer::postStopedMsg()
 {
     EventCustom event("TextFinished");
@@ -93,6 +104,7 @@ void TextLayer::textUpdate(float dt)
         stopText();
         // post a "TextFinished" event
         postStopedMsg();
+        this->unscheduleUpdate();
         return;
     }
     

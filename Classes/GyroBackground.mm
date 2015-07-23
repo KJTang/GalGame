@@ -35,7 +35,7 @@ bool GyroBackground::init(std::string filename, float scaleRate)
     this->setPosition(0, 0);
     
     xSpeed = 0.0, ySpeed = 0.0;
-    xSpeedRate = 1, ySpeedRate = 1;
+    xSpeedRate = 2, ySpeedRate = 2;
     resistanceX = 0.4, resistanceY = 0.4;
     
     bg = Sprite::create(filename);

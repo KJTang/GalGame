@@ -29,10 +29,11 @@ public:
     virtual bool init();
     CREATE_FUNC(TextLayer);
     
-    void setText(std::string s) {strSave = s;}
+    void setText(std::string s) {strSave = s; strShow.clear();}
     void setSpeed(float sp) {textSpeed = sp;}
     void showText();
     void stopText();
+    void clearText();
     
     void postStopedMsg();
     void textUpdate(float dt);

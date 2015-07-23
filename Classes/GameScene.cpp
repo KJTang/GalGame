@@ -32,9 +32,10 @@ bool GameScene::init()
     this->addChild(characterLayer);
     menuLayer = Layer::create();
     this->addChild(menuLayer);
-    
     // text
-    textLayer = nullptr;
+    textLayer = TextLayer::create();
+    this->addChild(textLayer);
+    textLayer->setVisible(false);
     // bgp
     bgp = nullptr;
     bgpDuration = 0, bgpScale = 1.5, bgpPositionX = 0, bgpPositionY = 0;
@@ -50,10 +51,10 @@ bool GameScene::init()
     choiceTable = nullptr;
     
     // buttons
-    quitButton = ButtonSprite::create("CloseNormal.png");
+    quitButton = ButtonSprite::create("title/start.pic");
     menuLayer->addChild(quitButton);
-    quitButton->setScale(3.5);
-    quitButton->setPosition(visibleSize.width*0.75, visibleSize.height*0.25);
+    quitButton->setScale(1.5);
+    quitButton->setPosition(Point(visibleSize.width*0.75, visibleSize.height*0.25));
     quitButton->setCallbackFunc([](){
         log("back to StartScene");
         GameController::getInstance()->enterStartScene();
@@ -61,10 +62,10 @@ bool GameScene::init()
         GameScene::getInstance()->clear();
     });
     
-    saveButton = ButtonSprite::create("CloseNormal.png");
+    saveButton = ButtonSprite::create("title/load.pic");
     menuLayer->addChild(saveButton);
-    saveButton->setScale(3.5);
-    saveButton->setPosition(visibleSize.width*0.75, visibleSize.height*0.75);
+    saveButton->setScale(1.5);
+    saveButton->setPosition(Point(visibleSize.width*0.75, visibleSize.height*0.75));
     saveButton->setCallbackFunc([](){
         log("save data");
         DataController::getInstance()->saveData("test");
@@ -152,7 +153,7 @@ void GameScene::saveFlags()
 
 void GameScene::clear()
 {
-    log("GameScene clearing");
+//    log("GameScene clearing");
     this->removeAllChildren();
     backgroundLayer = nullptr, characterLayer = nullptr, menuLayer = nullptr;
     textLayer = nullptr;
@@ -164,22 +165,20 @@ void GameScene::clear()
         this->unscheduleUpdate();
     }
     if (touchListener) {
-        log("remove touchlistener");
         _eventDispatcher->removeEventListener(touchListener);
         touchListener = nullptr;
     }
     if (textFinishListener) {
-        log("remove textlistener");
         _eventDispatcher->removeEventListener(textFinishListener);
         textFinishListener = nullptr;
     }
 
-    log("GameScene cleared");
+//    log("GameScene cleared");
 }
 
 void GameScene::startNewGame()
 {
-    log("start new game");
+//    log("start new game");
     this->init();
     DataController::getInstance()->readFromScript();
     ScriptController::getInstance()->runNew("file.txt");
@@ -190,7 +189,7 @@ void GameScene::startNewGame()
 
 void GameScene::startSavedGame(std::string datafile)
 {
-    log("load saved game");
+//    log("load saved game");
     this->init();
     // variables
     DataController::getInstance()->readFromData(datafile);
@@ -465,13 +464,8 @@ void GameScene::setCharacterStart(int id)
  */
 void GameScene::setTextShow()
 {
-    if (textLayer) {
-        textLayer->removeFromParentAndCleanup(true);
-        textLayer = nullptr;
-    }
-    textLayer = TextLayer::create();
-    this->addChild(textLayer);
     textLayer->setText(textToShow);
+    textLayer->setVisible(true);
     
     switch (gameMode) {
         case MODE_NORMAL:
@@ -521,12 +515,8 @@ void GameScene::setTextSpeed(float sp)
 
 void GameScene::setTextClear()
 {
-    if (textLayer) {
-        textLayer->removeFromParentAndCleanup(true);
-        textLayer = nullptr;
-    }
-    textLayer = nullptr;
-    
+    textLayer->clearText();
+    textLayer->setVisible(false);
     isMissionCompleted = true;
     // clear data
     UserData.textContent.clear();

@@ -22,7 +22,6 @@ private:
     float scaleX, scaleY;
     
     void *m_motionManager;
-    float initialYaw, initialRoll, initialPitch;
     float currentYaw, currentRoll, currentPitch;
     
     std::vector<float> yawAngle, rollAngle, pitchAngle;
@@ -31,8 +30,6 @@ private:
     float xSpeedRate, ySpeedRate;
     // 阻力
     float resistanceX, resistanceY;
-    // 运动方向
-    bool directionX, directionY;
 public:
     GyroBackground(){};
     ~GyroBackground(){};

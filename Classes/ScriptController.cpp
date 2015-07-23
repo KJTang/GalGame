@@ -56,6 +56,14 @@ std::string ScriptController::getString()
             ++pos;
             continue;
         }
+        if (data[pos] == '.') {
+            ++pos;
+            continue;
+        }
+        if (data[pos] == '=') {
+            ++pos;
+            continue;
+        }
         if (data[pos] == '\n') {
             ++pos;
             ++lineID;
@@ -111,14 +119,17 @@ std::string ScriptController::getString()
                     str += data[pos];
                     ++pos;
                     continue;
-                }
-                if (data[pos] == '.' || data[pos] == '=' || data[pos] == '\n') {
+                } else {
                     ++pos;
                     return str;
-                } else {
-                    showError(INVALID_EXPRESSION);
-                    return "";
                 }
+//                if (data[pos] == '.' || data[pos] == '=' || data[pos] == '\n') {
+//                    ++pos;
+//                    return str;
+//                } else {
+//                    showError(INVALID_EXPRESSION);
+//                    return "";
+//                }
             }
         }
         else {
