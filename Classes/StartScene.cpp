@@ -70,7 +70,7 @@ bool StartScene::init()
 //    });
 //
 //    // test
-//    DataController::getInstance()->test();
+    DataController::getInstance()->test();
     
     return true;
 }

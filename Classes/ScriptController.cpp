@@ -168,7 +168,7 @@ float ScriptController::transStringToFloat(std::string num)
 void ScriptController::stateBegin()
 {
     std::string str = getString();
-    log("---------------------------------------------%s", str.c_str());
+    log("-------------------------------------------%s----", str.c_str());
     if (str.size()) {
         if (str[0] == '#') {
             stateJump(str);

@@ -38,8 +38,8 @@ void GameController::enterStartScene()
             break;
         }
         case STATE_GAME_SCENE: {
-//            GameScene::getInstance()->clear();
-//            Director::getInstance()->purgeCachedData();
+            GameScene::getInstance()->clear();
+            Director::getInstance()->purgeCachedData();
             Director::getInstance()->replaceScene(TransitionFade::create(0.5, StartScene::create()));
             break;
         }

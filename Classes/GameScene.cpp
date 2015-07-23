@@ -181,7 +181,7 @@ void GameScene::startNewGame()
 //    log("start new game");
     this->init();
     DataController::getInstance()->readFromScript();
-    ScriptController::getInstance()->runNew("file.txt");
+    ScriptController::getInstance()->runNew("file2.txt");
     
     isMissionCompleted = true;
     this->scheduleUpdate();
@@ -268,11 +268,8 @@ void GameScene::startSavedGame(std::string datafile)
             fin>>str;
             if (str == "content") {
                 fin>>str;
-                textLayer = TextLayer::create();
-                this->addChild(textLayer);
-                textLayer->setText(str);
-                textLayer->setSpeed(0);
-                textLayer->showText();
+                setTextContent(str);
+                setTextShow();
                 log("load text =%s", str.c_str());
             }
         } else {
@@ -294,7 +291,7 @@ void GameScene::startSavedGame(std::string datafile)
     }
     
     // next script
-    ScriptController::getInstance()->runSaved("file.txt");
+    ScriptController::getInstance()->runSaved("file2.txt");
     // schedule
     isMissionCompleted = false;
     this->scheduleUpdate();
