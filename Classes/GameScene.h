@@ -15,6 +15,8 @@
 #include "ScriptController.h"
 #include "DataController.h"
 
+#include "BackgroundLayer.h"
+#include "CharacterLayer.h"
 #include "TextLayer.h"
 #include "ChoiceTableLayer.h"
 #include "GyroBackground.h"
@@ -27,7 +29,9 @@ class GameScene : public Scene
 private:
     static GameScene* sharedGameScene;
     Size visibleSize;
-    Layer *backgroundLayer, *characterLayer, *menuLayer;
+    BackgroundLayer *backgroundLayer;
+    CharacterLayer *characterLayer;
+    Layer *menuLayer;
     ButtonSprite *quitButton, *saveButton;
     // game mode
     int gameMode;
@@ -56,8 +60,12 @@ private:
     // choices
     ChoiceTableLayer *choiceTable;
     
-    EventListenerTouchOneByOne *touchListener;
-    EventListenerCustom *textFinishListener;
+//    EventListenerTouchOneByOne *touchListener;
+//    EventListenerCustom *textFinishListener;
+
+    // event listener
+    std::vector<TouchableLayer*> EventReceiverList;
+    EventListenerTouchOneByOne *screenTouchListener;
 public:
     GameScene();
     ~GameScene();
@@ -129,7 +137,7 @@ public:
     void setTextSpeed(float sp);
     void setTextClear();
     bool isTextShowing;
-    void enableTextFinishedEventListener(bool btext);
+//    void enableTextFinishedEventListener(bool btext);
     // choices
     void setChoiceNumber(int number);
     void setChoiceContent(int id, std::string content);

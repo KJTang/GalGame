@@ -8,13 +8,16 @@
 
 #include "TextLayer.h"
 
+#include "GameScene.h"
+#include "ScriptController.h"
+
 TextLayer::TextLayer(){}
 
 TextLayer::~TextLayer(){}
 
 bool TextLayer::init()
 {
-    if (!Layer::init()) {
+    if (!TouchableLayer::init()) {
         return false;
     }
     
@@ -22,7 +25,7 @@ bool TextLayer::init()
     pos = 0;
     textSpeed = 0.1;
     
-    std::string fontFile = "fonts/PingFang_7.ttf";
+    std::string fontFile = "fonts/PingFang_9.ttf";
     
     text = Label::createWithTTF("", fontFile, 40, Size(800, 200));
     text->setAnchorPoint(Point(0, 0));
@@ -55,6 +58,8 @@ bool TextLayer::init()
     
 //    background = Sprite::create();
 //    this->addChild(background);
+    
+    enableTouchListener = false;
     
     return true;
 }
@@ -97,16 +102,17 @@ void TextLayer::clearText()
 
 void TextLayer::postStopedMsg()
 {
-    EventCustom event("TextFinished");
-    _eventDispatcher->dispatchEvent(&event);
+//    EventCustom event("TextFinished");
+//    _eventDispatcher->dispatchEvent(&event);
 }
 
 void TextLayer::textUpdate(float dt)
 {
     if (pos == strSave.size()) {
         stopText();
-        // post a "TextFinished" event
-        postStopedMsg();
+//        // post a "TextFinished" event
+//        postStopedMsg();
+        enableTouchListener = false;
         this->unscheduleUpdate();
         return;
     }
@@ -129,4 +135,19 @@ void TextLayer::textUpdate(float dt)
     outline02->setString(strShow);
     outline03->setString(strShow);
     outline04->setString(strShow);
+}
+
+void TextLayer::onClick()
+{
+    if (!enableTouchListener) {
+        return;
+    }
+    log("------------------textlayer is clicked");
+    stopText();
+    enableTouchListener = false;
+    
+    GameScene::getInstance()->isMissionCompleted = true;
+    ScriptController::getInstance()->isChoiceTableShowing = false;
+    ScriptController::getInstance()->choiceTablePos = -1;
+    ScriptController::getInstance()->choiceTableLineID = -1;
 }

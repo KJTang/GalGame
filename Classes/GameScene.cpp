@@ -26,14 +26,17 @@ bool GameScene::init()
     
     gameMode = MODE_NORMAL;
     // Layers
-    backgroundLayer = Layer::create();
+    backgroundLayer = BackgroundLayer::create();
+    EventReceiverList.push_back(backgroundLayer);
     this->addChild(backgroundLayer);
-    characterLayer = Layer::create();
+    characterLayer = CharacterLayer::create();
+    EventReceiverList.push_back(characterLayer);
     this->addChild(characterLayer);
     menuLayer = Layer::create();
     this->addChild(menuLayer);
     // text
     textLayer = TextLayer::create();
+    EventReceiverList.push_back(textLayer);
     this->addChild(textLayer);
     textLayer->setVisible(false);
     // bgp
@@ -72,57 +75,72 @@ bool GameScene::init()
         DataController::getInstance()->saveData("test");
     });
     
-    // touch listener
-    touchListener = EventListenerTouchOneByOne::create();
-    touchListener->setSwallowTouches(true);
-    touchListener->onTouchBegan = [](Touch* touch, Event* event){
+//    // touch listener
+//    touchListener = EventListenerTouchOneByOne::create();
+//    touchListener->setSwallowTouches(true);
+//    touchListener->onTouchBegan = [](Touch* touch, Event* event){
+//        return true;
+//    };
+//    touchListener->onTouchEnded = [&](Touch* touch, Event* event){
+//        auto target = static_cast<GameScene*>(event->getCurrentTarget());
+//        // got touch
+//        switch (gameMode) {
+//            case MODE_NORMAL:
+//                // if text is showing, stop it right now
+//                if (target->isTextShowing) {
+//                    // post a "TextFinished" event
+//                    target->isTextShowing = false;
+//                    target->setTextStop();
+//                    target->enableTextFinishedEventListener(false);
+//                }
+//                target->isMissionCompleted = true;
+//                target->enableScreenTouchEventListener(false);
+//                break;
+//            case MODE_SKIP:
+//                gameMode = MODE_NORMAL;
+//                target->enableScreenTouchEventListener(false);
+//                break;
+//            case MODE_AUTO:
+//                gameMode = MODE_NORMAL;
+//                target->enableScreenTouchEventListener(false);
+//                break;
+//            default:
+//                break;
+//        }
+//        return false;
+//    };
+//    touchListener->setEnabled(false);
+//    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+//    
+//    // text finish listener
+//    textFinishListener = EventListenerCustom::create("TextFinished", [&](Event* event){
+//        auto target = static_cast<GameScene*>(event->getCurrentTarget());
+//        target->isTextShowing = false;
+//        target->setTextStop();
+//        target->isMissionCompleted = true;
+//        target->enableScreenTouchEventListener(false);
+//        target->enableTextFinishedEventListener(false);
+//        ScriptController::getInstance()->isChoiceTableShowing = false;
+//        ScriptController::getInstance()->choiceTablePos = -1;
+//        ScriptController::getInstance()->choiceTableLineID = -1;
+//    });
+//    textFinishListener->setEnabled(false);
+//    _eventDispatcher->addEventListenerWithSceneGraphPriority(textFinishListener, this);
+    
+    
+    // screen touch listener
+    screenTouchListener = EventListenerTouchOneByOne::create();
+    screenTouchListener->setSwallowTouches(true);
+    screenTouchListener->onTouchBegan = [](Touch* touch, Event* event){
         return true;
     };
-    touchListener->onTouchEnded = [&](Touch* touch, Event* event){
-        auto target = static_cast<GameScene*>(event->getCurrentTarget());
-        // got touch
-        switch (gameMode) {
-            case MODE_NORMAL:
-                // if text is showing, stop it right now
-                if (target->isTextShowing) {
-                    // post a "TextFinished" event
-                    target->isTextShowing = false;
-                    target->setTextStop();
-                    target->enableTextFinishedEventListener(false);
-                }
-                target->isMissionCompleted = true;
-                target->enableScreenTouchEventListener(false);
-                break;
-            case MODE_SKIP:
-                gameMode = MODE_NORMAL;
-                target->enableScreenTouchEventListener(false);
-                break;
-            case MODE_AUTO:
-                gameMode = MODE_NORMAL;
-                target->enableScreenTouchEventListener(false);
-                break;
-            default:
-                break;
+    screenTouchListener->onTouchEnded = [&](Touch* touch, Event* event){
+        for (int i = 0; i != EventReceiverList.size(); ++i) {
+            EventReceiverList[i]->onClick();
         }
         return false;
     };
-    touchListener->setEnabled(false);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
-    
-    // text finish listener
-    textFinishListener = EventListenerCustom::create("TextFinished", [&](Event* event){
-        auto target = static_cast<GameScene*>(event->getCurrentTarget());
-        target->isTextShowing = false;
-        target->setTextStop();
-        target->isMissionCompleted = true;
-        target->enableScreenTouchEventListener(false);
-        target->enableTextFinishedEventListener(false);
-        ScriptController::getInstance()->isChoiceTableShowing = false;
-        ScriptController::getInstance()->choiceTablePos = -1;
-        ScriptController::getInstance()->choiceTableLineID = -1;
-    });
-    textFinishListener->setEnabled(false);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(textFinishListener, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(screenTouchListener, this);
     
     return true;
 }
@@ -156,6 +174,7 @@ void GameScene::clear()
 {
 //    log("GameScene clearing");
     this->removeAllChildren();
+    EventReceiverList.clear();
     backgroundLayer = nullptr, characterLayer = nullptr, menuLayer = nullptr;
     textLayer = nullptr;
     choiceTable = nullptr;
@@ -165,13 +184,17 @@ void GameScene::clear()
     if (this->isScheduled(schedule_selector(GameScene::update))) {
         this->unscheduleUpdate();
     }
-    if (touchListener) {
-        _eventDispatcher->removeEventListener(touchListener);
-        touchListener = nullptr;
-    }
-    if (textFinishListener) {
-        _eventDispatcher->removeEventListener(textFinishListener);
-        textFinishListener = nullptr;
+//    if (touchListener) {
+//        _eventDispatcher->removeEventListener(touchListener);
+//        touchListener = nullptr;
+//    }
+//    if (textFinishListener) {
+//        _eventDispatcher->removeEventListener(textFinishListener);
+//        textFinishListener = nullptr;
+//    }
+    if (screenTouchListener) {
+        _eventDispatcher->removeEventListener(screenTouchListener);
+        screenTouchListener = nullptr;
     }
 
 //    log("GameScene cleared");
@@ -297,7 +320,9 @@ void GameScene::startSavedGame(std::string datafile)
     isMissionCompleted = false;
     this->scheduleUpdate();
     
-    touchListener->setEnabled(true);
+//    touchListener->setEnabled(true);
+    // waiting for a screen touch
+    backgroundLayer->enableClickListener = true;
 }
 
 void GameScene::enterSkipMode()
@@ -492,28 +517,29 @@ void GameScene::setTextShow()
     switch (gameMode) {
         case MODE_NORMAL:
             textLayer->showText();
-            isTextShowing = true;
-            touchListener->setEnabled(true);
-            textFinishListener->setEnabled(true);
+//            isTextShowing = true;
+//            touchListener->setEnabled(true);
+//            textFinishListener->setEnabled(true);
             break;
         case MODE_SKIP:
             textLayer->setSpeed(0.01);
             textLayer->showText();
-            isTextShowing = true;
-            touchListener->setEnabled(true);
-            textFinishListener->setEnabled(true);
+//            isTextShowing = true;
+//            touchListener->setEnabled(true);
+//            textFinishListener->setEnabled(true);
             break;
         case MODE_AUTO:
             textLayer->setSpeed(0.2);
             textLayer->showText();
-            isTextShowing = true;
-            touchListener->setEnabled(true);
-            textFinishListener->setEnabled(true);
+//            isTextShowing = true;
+//            touchListener->setEnabled(true);
+//            textFinishListener->setEnabled(true);
             break;
         default:
             break;
     }
     
+    textLayer->enableTouchListener = true;
     // save data
     UserData.textContent = textToShow;
 }
@@ -543,11 +569,11 @@ void GameScene::setTextClear()
     // clear data
     UserData.textContent.clear();
 }
-
-void GameScene::enableTextFinishedEventListener(bool b)
-{
-    textFinishListener->setEnabled(b);
-}
+//
+//void GameScene::enableTextFinishedEventListener(bool b)
+//{
+//    textFinishListener->setEnabled(b);
+//}
 
 /**
  * choices
@@ -589,7 +615,7 @@ void GameScene::enableScreenTouchEventListener(bool btouch, float delay)
     if (btouch) {
         switch (gameMode) {
             case MODE_NORMAL:
-                touchListener->setEnabled(true);
+                backgroundLayer->enableClickListener = true;
                 break;
             case MODE_SKIP:
                 this->runAction(Sequence::create(DelayTime::create(delay * 0.2),
@@ -603,9 +629,6 @@ void GameScene::enableScreenTouchEventListener(bool btouch, float delay)
             default:
                 break;
         }
-    }
-    else {
-        touchListener->setEnabled(false);
     }
 }
 
