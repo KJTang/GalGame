@@ -352,6 +352,8 @@ void ScriptController::stateCommand(std::string cmd)
                 GameScene::getInstance()->setCharacterScale(id, transStringToFloat(getString()));
             } else if (str == "position") {
                 GameScene::getInstance()->setCharacterPosition(id, transStringToFloat(getString()), transStringToFloat(getString()));
+            } else if (str == "effect") {
+                GameScene::getInstance()->setCharacterEffect(id, getString());
             } else if (str == "clear") {
                 GameScene::getInstance()->setCharacterClear(id);
             } else if (str == "start") {

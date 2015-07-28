@@ -53,6 +53,9 @@ bool TextLayer::init()
     outline04->setColor(Color3B::RED);
     this->addChild(outline04, 4);
     
+//    background = Sprite::create();
+//    this->addChild(background);
+    
     return true;
 }
 

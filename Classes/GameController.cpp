@@ -122,3 +122,8 @@ void GameController::stopBGM()
 {
     CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 }
+
+void GameController::setBGMVolume(float v)
+{
+    CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(v);
+}

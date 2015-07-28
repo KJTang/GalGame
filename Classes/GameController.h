@@ -72,6 +72,7 @@ public:
     void pauseBGM();
     void resumeBGM();
     void stopBGM();
+    void setBGMVolume(float v);
 };
 
 #endif /* GameController_cpp */

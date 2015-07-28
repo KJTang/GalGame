@@ -49,6 +49,7 @@ private:
     float characterScale[4];
     float characterDuration[4];
     float characterPositionX[4], characterPositionY[4];
+    Action *characterEffect[4];
     // text
     TextLayer *textLayer;
     std::string textToShow;
@@ -118,6 +119,7 @@ public:
     void setCharacterDuration(int id, float d);
     void setCharacterScale(int id, float scale);
     void setCharacterPosition(int id, float x, float y);
+    void setCharacterEffect(int id, std::string effect);
     void setCharacterClear(int id);
     void setCharacterStart(int id);
     // text

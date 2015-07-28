@@ -35,7 +35,7 @@ bool GyroBackground::init(std::string filename, float scaleRate)
     this->setPosition(0, 0);
     
     xSpeed = 0.0, ySpeed = 0.0;
-    xSpeedRate = 2, ySpeedRate = 2;
+    xSpeedRate = 4, ySpeedRate = 2;
     resistanceX = 0.4, resistanceY = 0.4;
     
     bg = Sprite::create(filename);
@@ -78,6 +78,7 @@ void GyroBackground::bgMove(float dt)
         rollAcc /= (number-1);
         pitchAcc /= (number-1);
         
+//        log("yaw=%.2f, roll=%.2f, pitch=%.2f", yawAcc, rollAcc, pitchAcc);
         float xAcc = yawAcc + pitchAcc, yAcc = rollAcc;
 //        log("Acceleration: %.2f, %.2f", xAcc, yAcc);
         

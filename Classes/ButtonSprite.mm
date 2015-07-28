@@ -48,7 +48,7 @@ bool ButtonSprite::init()
     visibleSize = Director::getInstance()->getVisibleSize();
     
     xSpeed = 0.0, ySpeed = 0.0;
-    xSpeedRate = 0.2, ySpeedRate = 0.2;
+    xSpeedRate = 0.1, ySpeedRate = 0.1;
     resistanceX = 0.4, resistanceY = 0.4;
     
     callbackFunc = nullptr;
@@ -79,8 +79,8 @@ bool ButtonSprite::init()
     };
     
     isOriginSetted = false;
-    maxX = 30, maxY = 30;
-    this->scheduleUpdate();
+    maxX = 20, maxY = 20;
+//    this->scheduleUpdate();
     
     /* when use popScene to go back to the scene which add ButtonSprite,
      * it'll call ButtonSprite::onEnter once more,

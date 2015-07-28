@@ -46,12 +46,13 @@ bool GameScene::init()
         characterScale[i] = 0.5;
         characterPositionX[i] = 0.5;
         characterPositionY[i] = 0.5;
+        characterEffect[i] = nullptr;
     }
     // choices
     choiceTable = nullptr;
     
     // buttons
-    quitButton = ButtonSprite::create("title/start.pic");
+    quitButton = ButtonSprite::create("title/start");
     menuLayer->addChild(quitButton);
     quitButton->setScale(1.5);
     quitButton->setPosition(Point(visibleSize.width*0.75, visibleSize.height*0.25));
@@ -62,7 +63,7 @@ bool GameScene::init()
         GameScene::getInstance()->clear();
     });
     
-    saveButton = ButtonSprite::create("title/load.pic");
+    saveButton = ButtonSprite::create("title/load");
     menuLayer->addChild(saveButton);
     saveButton->setScale(1.5);
     saveButton->setPosition(Point(visibleSize.width*0.75, visibleSize.height*0.75));
@@ -406,6 +407,21 @@ void GameScene::setCharacterPosition(int id, float x, float y)
     isMissionCompleted = true;
 }
 
+void GameScene::setCharacterEffect(int id, std::string effect)
+{
+    if (id > 3 || id < 0) {
+        log("character id wrong");
+        return;
+    }
+    if (effect == "fade") {
+        characterEffect[id] = Sequence::create(FadeIn::create(1), NULL);
+    } else if (effect == "wave") {
+        characterEffect[id] = Spawn::create(MoveTo::create(1, Point(characterPositionX, characterPositionY)), NULL);
+    }
+    
+    isMissionCompleted = true;
+}
+
 void GameScene::setCharacterClear(int id)
 {
     if (id > 3 || id < 0) {
@@ -441,6 +457,15 @@ void GameScene::setCharacterStart(int id)
     characters[id]->setScale(characterScale[id]);
     characters[id]->setPosition(visibleSize.width * characterPositionX[id],
                                 visibleSize.height * characterPositionY[id]);
+    
+    if (characterEffect[id]) {
+        log("characterEffect sth.");
+        characters[id]->runAction(characterEffect[id]);
+        characterEffect[id] = nullptr;
+    } else {
+        log("characterEffect none");
+//        characters[id]->runAction(FadeIn::create(5));
+    }
     
     isMissionCompleted = true;
     
