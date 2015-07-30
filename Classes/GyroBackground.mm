@@ -47,7 +47,7 @@ bool GyroBackground::init(std::string filename, float scaleRate)
     scaleY = bg->getContentSize().height*bg->getScaleY()/visibleSize.height;
     bg->setPosition(visibleSize.width/2, visibleSize.height/2);
     
-    this->schedule(schedule_selector(GyroBackground::bgMove), 1.0/60);
+    this->schedule(schedule_selector(GyroBackground::bgMove), 1.0/120);
     return true;
 }
 

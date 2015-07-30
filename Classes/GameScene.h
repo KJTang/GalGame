@@ -136,8 +136,6 @@ public:
     void setTextContent(std::string str);
     void setTextSpeed(float sp);
     void setTextClear();
-    bool isTextShowing;
-//    void enableTextFinishedEventListener(bool btext);
     // choices
     void setChoiceNumber(int number);
     void setChoiceContent(int id, std::string content);

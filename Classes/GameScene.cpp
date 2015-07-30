@@ -22,7 +22,6 @@ bool GameScene::init()
     
     visibleSize = Director::getInstance()->getVisibleSize();
     isMissionCompleted = false;
-    isTextShowing = false;
     
     gameMode = MODE_NORMAL;
     // Layers
@@ -517,23 +516,14 @@ void GameScene::setTextShow()
     switch (gameMode) {
         case MODE_NORMAL:
             textLayer->showText();
-//            isTextShowing = true;
-//            touchListener->setEnabled(true);
-//            textFinishListener->setEnabled(true);
             break;
         case MODE_SKIP:
             textLayer->setSpeed(0.01);
             textLayer->showText();
-//            isTextShowing = true;
-//            touchListener->setEnabled(true);
-//            textFinishListener->setEnabled(true);
             break;
         case MODE_AUTO:
             textLayer->setSpeed(0.2);
             textLayer->showText();
-//            isTextShowing = true;
-//            touchListener->setEnabled(true);
-//            textFinishListener->setEnabled(true);
             break;
         default:
             break;

@@ -25,32 +25,33 @@ bool TextLayer::init()
     pos = 0;
     textSpeed = 0.1;
     
-    std::string fontFile = "fonts/PingFang_9.ttf";
+    std::string fontFile = "fonts/PingFang_1.ttf";
+    float fontSize = 60;
     
-    text = Label::createWithTTF("", fontFile, 40, Size(800, 200));
+    text = Label::createWithTTF("", fontFile, fontSize, Size(2000, 240));
     text->setAnchorPoint(Point(0, 0));
     text->setPosition(Point(0, 0));
     this->addChild(text, 5);
     
-    outline01 = Label::createWithTTF("", fontFile, 40, Size(800, 200));
+    outline01 = Label::createWithTTF("", fontFile, fontSize, Size(2000, 240));
     outline01->setAnchorPoint(Point(0, 0));
     outline01->setPosition(Point(1, 0));
     outline01->setColor(Color3B::RED);
     this->addChild(outline01, 1);
     
-    outline02 = Label::createWithTTF("", fontFile, 40, Size(800, 200));
+    outline02 = Label::createWithTTF("", fontFile, fontSize, Size(2000, 240));
     outline02->setAnchorPoint(Point(0, 0));
     outline02->setPosition(Point(-1, 0));
     outline02->setColor(Color3B::RED);
     this->addChild(outline02, 2);
     
-    outline03 = Label::createWithTTF("", fontFile, 40, Size(800, 200));
+    outline03 = Label::createWithTTF("", fontFile, fontSize, Size(2000, 240));
     outline03->setAnchorPoint(Point(0, 0));
     outline03->setPosition(Point(0, 1));
     outline03->setColor(Color3B::RED);
     this->addChild(outline03, 3);
     
-    outline04 = Label::createWithTTF("", fontFile, 40, Size(800, 200));
+    outline04 = Label::createWithTTF("", fontFile, fontSize, Size(2000, 240));
     outline04->setAnchorPoint(Point(0, 0));
     outline04->setPosition(Point(0, -1));
     outline04->setColor(Color3B::RED);
@@ -100,19 +101,17 @@ void TextLayer::clearText()
     outline04->setString("");
 }
 
-void TextLayer::postStopedMsg()
-{
-//    EventCustom event("TextFinished");
-//    _eventDispatcher->dispatchEvent(&event);
-}
-
 void TextLayer::textUpdate(float dt)
 {
     if (pos == strSave.size()) {
         stopText();
-//        // post a "TextFinished" event
-//        postStopedMsg();
         enableTouchListener = false;
+        
+        GameScene::getInstance()->isMissionCompleted = true;
+        ScriptController::getInstance()->isChoiceTableShowing = false;
+        ScriptController::getInstance()->choiceTablePos = -1;
+        ScriptController::getInstance()->choiceTableLineID = -1;
+        
         this->unscheduleUpdate();
         return;
     }
@@ -128,7 +127,6 @@ void TextLayer::textUpdate(float dt)
         pos += 3;
     }
     
-//    log("string = %s", strShow.c_str());
     text->setString(strShow);
     
     outline01->setString(strShow);

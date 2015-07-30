@@ -37,7 +37,6 @@ public:
     void stopText();
     void clearText();
     
-    void postStopedMsg();
     void textUpdate(float dt);
     
     bool enableTouchListener;
