@@ -25,6 +25,8 @@ private:
     bool init();
     //bgm
     std::string bgmFilename;
+    // shaders
+    void LoadShader();
     
     // state
     int currentState;
