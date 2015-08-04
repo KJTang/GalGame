@@ -1,3 +1,4 @@
+(unfinished)
 this is a galgame which used cocos2d-x;
 
 it includes a "ScriptController" which can read script from
