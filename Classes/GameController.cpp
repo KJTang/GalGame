@@ -39,56 +39,7 @@ void GameController::LoadShader()
                                    GLProgram::VERTEX_ATTRIB_TEX_COORDS);
     greyShader->link();
     greyShader->updateUniforms();
-    GLProgramCache::getInstance()->addGLProgram(greyShader, "grey");
-    
-    // blur shader
-    auto blur1 = new GLProgram();
-    blur1->initWithFilenames("BlurVertexShader.vert", "BlurFragmentShader1.frag");
-    blur1->bindAttribLocation(
-                                   GLProgram::ATTRIBUTE_NAME_POSITION,
-                                   GLProgram::VERTEX_ATTRIB_POSITION);
-    blur1->bindAttribLocation(
-                                   GLProgram::ATTRIBUTE_NAME_COLOR,
-                                   GLProgram::VERTEX_ATTRIB_COLOR);
-    blur1->bindAttribLocation(
-                                   GLProgram::ATTRIBUTE_NAME_TEX_COORD,
-                                   GLProgram::VERTEX_ATTRIB_TEX_COORDS);
-    blur1->link();
-    blur1->updateUniforms();
-    GLProgramCache::getInstance()->addGLProgram(blur1, "blur1");
-    
-    // blur shader
-    auto blur2 = new GLProgram();
-    blur2->initWithFilenames("BlurVertexShader.vert", "BlurFragmentShader2.frag");
-    blur2->bindAttribLocation(
-                              GLProgram::ATTRIBUTE_NAME_POSITION,
-                              GLProgram::VERTEX_ATTRIB_POSITION);
-    blur2->bindAttribLocation(
-                              GLProgram::ATTRIBUTE_NAME_COLOR,
-                              GLProgram::VERTEX_ATTRIB_COLOR);
-    blur2->bindAttribLocation(
-                              GLProgram::ATTRIBUTE_NAME_TEX_COORD,
-                              GLProgram::VERTEX_ATTRIB_TEX_COORDS);
-    blur2->link();
-    blur2->updateUniforms();
-    GLProgramCache::getInstance()->addGLProgram(blur2, "blur2");
-    
-    // blur shader
-    auto blur3 = new GLProgram();
-    blur3->initWithFilenames("BlurVertexShader.vert", "BlurFragmentShader3.frag");
-    blur3->bindAttribLocation(
-                              GLProgram::ATTRIBUTE_NAME_POSITION,
-                              GLProgram::VERTEX_ATTRIB_POSITION);
-    blur3->bindAttribLocation(
-                              GLProgram::ATTRIBUTE_NAME_COLOR,
-                              GLProgram::VERTEX_ATTRIB_COLOR);
-    blur3->bindAttribLocation(
-                              GLProgram::ATTRIBUTE_NAME_TEX_COORD,
-                              GLProgram::VERTEX_ATTRIB_TEX_COORDS);
-    blur3->link();
-    blur3->updateUniforms();
-    GLProgramCache::getInstance()->addGLProgram(blur3, "blur3");
-    
+    GLProgramCache::getInstance()->addGLProgram(greyShader, "grey");    
     // text's shader
     auto textShader = new GLProgram();
     textShader->initWithFilenames("TextBlurShader.vert", "TextBlurShader.frag");
