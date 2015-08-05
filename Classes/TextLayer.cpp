@@ -140,7 +140,7 @@ void TextLayer::onClick()
     if (!enableTouchListener) {
         return;
     }
-    log("------------------textlayer is clicked");
+//    log("------------------textlayer is clicked");
     stopText();
     enableTouchListener = false;
     
@@ -148,4 +148,14 @@ void TextLayer::onClick()
     ScriptController::getInstance()->isChoiceTableShowing = false;
     ScriptController::getInstance()->choiceTablePos = -1;
     ScriptController::getInstance()->choiceTableLineID = -1;
+}
+
+void TextLayer::blurIn()
+{
+    text->setGLProgram(GLProgramCache::getInstance()->getGLProgram("textblur"));
+}
+
+void TextLayer::blurOut()
+{
+    text->setGLProgram(GLProgramCache::getInstance()->getGLProgram("textclear"));
 }

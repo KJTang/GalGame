@@ -19,6 +19,9 @@
 #include "GyroBackground.h"
 #include "ButtonSprite.h"
 
+// test
+#include "AutoBlurSprite.h"
+
 using namespace cocos2d;
 
 class StartScene : public Scene

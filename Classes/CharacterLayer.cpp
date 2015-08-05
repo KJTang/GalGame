@@ -29,5 +29,5 @@ void CharacterLayer::onClick()
     if (!enableTouchListener) {
         return;
     }
-    log("------------------characterlayer is clicked");
+//    log("------------------characterlayer is clicked");
 }

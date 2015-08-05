@@ -22,6 +22,7 @@ bool GameScene::init()
     
     visibleSize = Director::getInstance()->getVisibleSize();
     isMissionCompleted = false;
+    focus = BACKGROUND;
     
     gameMode = MODE_NORMAL;
     // Layers
@@ -130,13 +131,73 @@ bool GameScene::init()
     // screen touch listener
     screenTouchListener = EventListenerTouchOneByOne::create();
     screenTouchListener->setSwallowTouches(true);
-    screenTouchListener->onTouchBegan = [](Touch* touch, Event* event){
+    Point touchStart, touchEnd;
+    screenTouchListener->onTouchBegan = [&](Touch* touch, Event* event){
+        touchStart = touch->getLocation();
         return true;
     };
     screenTouchListener->onTouchEnded = [&](Touch* touch, Event* event){
-        for (int i = 0; i != EventReceiverList.size(); ++i) {
-            EventReceiverList[i]->onClick();
+//        touchEnd = touch->getLocation();
+//        log("touch ended at %f %f", touchEnd.x, touchEnd.y);
+        // TODO: unfinised, these only used for test, need to be finished sometime
+        if (textLayer && textLayer->isVisible()) {
+            Rect *textRect = new Rect(0, 0, visibleSize.width, 300);
+            if (textRect->containsPoint(touch->getLocation())) {
+                log("text area touched!");
+                if (focus != TEXT) {
+                    textLayer->blurOut();
+                    for (int j = 0; j != 4; ++j) {
+                        if (characters[j]) {
+                            characters[j]->runAction(BlurIn::create(0.5));
+                        }
+                    }
+                    auto bgs = bgp->getChildren();
+                    for (int j = 0; j != bgs.size(); ++j) {
+                        bgs.at(j)->runAction(BlurIn::create(0.5));
+                    }
+                }
+                focus = TEXT;
+                return false;
+            }
         }
+        for (int i = 0; i != 4; ++i) {
+            if (characters[i] && characters[i]->getBoundingBox().containsPoint(touch->getLocation())) {
+                log("character %d area touched!", i);
+                if (focus != CHARACTER) {
+                    textLayer->blurIn();
+                    for (int j = 0; j != 4; ++j) {
+                        if (characters[j]) {
+                            characters[j]->runAction(BlurOut::create(0.5));
+                        }
+                    }
+                    auto bgs = bgp->getChildren();
+                    for (int j = 0; j != bgs.size(); ++j) {
+                        bgs.at(j)->runAction(BlurIn::create(0.5));
+                    }
+                }
+                focus = CHARACTER;
+                return false;
+            }
+        }
+        log("background area touched!");
+        if (focus != BACKGROUND) {
+            textLayer->blurIn();
+            for (int j = 0; j != 4; ++j) {
+                if (characters[j]) {
+                    characters[j]->runAction(BlurIn::create(0.5));
+                }
+            }
+            auto bgs = bgp->getChildren();
+            for (int j = 0; j != bgs.size(); ++j) {
+                bgs.at(j)->runAction(BlurOut::create(0.5));
+            }
+            focus = BACKGROUND;
+            return false;
+        }
+        // notify the receivers
+//        for (int i = 0; i != EventReceiverList.size(); ++i) {
+//            EventReceiverList[i]->onClick();
+//        }
         return false;
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(screenTouchListener, this);
@@ -319,7 +380,6 @@ void GameScene::startSavedGame(std::string datafile)
     isMissionCompleted = false;
     this->scheduleUpdate();
     
-//    touchListener->setEnabled(true);
     // waiting for a screen touch
     backgroundLayer->enableClickListener = true;
 }

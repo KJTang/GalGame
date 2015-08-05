@@ -2,8 +2,6 @@
 precision mediump float;
 #endif
 
-uniform vec2 resolution;
-
 varying vec4 v_fragmentColor;
 varying vec2 v_texCoord;
 
@@ -22,7 +20,8 @@ void main(void)
     p_weight[3] = 0.20;
     p_weight[4] = 0.20;
     
-    vec2 pix_size = 1.0/vec2(512, 384);
+//    vec2 pix_size = 1.0/vec2(512, 384);
+    vec2 pix_size = 1.0/vec2(600, 600);
     
     vec4 sample = vec4(0, 0, 0, 0);
     for (int i = 0; i < 5; i += 1) {

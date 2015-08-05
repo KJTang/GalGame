@@ -41,20 +41,35 @@ void GameController::LoadShader()
     greyShader->updateUniforms();
     GLProgramCache::getInstance()->addGLProgram(greyShader, "grey");    
     // text's shader
-    auto textShader = new GLProgram();
-    textShader->initWithFilenames("TextBlurShader.vert", "TextBlurShader.frag");
-    textShader->bindAttribLocation(
-                                   GLProgram::ATTRIBUTE_NAME_POSITION,
-                                   GLProgram::VERTEX_ATTRIB_POSITION);
-    textShader->bindAttribLocation(
-                                   GLProgram::ATTRIBUTE_NAME_COLOR,
-                                   GLProgram::VERTEX_ATTRIB_COLOR);
-    textShader->bindAttribLocation(
-                                   GLProgram::ATTRIBUTE_NAME_TEX_COORD,
-                                   GLProgram::VERTEX_ATTRIB_TEX_COORDS);
-    textShader->link();
-    textShader->updateUniforms();
-    GLProgramCache::getInstance()->addGLProgram(textShader, "text");
+    auto textBlur = new GLProgram();
+    textBlur->initWithFilenames("TextVertexShader.vert", "TextBlurShader.frag");
+    textBlur->bindAttribLocation(
+                                 GLProgram::ATTRIBUTE_NAME_POSITION,
+                                 GLProgram::VERTEX_ATTRIB_POSITION);
+    textBlur->bindAttribLocation(
+                                 GLProgram::ATTRIBUTE_NAME_COLOR,
+                                 GLProgram::VERTEX_ATTRIB_COLOR);
+    textBlur->bindAttribLocation(
+                                 GLProgram::ATTRIBUTE_NAME_TEX_COORD,
+                                 GLProgram::VERTEX_ATTRIB_TEX_COORDS);
+    textBlur->link();
+    textBlur->updateUniforms();
+    GLProgramCache::getInstance()->addGLProgram(textBlur, "textblur");
+    
+    auto textClear = new GLProgram();
+    textClear->initWithFilenames("TextVertexShader.vert", "TextClearShader.frag");
+    textClear->bindAttribLocation(
+                                 GLProgram::ATTRIBUTE_NAME_POSITION,
+                                 GLProgram::VERTEX_ATTRIB_POSITION);
+    textClear->bindAttribLocation(
+                                 GLProgram::ATTRIBUTE_NAME_COLOR,
+                                 GLProgram::VERTEX_ATTRIB_COLOR);
+    textClear->bindAttribLocation(
+                                 GLProgram::ATTRIBUTE_NAME_TEX_COORD,
+                                 GLProgram::VERTEX_ATTRIB_TEX_COORDS);
+    textClear->link();
+    textClear->updateUniforms();
+    GLProgramCache::getInstance()->addGLProgram(textClear, "textclear");
 }
 
 void GameController::saveData(std::string dataname)

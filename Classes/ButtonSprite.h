@@ -39,7 +39,7 @@ public:
     
     static ButtonSprite* create(std::string filename);
     
-    virtual bool init();
+    virtual bool initWithFile(std::string filename);
     virtual void onEnter();
     
     virtual void update(float dt);

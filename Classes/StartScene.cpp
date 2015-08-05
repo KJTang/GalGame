@@ -93,5 +93,11 @@ bool StartScene::init()
 //    // test
     DataController::getInstance()->test();
     
+//    auto test = AutoBlurSprite::create("ch01.png");
+//    this->addChild(test);
+//    test->setPosition(Point(visibleSize.width/2, visibleSize.height/2));
+//    test->setScale(0.3);
+//    test->BlurIn();
+    
     return true;
 }

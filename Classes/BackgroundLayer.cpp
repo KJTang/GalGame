@@ -29,7 +29,7 @@ void BackgroundLayer::onClick()
     if (!enableClickListener) {
         return;
     }
-    log("------------------background is clicked");
+//    log("------------------background is clicked");
     enableClickListener = false;
     GameScene::getInstance()->isMissionCompleted = true;
 }

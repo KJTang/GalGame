@@ -18,7 +18,7 @@ ButtonSprite::~ButtonSprite(){}
 ButtonSprite* ButtonSprite::create(std::string filename)
 {
     ButtonSprite *pRet = new(std::nothrow) ButtonSprite();
-    if (pRet && pRet->initWithFile(filename) && pRet->init())
+    if (pRet && pRet->initWithFile(filename))
     {
         pRet->autorelease();
         return pRet;
@@ -31,12 +31,11 @@ ButtonSprite* ButtonSprite::create(std::string filename)
     }
 }
 
-bool ButtonSprite::init()
+bool ButtonSprite::initWithFile(std::string filename)
 {
-    // don't know why when add this, the sprite will not show on screen
-//    if (!Sprite::init()) {
-//        return false;
-//    }
+    if (!Sprite::initWithFile(filename)) {
+        return false;
+    }
    
     CMMotionManager *motionManager = [[CMMotionManager alloc] init];
     motionManager.deviceMotionUpdateInterval = 1.0/60.0;

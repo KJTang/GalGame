@@ -22,6 +22,8 @@
 #include "GyroBackground.h"
 #include "ButtonSprite.h"
 
+#include "BlurInAndOut.h"
+
 using namespace cocos2d;
 
 class GameScene : public Scene
@@ -59,9 +61,6 @@ private:
     std::string textToShow;
     // choices
     ChoiceTableLayer *choiceTable;
-    
-//    EventListenerTouchOneByOne *touchListener;
-//    EventListenerCustom *textFinishListener;
 
     // event listener
     std::vector<TouchableLayer*> EventReceiverList;
@@ -82,8 +81,16 @@ public:
     }
     void clear();
     
-    // mission completed
+    // mission flag
     bool isMissionCompleted;
+    // current focus
+    int focus;
+    enum {
+        NONE,
+        BACKGROUND,
+        CHARACTER,
+        TEXT
+    };
     // different way to start game
     void startNewGame();
     void startSavedGame(std::string datafile);

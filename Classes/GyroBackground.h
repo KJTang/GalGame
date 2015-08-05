@@ -12,9 +12,6 @@
 #include "cocos2d.h"
 #include <vector>
 
-// test
-#include "BlurInAndOut.h"
-
 using namespace cocos2d;
 
 class GyroBackground : public Layer

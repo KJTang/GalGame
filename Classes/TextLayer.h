@@ -41,6 +41,10 @@ public:
     
     bool enableTouchListener;
     virtual void onClick();
+    
+    // blur
+    void blurIn();
+    void blurOut();
 };
 
 #endif /* TextLayer_cpp */
