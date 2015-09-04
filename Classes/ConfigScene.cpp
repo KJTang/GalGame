@@ -37,5 +37,7 @@ bool ConfigScene::init()
         GameController::getInstance()->enterStartScene();
     });
     
+    this->setVisible(false);
+    
     return true;
 }

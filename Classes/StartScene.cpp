@@ -21,6 +21,8 @@ bool StartScene::init()
     
     backgroundLayer = Layer::create();
     this->addChild(backgroundLayer);
+    touchLayer = Layer::create();
+    this->addChild(touchLayer);
     
     auto pic = GyroBackground::create("title/title", 1.5);
     backgroundLayer->addChild(pic, -1);
@@ -28,7 +30,7 @@ bool StartScene::init()
     float btnMoveSpeed = 0.5;
     auto startBtn = ButtonSprite::create("title/start");
     backgroundLayer->addChild(startBtn);
-//    startBtn->setScale(1.5);
+    startBtn->setScale(visibleSize.height/startBtn->getContentSize().height/15);
     startBtn->setAnchorPoint(Point(0, 0));
     startBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.40));
     startBtn->setCallbackFunc([](){
@@ -41,7 +43,7 @@ bool StartScene::init()
     
     auto loadBtn = ButtonSprite::create("title/load");
     backgroundLayer->addChild(loadBtn);
-//    loadBtn->setScale(1.5);
+    loadBtn->setScale(visibleSize.height/loadBtn->getContentSize().height/15);
     loadBtn->setAnchorPoint(Point(0, 0));
     loadBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.30));
     loadBtn->setCallbackFunc([](){
@@ -54,7 +56,7 @@ bool StartScene::init()
     
     auto gallaryBtn = ButtonSprite::create("title/gallary");
     backgroundLayer->addChild(gallaryBtn);
-//    gallaryBtn->setScale(1.5);
+    gallaryBtn->setScale(visibleSize.height/gallaryBtn->getContentSize().height/15);
     gallaryBtn->setAnchorPoint(Point(0, 0));
     gallaryBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.20));
     gallaryBtn->setCallbackFunc([](){
@@ -66,7 +68,7 @@ bool StartScene::init()
     
     auto configBtn = ButtonSprite::create("title/config");
     backgroundLayer->addChild(configBtn);
-//    configBtn->setScale(1.5);
+    configBtn->setScale(visibleSize.height/configBtn->getContentSize().height/15);
     configBtn->setAnchorPoint(Point(0, 0));
     configBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.10));
     configBtn->setCallbackFunc([](){
@@ -79,7 +81,7 @@ bool StartScene::init()
     
     auto infoBtn = ButtonSprite::create("title/info");
     backgroundLayer->addChild(infoBtn);
-//    infoBtn->setScale(1.5);
+    infoBtn->setScale(visibleSize.height/infoBtn->getContentSize().height/10);
     infoBtn->setAnchorPoint(Point(0, 0));
     infoBtn->setPosition(Point(-visibleSize.width*0.3, visibleSize.height*0.0));
     infoBtn->setCallbackFunc([](){
@@ -90,14 +92,32 @@ bool StartScene::init()
                                         NULL));
 
     
+    //
+    touchListener = EventListenerTouchOneByOne::create();
+    touchListener->setSwallowTouches(false);
+    touchStart = Point(0.0, 0.0), touchEnd = Point(0.0, 0.0);
+    touchListener->onTouchBegan = [&](Touch* touch, Event* event){
+        touchStart = touch->getLocation();
+        return true;
+    };
+    touchListener->onTouchMoved = [&](Touch* touch, Event* event){
+//        log("move=%.2f,%.2f", touch->getLocation().x, touch->getLocation().y);
+        return true;
+    };
+    touchListener->onTouchEnded = [&](Touch* touch, Event* event){
+        touchEnd = touch->getLocation();
+        log("start=%.2f,%.2f", touchStart.x, touchStart.y);
+        log("end=%.2f,%.2f", touchEnd.x, touchEnd.y);
+        if (touchStart.x < visibleSize.width * 0.75 && touchStart.x > visibleSize.width * 0.25 &&
+            touchStart.y < visibleSize.height * 0.3 && touchStart.y > visibleSize.height * 0.0) {
+            log("hey");
+        }
+        return false;
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, touchLayer);
+
+    
 //    // test
     DataController::getInstance()->test();
-    
-//    auto test = AutoBlurSprite::create("ch01.png");
-//    this->addChild(test);
-//    test->setPosition(Point(visibleSize.width/2, visibleSize.height/2));
-//    test->setScale(0.3);
-//    test->BlurIn();
-    
     return true;
 }

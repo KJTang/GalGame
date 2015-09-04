@@ -19,16 +19,15 @@
 #include "GyroBackground.h"
 #include "ButtonSprite.h"
 
-// test
-#include "AutoBlurSprite.h"
-
 using namespace cocos2d;
 
 class StartScene : public Scene
 {
 private:
     Size visibleSize;
-    Layer *backgroundLayer;
+    Layer *backgroundLayer, *touchLayer;
+    EventListenerTouchOneByOne *touchListener;
+    Point touchStart, touchEnd;
 public:
     StartScene();
     ~StartScene();

@@ -22,7 +22,7 @@
 #include "GyroBackground.h"
 #include "ButtonSprite.h"
 
-#include "BlurInAndOut.h"
+#include "ActionBlur.h"
 
 using namespace cocos2d;
 

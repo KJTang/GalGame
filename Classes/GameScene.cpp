@@ -22,7 +22,7 @@ bool GameScene::init()
     
     visibleSize = Director::getInstance()->getVisibleSize();
     isMissionCompleted = false;
-    focus = BACKGROUND;
+    focus = TEXT;
     
     gameMode = MODE_NORMAL;
     // Layers
@@ -75,59 +75,6 @@ bool GameScene::init()
         DataController::getInstance()->saveData("test");
     });
     
-//    // touch listener
-//    touchListener = EventListenerTouchOneByOne::create();
-//    touchListener->setSwallowTouches(true);
-//    touchListener->onTouchBegan = [](Touch* touch, Event* event){
-//        return true;
-//    };
-//    touchListener->onTouchEnded = [&](Touch* touch, Event* event){
-//        auto target = static_cast<GameScene*>(event->getCurrentTarget());
-//        // got touch
-//        switch (gameMode) {
-//            case MODE_NORMAL:
-//                // if text is showing, stop it right now
-//                if (target->isTextShowing) {
-//                    // post a "TextFinished" event
-//                    target->isTextShowing = false;
-//                    target->setTextStop();
-//                    target->enableTextFinishedEventListener(false);
-//                }
-//                target->isMissionCompleted = true;
-//                target->enableScreenTouchEventListener(false);
-//                break;
-//            case MODE_SKIP:
-//                gameMode = MODE_NORMAL;
-//                target->enableScreenTouchEventListener(false);
-//                break;
-//            case MODE_AUTO:
-//                gameMode = MODE_NORMAL;
-//                target->enableScreenTouchEventListener(false);
-//                break;
-//            default:
-//                break;
-//        }
-//        return false;
-//    };
-//    touchListener->setEnabled(false);
-//    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
-//    
-//    // text finish listener
-//    textFinishListener = EventListenerCustom::create("TextFinished", [&](Event* event){
-//        auto target = static_cast<GameScene*>(event->getCurrentTarget());
-//        target->isTextShowing = false;
-//        target->setTextStop();
-//        target->isMissionCompleted = true;
-//        target->enableScreenTouchEventListener(false);
-//        target->enableTextFinishedEventListener(false);
-//        ScriptController::getInstance()->isChoiceTableShowing = false;
-//        ScriptController::getInstance()->choiceTablePos = -1;
-//        ScriptController::getInstance()->choiceTableLineID = -1;
-//    });
-//    textFinishListener->setEnabled(false);
-//    _eventDispatcher->addEventListenerWithSceneGraphPriority(textFinishListener, this);
-    
-    
     // screen touch listener
     screenTouchListener = EventListenerTouchOneByOne::create();
     screenTouchListener->setSwallowTouches(true);
@@ -137,23 +84,33 @@ bool GameScene::init()
         return true;
     };
     screenTouchListener->onTouchEnded = [&](Touch* touch, Event* event){
-//        touchEnd = touch->getLocation();
-//        log("touch ended at %f %f", touchEnd.x, touchEnd.y);
-        // TODO: unfinised, these only used for test, need to be finished sometime
         if (textLayer && textLayer->isVisible()) {
             Rect *textRect = new Rect(0, 0, visibleSize.width, 300);
             if (textRect->containsPoint(touch->getLocation())) {
                 log("text area touched!");
-                if (focus != TEXT) {
+                if (focus == CHARACTER) {
                     textLayer->blurOut();
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-                            characters[j]->runAction(BlurIn::create(0.5));
+//                            characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
+                            characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
                         }
                     }
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
-                        bgs.at(j)->runAction(BlurIn::create(0.5));
+                        bgs.at(j)->runAction(ActionBlur::create(0.5, LITTLE_TO_MUCH));
+                    }
+                } else if (focus == BACKGROUND) {
+                    textLayer->blurOut();
+                    auto bgs = bgp->getChildren();
+                    for (int j = 0; j != bgs.size(); ++j) {
+                        bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+                    }
+                }
+                else {
+                    // notify the receivers
+                    for (int i = 0; i != EventReceiverList.size(); ++i) {
+                        EventReceiverList[i]->onClick();
                     }
                 }
                 focus = TEXT;
@@ -163,16 +120,28 @@ bool GameScene::init()
         for (int i = 0; i != 4; ++i) {
             if (characters[i] && characters[i]->getBoundingBox().containsPoint(touch->getLocation())) {
                 log("character %d area touched!", i);
-                if (focus != CHARACTER) {
+                if (focus == TEXT) {
                     textLayer->blurIn();
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-                            characters[j]->runAction(BlurOut::create(0.5));
+//                            characters[j]->runAction(ActionBlur::create(0.5, LITTLE_TO_NONE));
+                            characters[j]->runAction(ActionBlur::create(0.5, MUCH_TO_NONE));
                         }
                     }
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
-                        bgs.at(j)->runAction(BlurIn::create(0.5));
+                        bgs.at(j)->runAction(ActionBlur::create(0.5, MUCH_TO_LITTLE));
+                    }
+                } else if (focus == BACKGROUND) {
+                    for (int j = 0; j != 4; ++j) {
+                        if (characters[j]) {
+//                            characters[j]->runAction(ActionBlur::create(0.5, LITTLE_TO_NONE));
+                            characters[j]->runAction(ActionBlur::create(0.5, MUCH_TO_NONE));
+                        }
+                    }
+                    auto bgs = bgp->getChildren();
+                    for (int j = 0; j != bgs.size(); ++j) {
+                        bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
                     }
                 }
                 focus = CHARACTER;
@@ -180,24 +149,35 @@ bool GameScene::init()
             }
         }
         log("background area touched!");
-        if (focus != BACKGROUND) {
+        if (focus == TEXT) {
             textLayer->blurIn();
+            auto bgs = bgp->getChildren();
             for (int j = 0; j != 4; ++j) {
                 if (characters[j]) {
-                    characters[j]->runAction(BlurIn::create(0.5));
+//                    characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
+                    characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+                }
+            }
+            for (int j = 0; j != bgs.size(); ++j) {
+                bgs.at(j)->runAction(ActionBlur::create(0.5, MUCH_TO_NONE));
+            }
+            focus = BACKGROUND;
+            return false;
+        } else if (focus == CHARACTER) {
+            for (int j = 0; j != 4; ++j) {
+                if (characters[j]) {
+//                    characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
+                    characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
                 }
             }
             auto bgs = bgp->getChildren();
             for (int j = 0; j != bgs.size(); ++j) {
-                bgs.at(j)->runAction(BlurOut::create(0.5));
+                bgs.at(j)->runAction(ActionBlur::create(0.5, LITTLE_TO_NONE));
             }
             focus = BACKGROUND;
             return false;
         }
-        // notify the receivers
-//        for (int i = 0; i != EventReceiverList.size(); ++i) {
-//            EventReceiverList[i]->onClick();
-//        }
+        
         return false;
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(screenTouchListener, this);
@@ -415,6 +395,17 @@ void GameScene::setBgpStart()
     bgp->setScale(visibleSize.width/bgp->getContentSize().width*bgpScale);
     bgp->setPosition(Point(visibleSize.width*bgpPositionX, visibleSize.height*bgpPositionY));
     
+    if (focus == TEXT) {
+        auto bgs = bgp->getChildren();
+        for (int j = 0; j != bgs.size(); ++j) {
+            bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+        }
+    } else if (focus == CHARACTER) {
+        auto bgs = bgp->getChildren();
+        for (int j = 0; j != bgs.size(); ++j) {
+            bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
+        }
+    }
     isMissionCompleted = true;
     
     // save data
@@ -551,6 +542,9 @@ void GameScene::setCharacterStart(int id)
 //        characters[id]->runAction(FadeIn::create(5));
     }
     
+    if (focus != CHARACTER) {
+        characters[id]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+    }
     isMissionCompleted = true;
     
     //save data
@@ -572,6 +566,7 @@ void GameScene::setTextShow()
 {
     textLayer->setText(textToShow);
     textLayer->setVisible(true);
+    //
     
     switch (gameMode) {
         case MODE_NORMAL:
