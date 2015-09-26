@@ -20,7 +20,7 @@ private:
     Size visibleSize;
     Label *text;
     Label *outline01, *outline02, *outline03, *outline04;
-    Sprite *background;
+    Sprite *bgChosen, *bgUnchosen;
     std::string strSave, strShow;
     int pos;
     float textSpeed;

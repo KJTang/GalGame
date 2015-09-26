@@ -9,15 +9,7 @@
 #ifndef StartScene_cpp
 #define StartScene_cpp
 
-#include <stdio.h>
-
 #include "cocos2d.h"
-
-#include "GameController.h"
-#include "DataController.h"
-
-#include "GyroBackground.h"
-#include "ButtonSprite.h"
 
 using namespace cocos2d;
 

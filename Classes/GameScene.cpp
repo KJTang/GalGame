@@ -85,7 +85,7 @@ bool GameScene::init()
     };
     screenTouchListener->onTouchEnded = [&](Touch* touch, Event* event){
         if (textLayer && textLayer->isVisible()) {
-            Rect *textRect = new Rect(0, 0, visibleSize.width, 300);
+            auto textRect = new Rect(0, 0, visibleSize.width, visibleSize.height * 0.3);
             if (textRect->containsPoint(touch->getLocation())) {
                 log("text area touched!");
                 if (focus == CHARACTER) {

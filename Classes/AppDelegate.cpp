@@ -24,6 +24,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
     if(!glview) {
         glview = GLViewImpl::create("My Game");
+        glview->setDesignResolutionSize(2048, 1536, ResolutionPolicy::SHOW_ALL);
         director->setOpenGLView(glview);
     }
 
@@ -32,13 +33,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
-
-//    // create a scene. it's an autorelease object
-//    auto scene = GameController::getInstance()->createStartScene();
-//
-//    // run
-//    director->runWithScene(scene);
-
+    
     // run by customer GameController
     GameController::getInstance()->enterStartScene();
 

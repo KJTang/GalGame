@@ -8,6 +8,13 @@
 
 #include "StartScene.h"
 
+#include "GameController.h"
+#include "DataController.h"
+
+#include "GyroBackground.h"
+#include "MenuLayer.h"
+#include "ButtonSprite.h"
+
 StartScene::StartScene(){}
 
 StartScene::~StartScene(){}
@@ -117,7 +124,11 @@ bool StartScene::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, touchLayer);
 
     
-//    // test
+    // data test
     DataController::getInstance()->test();
+    // menu test
+    //auto layer = MenuLayer::create();
+    //this->addChild(layer);
+    
     return true;
 }

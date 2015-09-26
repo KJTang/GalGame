@@ -57,8 +57,15 @@ bool TextLayer::init()
     outline04->setColor(Color3B::RED);
     this->addChild(outline04, 4);
     
-//    background = Sprite::create();
-//    this->addChild(background);
+    bgChosen = Sprite::create("frame/Text-Chosen.png");
+    bgUnchosen = Sprite::create("frame/Text-Unchosen.png");
+    this->addChild(bgChosen);
+    this->addChild(bgUnchosen);
+    // add a tag
+    bgChosen->setPosition(visibleSize.width/2, visibleSize.height*0.17);
+    bgUnchosen->setPosition(visibleSize.width/2, visibleSize.height/2);
+    bgChosen->setVisible(true);
+    bgUnchosen->setVisible(false);
     
     enableTouchListener = false;
     
@@ -153,9 +160,13 @@ void TextLayer::onClick()
 void TextLayer::blurIn()
 {
     text->setGLProgram(GLProgramCache::getInstance()->getGLProgram("textblur"));
+    bgChosen->setVisible(false);
+    bgUnchosen->setVisible(true);
 }
 
 void TextLayer::blurOut()
 {
     text->setGLProgram(GLProgramCache::getInstance()->getGLProgram("textclear"));
+    bgChosen->setVisible(true);
+    bgUnchosen->setVisible(false);
 }
