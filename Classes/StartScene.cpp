@@ -127,8 +127,8 @@ bool StartScene::init()
     // data test
     DataController::getInstance()->test();
     // menu test
-    //auto layer = MenuLayer::create();
-    //this->addChild(layer);
+    auto layer = MenuLayer::create();
+    this->addChild(layer);
     
     return true;
 }

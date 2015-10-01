@@ -16,7 +16,16 @@ DataController::~DataController(){}
 
 bool DataController::init()
 {
+    dataCount = 0;
+    std::string path = FileUtils::getInstance()->getWritablePath()+"DataInfo";
+    std::ifstream fin(path);
     
+    fin>>dataCount;
+    for (int i = 0; i != dataCount; ++i) {
+        std::string temp;
+        fin>>temp;
+        dataName.push_back(temp);
+    }
     return true;
 }
 
@@ -81,6 +90,17 @@ std::string DataController::getString()
         // cannot resolve
         log("something wrong in \"global.txt\"");
         return "";
+    }
+}
+
+void DataController::updateDataInfo()
+{
+    std::string path = FileUtils::getInstance()->getWritablePath()+"DataInfo";
+    std::ofstream fout(path);
+    
+    fout<<dataCount;
+    for (int i = 0; i != dataCount; ++i) {
+        fout<<dataName[i]<<std::endl;
     }
 }
 

@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <vector>
 #include <fstream>
+#include <string>
 
 #include "cocos2d.h"
 #include "GameScene.h"
@@ -48,6 +49,9 @@ private:
     std::vector<globalInt> Ints;
     std::vector<globalFloat> Floats;
     std::vector<globalString> Strings;
+public:
+    int dataCount;
+    std::vector<std::string> dataName;
 private:
     DataController();
 public:
@@ -64,6 +68,7 @@ public:
         return sharedDataController;
     }
     void clear();
+    void updateDataInfo();
     // load
     void readFromScript();
     void readFromData(std::string datafile);
@@ -72,13 +77,6 @@ public:
     
     bool setInt(std::string name, int value);
     int getInt(std::string name);
-    
-    //unfinished
-    bool setFloat(std::string name, float value);
-    float getFloat(std::string name);
-    
-    bool setString(std::string name, std::string value);
-    std::string getString(std::string name);
     
     void test();
 };
