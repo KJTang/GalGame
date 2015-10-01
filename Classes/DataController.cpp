@@ -8,6 +8,8 @@
 
 #include "DataController.h"
 
+#include <iostream>
+
 DataController* DataController::sharedDataController = NULL;
 
 DataController::DataController(){}
@@ -18,13 +20,22 @@ bool DataController::init()
 {
     dataCount = 0;
     std::string path = FileUtils::getInstance()->getWritablePath()+"DataInfo";
-    std::ifstream fin(path);
     
-    fin>>dataCount;
-    for (int i = 0; i != dataCount; ++i) {
-        std::string temp;
-        fin>>temp;
-        dataName.push_back(temp);
+    if(!FileUtils::getInstance()->isFileExist(path))
+    {
+        std::ofstream fout(path);
+        fout<<0;
+        fout.close();
+    } else {
+        std::ifstream fin(path);
+        fin>>dataCount;
+        
+        for (int i = 0; i != dataCount; ++i) {
+            std::string temp;
+            fin>>temp;
+            dataName.push_back(temp);
+        }
+        fin.close();
     }
     return true;
 }
@@ -97,11 +108,14 @@ void DataController::updateDataInfo()
 {
     std::string path = FileUtils::getInstance()->getWritablePath()+"DataInfo";
     std::ofstream fout(path);
-    
+    dataCount = static_cast<int>(dataName.size());
     fout<<dataCount;
+    log("datainfo--------%d", dataCount);
     for (int i = 0; i != dataCount; ++i) {
         fout<<dataName[i]<<std::endl;
+        log("%s", dataName[i].c_str());
     }
+    fout.close();
 }
 
 void DataController::clear()
@@ -242,6 +256,37 @@ bool DataController::saveData(std::string datafile)
     
     fout.close();
     
+    // update
+    bool found = false;
+    for (int i = 0; i != dataName.size(); ++i) {
+        if (dataName[i] == datafile) {
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        dataName.push_back(datafile);
+    }
+    updateDataInfo();
+    
+    return true;
+}
+
+bool DataController::deleteData(std::string datafile)
+{
+    std::string path = FileUtils::getInstance()->getWritablePath()+datafile;
+    
+    if (FileUtils::getInstance()->isFileExist(path)) {
+        return false;
+    }
+    for (int i = 0; i != dataName.size(); ++i) {
+        if (dataName[i] == datafile) {
+            dataName.erase(dataName.begin() + i);
+            break;
+        }
+    }
+    --dataCount;
+    FileUtils::getInstance()->removeFile(path);
     return true;
 }
 

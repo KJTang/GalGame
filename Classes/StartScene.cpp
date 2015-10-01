@@ -117,7 +117,6 @@ bool StartScene::init()
         log("end=%.2f,%.2f", touchEnd.x, touchEnd.y);
         if (touchStart.x < visibleSize.width * 0.75 && touchStart.x > visibleSize.width * 0.25 &&
             touchStart.y < visibleSize.height * 0.3 && touchStart.y > visibleSize.height * 0.0) {
-            log("hey");
         }
         return false;
     };

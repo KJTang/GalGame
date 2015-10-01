@@ -74,6 +74,8 @@ public:
     void readFromData(std::string datafile);
     // save
     bool saveData(std::string datafile);
+    // delete
+    bool deleteData(std::string datafile);
     
     bool setInt(std::string name, int value);
     int getInt(std::string name);
