@@ -13,27 +13,37 @@
 
 using namespace cocos2d;
 
-class DataSprite : public Sprite
+class ListItem : public Sprite
 {
 private:
-    
+    Size visibleSize;
+    Label *text;
 public:
-    DataSprite();
-    ~DataSprite();
+    ListItem();
+    ~ListItem();
     virtual bool init();
-    CREATE_FUNC(DataSprite);
+    CREATE_FUNC(ListItem);
+    
+    void setText(std::string str);
+    void setActive(bool active);
 };
 
 class MenuLayer : public Layer
 {
 private:
     Size visibleSize;
+    
+    Layer *greyLayer;
+    // event
     EventListenerTouchOneByOne *screenTouchListener;
     int touchType;
-    Point startPoint, endPoint;
-    
-    DataSprite *currentData;
+    Point originPoint, startPoint, endPoint;
+    // menu
+    Layer *leftMenu, *rightMenu;
+    // data list
+    ListItem *currentData;
     Layer *dataList;
+    Sprite *dataPic;
     int listItemCount;
     float listItemHeight;
     int currentListItemID;

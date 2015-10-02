@@ -17,17 +17,13 @@ class StartScene : public Scene
 {
 private:
     Size visibleSize;
-    Layer *backgroundLayer, *touchLayer;
-    EventListenerTouchOneByOne *touchListener;
-    Point touchStart, touchEnd;
+    Layer *backgroundLayer;
 public:
     StartScene();
     ~StartScene();
     
     virtual bool init();
     CREATE_FUNC(StartScene);
-    
-    Label* text;
 };
 
 #endif /* StartScene_cpp */
