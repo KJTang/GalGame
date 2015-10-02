@@ -1,5 +1,6 @@
-(unfinished)
-this is a galgame which used cocos2d-x;
+### **(unfinished)**
+this is a galgame which used [cocos2d-x](http://http://www.cocos.com)
+
 
 it includes a "ScriptController" which can read script from
 some file to help to control the game;
@@ -11,6 +12,7 @@ so it is not only a game, but has a tool to make galgame,
 when i finish my work, maybe i'll write some docs about how
 to use this tool to make galgame
 
---WARNING--
+
+### **--WARNING--**
 the codes are terrible, it cannot be a good tutorial, unless
 I optimize them someday; so before that day...
