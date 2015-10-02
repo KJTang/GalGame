@@ -49,6 +49,7 @@ private:
     std::vector<globalInt> Ints;
     std::vector<globalFloat> Floats;
     std::vector<globalString> Strings;
+    void clear();
 public:
     int dataCount;
     std::vector<std::string> dataName;
@@ -66,9 +67,7 @@ public:
             sharedDataController->init();
         }
         return sharedDataController;
-    }
-    void clear();
-    void updateDataInfo();
+    }    void updateDataInfo();
     // load
     void readFromScript();
     void readFromData(std::string datafile);

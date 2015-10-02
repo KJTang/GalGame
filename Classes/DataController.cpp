@@ -276,16 +276,16 @@ bool DataController::deleteData(std::string datafile)
 {
     std::string path = FileUtils::getInstance()->getWritablePath()+datafile;
     
-    if (FileUtils::getInstance()->isFileExist(path)) {
+    if (!FileUtils::getInstance()->isFileExist(path)) {
         return false;
     }
     for (int i = 0; i != dataName.size(); ++i) {
         if (dataName[i] == datafile) {
             dataName.erase(dataName.begin() + i);
+            --dataCount;
             break;
         }
     }
-    --dataCount;
     FileUtils::getInstance()->removeFile(path);
     return true;
 }

@@ -125,6 +125,13 @@ bool MenuLayer::init()
         data->setPosition(visibleSize.width*0.75, -visibleSize.height*0.5 - listItemHeight*i);
         data->setText(DataController::getInstance()->dataName[i]);
     }
+    if (!listItemCount) {
+        auto data = ListItem::create();
+        dataList->addChild(data);
+        data->setPosition(visibleSize.width*0.75, -visibleSize.height*0.5);
+        data->setText("No Data");
+        listItemCount = 1;
+    }
     dataPic = nullptr;
     // touch event
     enum TOUCH_TYPE
@@ -265,9 +272,11 @@ bool MenuLayer::init()
                         auto list = dataList->getChildren();
                         static_cast<ListItem*>(list.at(i))->setActive(true);
                         if (i > 0) {
+                            log("i > 0");
                             static_cast<ListItem*>(list.at(i-1))->setActive(false);
                         }
                         if (i < list.size()-1) {
+                            log("i < listsize -1");
                             static_cast<ListItem*>(list.at(i+1))->setActive(false);
                         }
                         flag = true;
@@ -279,7 +288,9 @@ bool MenuLayer::init()
                         dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height+listItemHeight*(listItemCount-1))));
                         auto list = dataList->getChildren();
                         static_cast<ListItem*>(list.at(list.size()-1))->setActive(true);
-                        static_cast<ListItem*>(list.at(list.size()-2))->setActive(false);
+                        if (list.size() > 1) {
+                            static_cast<ListItem*>(list.at(list.size()-2))->setActive(false);
+                        }
                     }
                     // focus on the item at head of the list
                     else if (dataList->getPositionY() > visibleSize.height*0.7) {
