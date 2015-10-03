@@ -28,13 +28,14 @@ bool ListItem::init()
     return true;
 }
 
-void ListItem::setText(std::string str)
+void ListItem::setText(const std::string &str)
 {
+    text = str;
     std::string fontFile = "fonts/PingFang_1.ttf";
     float fontSize = 60;
     
-    text = Label::createWithTTF(str, fontFile, fontSize, Size(200, 200));
-    this->addChild(text);
+    textLabel = Label::createWithTTF(str, fontFile, fontSize, Size(200, 200));
+    this->addChild(textLabel);
 }
 
 void ListItem::setActive(bool active)
@@ -291,6 +292,7 @@ bool MenuLayer::init()
                         if (list.size() > 1) {
                             static_cast<ListItem*>(list.at(list.size()-2))->setActive(false);
                         }
+                        currentListItemID = static_cast<int>(list.size())-1;
                     }
                     // focus on the item at head of the list
                     else if (dataList->getPositionY() > visibleSize.height*0.7) {
@@ -300,6 +302,7 @@ bool MenuLayer::init()
                         if (list.size() > 1) {
                             static_cast<ListItem*>(list.at(1))->setActive(false);
                         }
+                        currentListItemID = 0;
                     }
                 }
                 // draw data-pic
@@ -307,7 +310,14 @@ bool MenuLayer::init()
                     dataPic->removeFromParentAndCleanup(true);
                     dataPic = nullptr;
                 }
-                dataPic = Sprite::create("frame/Data-Pic.png");
+                auto list = dataList->getChildren();
+                auto filename = static_cast<ListItem*>(list.at(currentListItemID))->text;
+                if (filename != "No Data") {
+                    dataPic = Sprite::create(FileUtils::getInstance()->getWritablePath()+filename+".png");
+                    dataPic->setScale(0.5);
+                } else {
+                    dataPic = Sprite::create("frame/Data-Pic.png");
+                }
                 this->addChild(dataPic);
                 dataPic->setPosition(visibleSize.width*0.25, visibleSize.height*0.5);
                 dataPic->setOpacity(0);

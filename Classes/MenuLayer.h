@@ -17,14 +17,16 @@ class ListItem : public Sprite
 {
 private:
     Size visibleSize;
-    Label *text;
+    Label *textLabel;
+public:
+    std::string text;
 public:
     ListItem();
     ~ListItem();
     virtual bool init();
     CREATE_FUNC(ListItem);
     
-    void setText(std::string str);
+    void setText(const std::string &str);
     void setActive(bool active);
 };
 

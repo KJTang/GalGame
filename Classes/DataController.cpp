@@ -110,7 +110,7 @@ void DataController::updateDataInfo()
     std::ofstream fout(path);
     dataCount = static_cast<int>(dataName.size());
     fout<<dataCount;
-    log("datainfo--------%d", dataCount);
+//    log("datainfo--------%d", dataCount);
     for (int i = 0; i != dataCount; ++i) {
         fout<<dataName[i]<<std::endl;
         log("%s", dataName[i].c_str());
@@ -202,7 +202,7 @@ void DataController::readFromData(std::string datafile)
 bool DataController::saveData(std::string datafile)
 {
     std::string path = FileUtils::getInstance()->getWritablePath()+datafile;
-    log("filepath = %s", path.c_str());
+//    log("filepath = %s", path.c_str());
 
 //    if (FileUtils::getInstance()->isFileExist(path)) {
 //        return false;
@@ -256,6 +256,39 @@ bool DataController::saveData(std::string datafile)
     
     fout.close();
     
+    // save screen shot
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    //定义一个屏幕大小的渲染纹理
+    RenderTexture* pScreen = RenderTexture::create(visibleSize.width, visibleSize.height, Texture2D::PixelFormat::RGBA8888);
+    //获得当前的场景指针
+    Scene* pCurScene = Director::getInstance()->getRunningScene();
+    //渲染纹理开始捕捉
+    pScreen->begin();
+    //当前场景参与绘制
+    pCurScene->visit();
+    //结束捕捉
+    pScreen->end();
+    
+    //保存为png
+    pScreen->saveToFile(datafile+".png", Image::Format::PNG, true, [&](RenderTexture*, const std::string&) {
+        log("saved");
+//        auto path = FileUtils::getInstance()->getWritablePath()+"datapic1.png";
+//        if (FileUtils::getInstance()->isFileExist(path)) {
+//            log("exist");
+//            Sprite *sprite = nullptr;
+//            sprite = Sprite::create(path);
+//            if (sprite) {
+//                Director::getInstance()->getRunningScene()->addChild(sprite);
+//                sprite->setScale(0.5);
+//                log("create succeed");
+//            } else {
+//                log("create failed");
+//            }
+//        } else {
+//            log("not exist");
+//        }
+    });
+
     // update
     bool found = false;
     for (int i = 0; i != dataName.size(); ++i) {
