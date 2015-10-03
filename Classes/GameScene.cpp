@@ -22,21 +22,19 @@ bool GameScene::init()
     
     visibleSize = Director::getInstance()->getVisibleSize();
     isMissionCompleted = false;
+    enableGetTouch = false;
     focus = TEXT;
     
     gameMode = MODE_NORMAL;
     // Layers
-    backgroundLayer = BackgroundLayer::create();
-    EventReceiverList.push_back(backgroundLayer);
+    backgroundLayer = Layer::create();
     this->addChild(backgroundLayer);
-    characterLayer = CharacterLayer::create();
-    EventReceiverList.push_back(characterLayer);
+    characterLayer = Layer::create();
     this->addChild(characterLayer);
     menuLayer = Layer::create();
     this->addChild(menuLayer);
     // text
     textLayer = TextLayer::create();
-    EventReceiverList.push_back(textLayer);
     this->addChild(textLayer);
     textLayer->setVisible(false);
     // bgp
@@ -108,10 +106,10 @@ bool GameScene::init()
                     }
                 }
                 else {
-                    // notify the receivers
-                    for (int i = 0; i != EventReceiverList.size(); ++i) {
-                        EventReceiverList[i]->onClick();
+                    if (enableGetTouch) {
+                        isMissionCompleted = true;
                     }
+                    textLayer->onClick();
                 }
                 focus = TEXT;
                 return false;
@@ -190,6 +188,7 @@ void GameScene::update(float dt)
     if (!isMissionCompleted) {
         return;
     }
+    log("update");
     isMissionCompleted = false;
     ScriptController::getInstance()->stateBegin();
 }
@@ -214,7 +213,6 @@ void GameScene::clear()
 {
 //    log("GameScene clearing");
     this->removeAllChildren();
-    EventReceiverList.clear();
     backgroundLayer = nullptr, characterLayer = nullptr, menuLayer = nullptr;
     textLayer = nullptr;
     choiceTable = nullptr;
@@ -359,9 +357,9 @@ void GameScene::startSavedGame(std::string datafile)
     // schedule
     isMissionCompleted = false;
     this->scheduleUpdate();
-    
+
     // waiting for a screen touch
-    backgroundLayer->enableClickListener = true;
+    enableGetTouch = true;
 }
 
 void GameScene::enterSkipMode()
@@ -660,7 +658,7 @@ void GameScene::enableScreenTouchEventListener(bool btouch, float delay)
     if (btouch) {
         switch (gameMode) {
             case MODE_NORMAL:
-                backgroundLayer->enableClickListener = true;
+                enableGetTouch = true;
                 break;
             case MODE_SKIP:
                 this->runAction(Sequence::create(DelayTime::create(delay * 0.2),

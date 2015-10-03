@@ -17,7 +17,7 @@ TextLayer::~TextLayer(){}
 
 bool TextLayer::init()
 {
-    if (!TouchableLayer::init()) {
+    if (!Layer::init()) {
         return false;
     }
     

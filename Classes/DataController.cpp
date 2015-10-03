@@ -270,24 +270,10 @@ bool DataController::saveData(std::string datafile)
     pScreen->end();
     
     //保存为png
-    pScreen->saveToFile(datafile+".png", Image::Format::PNG, true, [&](RenderTexture*, const std::string&) {
-        log("saved");
-//        auto path = FileUtils::getInstance()->getWritablePath()+"datapic1.png";
-//        if (FileUtils::getInstance()->isFileExist(path)) {
-//            log("exist");
-//            Sprite *sprite = nullptr;
-//            sprite = Sprite::create(path);
-//            if (sprite) {
-//                Director::getInstance()->getRunningScene()->addChild(sprite);
-//                sprite->setScale(0.5);
-//                log("create succeed");
-//            } else {
-//                log("create failed");
-//            }
-//        } else {
-//            log("not exist");
-//        }
-    });
+//    pScreen->saveToFile(datafile+".png", Image::Format::PNG, true, [&](RenderTexture*, const std::string&) {
+//        log("saved");
+//    });
+    pScreen->saveToFile(datafile+".png", Image::Format::PNG);
 
     // update
     bool found = false;

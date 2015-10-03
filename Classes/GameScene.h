@@ -15,8 +15,6 @@
 #include "ScriptController.h"
 #include "DataController.h"
 
-#include "BackgroundLayer.h"
-#include "CharacterLayer.h"
 #include "TextLayer.h"
 #include "ChoiceTableLayer.h"
 #include "GyroBackground.h"
@@ -31,8 +29,8 @@ class GameScene : public Scene
 private:
     static GameScene* sharedGameScene;
     Size visibleSize;
-    BackgroundLayer *backgroundLayer;
-    CharacterLayer *characterLayer;
+    Layer *backgroundLayer;
+    Layer *characterLayer;
     Layer *menuLayer;
     ButtonSprite *quitButton, *saveButton;
     // game mode
@@ -63,8 +61,8 @@ private:
     ChoiceTableLayer *choiceTable;
 
     // event listener
-    std::vector<TouchableLayer*> EventReceiverList;
     EventListenerTouchOneByOne *screenTouchListener;
+    bool enableGetTouch;
 public:
     GameScene();
     ~GameScene();

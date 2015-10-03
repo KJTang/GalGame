@@ -10,11 +10,10 @@
 #define TextLayer_cpp
 
 #include "cocos2d.h"
-#include "TouchableLayer.h"
 
 using namespace cocos2d;
 
-class TextLayer : public TouchableLayer
+class TextLayer : public Layer
 {
 private:
     Size visibleSize;
@@ -40,7 +39,7 @@ public:
     void textUpdate(float dt);
     
     bool enableTouchListener;
-    virtual void onClick();
+    void onClick();
     
     // blur
     void blurIn();

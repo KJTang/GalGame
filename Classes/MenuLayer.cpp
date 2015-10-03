@@ -250,7 +250,10 @@ bool MenuLayer::init()
                     endPoint.y - originPoint.y > -20 && endPoint.y - originPoint.y < 20 &&
                     endPoint.x > visibleSize.width*0.5 && endPoint.x < visibleSize.width &&
                     endPoint.y > visibleSize.height*0.5-listItemHeight*0.5 && endPoint.y < visibleSize.height*0.5+listItemHeight*0.5) {
-                    log("click on item %d", currentListItemID);
+                    auto list = dataList->getChildren();
+                    auto filename = static_cast<ListItem*>(list.at(currentListItemID))->text;
+                    log("click on item %d: %s", currentListItemID, filename.c_str());
+                    GameController::getInstance()->enterGameScene(filename);
                 }
                 // hide list
                 if (dataList->getPositionY() < visibleSize.height*0.7) {
