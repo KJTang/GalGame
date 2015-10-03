@@ -111,6 +111,7 @@ void GameController::enterGameScene(std::string dataFilename)
     if (dataFilename.size()) {
         switch (currentState) {
             case STATE_START_SCENE:
+                static_cast<StartScene*>(Director::getInstance()->getRunningScene())->black->runAction(FadeIn::create(0.1));
                 Director::getInstance()->purgeCachedData();
                 Director::getInstance()->replaceScene(TransitionFade::create(0.5, GameScene::getInstance()));
                 GameScene::getInstance()->startSavedGame(dataFilename);
@@ -121,6 +122,7 @@ void GameController::enterGameScene(std::string dataFilename)
     } else {
         switch (currentState) {
             case STATE_START_SCENE: {
+                static_cast<StartScene*>(Director::getInstance()->getRunningScene())->black->runAction(FadeIn::create(0.1));
                 Director::getInstance()->purgeCachedData();
                 Director::getInstance()->replaceScene(TransitionFade::create(0.5, GameScene::getInstance()));
                 GameScene::getInstance()->startNewGame();

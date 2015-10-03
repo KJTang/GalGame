@@ -21,6 +21,7 @@ bool GameScene::init()
     }
     
     visibleSize = Director::getInstance()->getVisibleSize();
+    isGameLoaded = false;
     isMissionCompleted = false;
     enableGetTouch = false;
     focus = TEXT;
@@ -98,18 +99,27 @@ bool GameScene::init()
                     for (int j = 0; j != bgs.size(); ++j) {
                         bgs.at(j)->runAction(ActionBlur::create(0.5, LITTLE_TO_MUCH));
                     }
-                } else if (focus == BACKGROUND) {
-                    textLayer->blurOut();
+                } else if (focus == BACKGROUND) {                    textLayer->blurOut();
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
                         bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
                     }
                 }
                 else {
-                    if (enableGetTouch) {
-                        isMissionCompleted = true;
+//                    log("isgameloaded=%d", isGameLoaded);
+                    if (!isGameLoaded) {
+                        // load saved game here
+                        ScriptController::getInstance()->runSaved("file2.txt");
+                        isMissionCompleted = false;
+                        isGameLoaded = true;
+                        enableGetTouch = true;
+                        this->scheduleUpdate();
+                    } else {
+                        if (enableGetTouch) {
+                            isMissionCompleted = true;
+                        }
+                        textLayer->onClick();
                     }
-                    textLayer->onClick();
                 }
                 focus = TEXT;
                 return false;
@@ -188,7 +198,6 @@ void GameScene::update(float dt)
     if (!isMissionCompleted) {
         return;
     }
-    log("update");
     isMissionCompleted = false;
     ScriptController::getInstance()->stateBegin();
 }
@@ -240,7 +249,8 @@ void GameScene::clear()
 
 void GameScene::startNewGame()
 {
-//    log("start new game");
+    isGameLoaded = true;
+    
     this->init();
     DataController::getInstance()->readFromScript();
     ScriptController::getInstance()->runNew("file2.txt");
@@ -251,7 +261,8 @@ void GameScene::startNewGame()
 
 void GameScene::startSavedGame(std::string datafile)
 {
-//    log("load saved game");
+    isGameLoaded = false;
+    
     this->init();
     // variables
     DataController::getInstance()->readFromData(datafile);
@@ -333,6 +344,7 @@ void GameScene::startSavedGame(std::string datafile)
                 setTextContent(str);
                 setTextShow();
                 log("load text =%s", str.c_str());
+                textLayer->onClick();
             }
         } else {
             break;
@@ -351,15 +363,6 @@ void GameScene::startSavedGame(std::string datafile)
             log("load character %d =%s", i, characterFilename[i].c_str());
         }
     }
-    
-    // next script
-    ScriptController::getInstance()->runSaved("file2.txt");
-    // schedule
-    isMissionCompleted = false;
-    this->scheduleUpdate();
-
-    // waiting for a screen touch
-    enableGetTouch = true;
 }
 
 void GameScene::enterSkipMode()

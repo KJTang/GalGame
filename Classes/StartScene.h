@@ -19,6 +19,8 @@ private:
     Size visibleSize;
     Layer *backgroundLayer;
 public:
+    LayerColor *black;
+public:
     StartScene();
     ~StartScene();
     

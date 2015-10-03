@@ -33,6 +33,8 @@ private:
     Layer *characterLayer;
     Layer *menuLayer;
     ButtonSprite *quitButton, *saveButton;
+    // new or saved game
+    bool isGameLoaded;
     // game mode
     int gameMode;
     enum {

@@ -29,12 +29,16 @@ bool StartScene::init()
     this->addChild(backgroundLayer);
     auto pic = GyroBackground::create("title/title", 1.5);
     backgroundLayer->addChild(pic, -1);
+    // menu
+    auto layer = MenuLayer::create();
+    this->addChild(layer);
+    // black
+    black = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
+    this->addChild(black);
+    black->setOpacity(0);
     
     // data test
     DataController::getInstance()->test();
-    // menu test
-    auto layer = MenuLayer::create();
-    this->addChild(layer);
     
     return true;
 }
