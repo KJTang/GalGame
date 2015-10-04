@@ -10,6 +10,8 @@
 #include "DataController.h"
 #include "ButtonSprite.h"
 
+#include "ActionFade.h"
+
 /**
  *   ListItem
  */
@@ -165,8 +167,8 @@ bool MenuLayer::init()
         // already in some event
         if (leftMenu->getPositionX() > 0) {
             touchType = LEFT;
-        }
-        if (rightMenu->getPositionX() < 0) {
+            return true;
+        } else if (rightMenu->getPositionX() < 0) {
             touchType = RIGHT;
             return true;
         } else if (dataList->getPositionY() > 0) {
@@ -251,8 +253,10 @@ bool MenuLayer::init()
             {
                 if (leftMenu->getPositionX() > visibleSize.width*0.15) {
                     leftMenu->runAction(MoveTo::create(0.1, Vec2(visibleSize.width*0.3, 0)));
+                    greyLayer->runAction(ActionFadeIn::create(0.1, 150));
                 } else {
                     leftMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
+                    greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
                 }
                 break;
             }
@@ -260,8 +264,10 @@ bool MenuLayer::init()
             {
                 if (rightMenu->getPositionX() < -visibleSize.width*0.15) {
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(-visibleSize.width*0.3, 0)));
+                    greyLayer->runAction(ActionFadeIn::create(0.1, 150));
                 } else {
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
+                    greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
                 }
                 break;
             }
@@ -283,6 +289,7 @@ bool MenuLayer::init()
                     currentListItemID = -1;
                     auto list = dataList->getChildren();
                     static_cast<ListItem*>(list.at(0))->setActive(false);
+                    greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
                     return false;
                 }
                 // focus on the item at middle of screen
@@ -321,6 +328,7 @@ bool MenuLayer::init()
                     // focus on the item at head of the list
                     else if (dataList->getPositionY() > visibleSize.height*0.7) {
                         dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height)));
+                        greyLayer->runAction(ActionFadeIn::create(0.1, 150));
                         auto list = dataList->getChildren();
                         static_cast<ListItem*>(list.at(0))->setActive(true);
                         if (list.size() > 1) {
