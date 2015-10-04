@@ -18,6 +18,7 @@ class ListItem : public Sprite
 private:
     Size visibleSize;
     Label *textLabel;
+    Sprite *chosen, *unchosen;
 public:
     std::string text;
 public:

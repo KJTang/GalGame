@@ -15,7 +15,7 @@ ButtonSprite::~ButtonSprite(){}
 ButtonSprite* ButtonSprite::create(std::string filename)
 {
     ButtonSprite *pRet = new(std::nothrow) ButtonSprite();
-    if (pRet && pRet->initWithFile(filename) && pRet->init())
+    if (pRet && pRet->initWithFile(filename))
     {
         pRet->autorelease();
         return pRet;
@@ -28,38 +28,41 @@ ButtonSprite* ButtonSprite::create(std::string filename)
     }
 }
 
-bool ButtonSprite::init()
+bool ButtonSprite::initWithFile(std::string filename)
 {
-    // don't know why when add this, the sprite will not show on screen
-//    if (!Sprite::init()) {
-//        return false;
-//    }
+    if (!Sprite::initWithFile(filename)) {
+        return false;
+    }
     
     visibleSize = Director::getInstance()->getVisibleSize();
+    
     callbackFunc = nullptr;
     
     touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);
     
-    touchListener->onTouchBegan = [](Touch* touch, Event* event){
+    touchListener->onTouchBegan = [&](Touch* touch, Event* event){
+        startPoint = touch->getLocation();
         auto target = static_cast<ButtonSprite*>(event->getCurrentTarget());
         // relative position
-        Point locationInNode = target->convertToNodeSpace(touch->getLocation());
-        Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
+        cocos2d::Point locationInNode = target->convertToNodeSpace(touch->getLocation());
+        cocos2d::Rect rect = cocos2d::Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
         if (rect.containsPoint(locationInNode))
         {
-            target->runAction(ScaleTo::create(0.05, 2));
+            target->runAction(MoveBy::create(0.05, Vec2(10, -10)));
             return true;
         }
         return false;
     };
     
-    touchListener->onTouchMoved = [](Touch* touch, Event* event){};
-    
-    touchListener->onTouchEnded = [](Touch* touch, Event* event){
+    touchListener->onTouchEnded = [&](Touch* touch, Event* event){
+        endPoint = touch->getLocation();
         auto target = static_cast<ButtonSprite*>(event->getCurrentTarget());
-        target->runAction(ScaleTo::create(0.05, 3.5));
-        target->onClicked();
+        target->runAction(MoveBy::create(0.05, Vec2(-10, 10)));
+        if (endPoint.x - startPoint.x > -10 && endPoint.x - startPoint.x < 10 &&
+            endPoint.y - startPoint.y > -10 && endPoint.y - startPoint.y < 10) {
+            target->onClicked();
+        }
         return true;
     };
     
@@ -84,7 +87,7 @@ void ButtonSprite::onClicked()
 {
     if (callbackFunc) {
         callbackFunc();
-        touchListener->setEnabled(false);
+//        touchListener->setEnabled(false);
     }
 }
 

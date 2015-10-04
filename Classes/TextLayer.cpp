@@ -26,34 +26,34 @@ bool TextLayer::init()
     textSpeed = 0.1;
     
     std::string fontFile = "fonts/PingFang_1.ttf";
-    float fontSize = 60;
+    float fontSize = 50;
+    Size textBoxSize = Size(1500, 300);
     
-    text = Label::createWithTTF("", fontFile, fontSize, Size(2000, 240));
-    text->setAnchorPoint(Point(0, 0));
-    text->setPosition(Point(0, 0));
+    text = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
+    text->setPosition(Point(visibleSize.width*0.5, visibleSize.height*0.16));
     this->addChild(text, 5);
     
-    outline01 = Label::createWithTTF("", fontFile, fontSize, Size(2000, 240));
-    outline01->setAnchorPoint(Point(0, 0));
-    outline01->setPosition(Point(1, 0));
+    outline01 = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
+    outline01->setOpacity(100);
+    outline01->setPosition(text->getPosition()+Point(1, 0));
     outline01->setColor(Color3B::RED);
     this->addChild(outline01, 1);
     
-    outline02 = Label::createWithTTF("", fontFile, fontSize, Size(2000, 240));
-    outline02->setAnchorPoint(Point(0, 0));
-    outline02->setPosition(Point(-1, 0));
+    outline02 = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
+    outline02->setOpacity(100);
+    outline02->setPosition(text->getPosition()+Point(-1, 0));
     outline02->setColor(Color3B::RED);
     this->addChild(outline02, 2);
     
-    outline03 = Label::createWithTTF("", fontFile, fontSize, Size(2000, 240));
-    outline03->setAnchorPoint(Point(0, 0));
-    outline03->setPosition(Point(0, 1));
+    outline03 = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
+    outline03->setOpacity(100);
+    outline03->setPosition(text->getPosition()+Point(0, 1));
     outline03->setColor(Color3B::RED);
     this->addChild(outline03, 3);
     
-    outline04 = Label::createWithTTF("", fontFile, fontSize, Size(2000, 240));
-    outline04->setAnchorPoint(Point(0, 0));
-    outline04->setPosition(Point(0, -1));
+    outline04 = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
+    outline04->setOpacity(100);
+    outline04->setPosition(text->getPosition()+Point(0, -1));
     outline04->setColor(Color3B::RED);
     this->addChild(outline04, 4);
     
@@ -63,7 +63,7 @@ bool TextLayer::init()
     this->addChild(bgUnchosen);
     // add a tag
     bgChosen->setPosition(visibleSize.width/2, visibleSize.height*0.17);
-    bgUnchosen->setPosition(visibleSize.width/2, visibleSize.height/2);
+    bgUnchosen->setPosition(visibleSize.width/2, visibleSize.height*0.17);
     bgChosen->setVisible(true);
     bgUnchosen->setVisible(false);
     
