@@ -10,8 +10,6 @@
 #include "DataController.h"
 #include "ButtonSprite.h"
 
-#include "ActionFade.h"
-
 /**
  *   ListItem
  */
@@ -182,41 +180,65 @@ bool MenuLayer::init()
             touch->getLocation().y < visibleSize.height*0.9) {
             touchType = LEFT;
             log("touch begin left");
-            greyLayer->runAction(ActionFadeIn::create(0.3, 150));
         } else if (touch->getLocation().x > visibleSize.width*0.9 &&
                    touch->getLocation().y > visibleSize.height*0.1 &&
                    touch->getLocation().y < visibleSize.height*0.9) {
             touchType = RIGHT;
             log("touch begin right");
-            greyLayer->runAction(ActionFadeIn::create(0.3, 150));
         } else if (touch->getLocation().y < visibleSize.height*0.1) {
             touchType = BOTTOM;
             dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height*0.5)));
             log("touch begin bottom");
-            greyLayer->runAction(ActionFadeIn::create(0.3, 150));
         }
         return true;
     };
     screenTouchListener->onTouchMoved = [&](Touch* touch, Event* event){
         switch (touchType) {
             case LEFT:
+            {
                 leftMenu->setPositionX(leftMenu->getPositionX()+touch->getLocation().x-startPoint.x);
                 if (leftMenu->getPositionX() > visibleSize.width*0.3) {
                     leftMenu->setPositionX(visibleSize.width*0.3);
                 }
                 startPoint = touch->getLocation();
+                
+                float relativePos = leftMenu->getPositionX();
+                if (relativePos < 0) {
+                    relativePos = 0;
+                }
+                greyLayer->setOpacity(relativePos / (visibleSize.width*0.3) * 150);
                 break;
+            }
             case RIGHT:
+            {
                 rightMenu->setPositionX(rightMenu->getPositionX()+touch->getLocation().x-startPoint.x);
                 if (rightMenu->getPositionX() < -visibleSize.width*0.3) {
                     rightMenu->setPositionX(-visibleSize.width*0.3);
                 }
                 startPoint = touch->getLocation();
+                
+                float relativePos = -rightMenu->getPositionX();
+                if (relativePos < 0) {
+                    relativePos = 0;
+                }
+                greyLayer->setOpacity(relativePos / (visibleSize.width*0.3) * 150);
                 break;
+            }
             case BOTTOM:
+            {
                 dataList->setPositionY(dataList->getPositionY()+touch->getLocation().y-startPoint.y);
                 startPoint = touch->getLocation();
+                
+                float relativePos = dataList->getPositionY()-visibleSize.height*0.5;
+                if (relativePos > visibleSize.height*0.5) {
+                    relativePos = visibleSize.height*0.5;
+                } else if (relativePos < 0)
+                {
+                    relativePos = 0;
+                }
+                greyLayer->setOpacity(relativePos / (visibleSize.height*0.5) * 150);
                 break;
+            }
             default:
                 break;
         }
@@ -231,7 +253,6 @@ bool MenuLayer::init()
                     leftMenu->runAction(MoveTo::create(0.1, Vec2(visibleSize.width*0.3, 0)));
                 } else {
                     leftMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
-                    greyLayer->runAction(ActionFadeOut::create(0.3, 150));
                 }
                 break;
             }
@@ -241,7 +262,6 @@ bool MenuLayer::init()
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(-visibleSize.width*0.3, 0)));
                 } else {
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
-                    greyLayer->runAction(ActionFadeOut::create(0.3, 150));
                 }
                 break;
             }
@@ -263,7 +283,6 @@ bool MenuLayer::init()
                     currentListItemID = -1;
                     auto list = dataList->getChildren();
                     static_cast<ListItem*>(list.at(0))->setActive(false);
-                    greyLayer->runAction(ActionFadeOut::create(0.3, 150));
                     return false;
                 }
                 // focus on the item at middle of screen
