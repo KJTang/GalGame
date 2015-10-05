@@ -33,13 +33,22 @@ bool ListItem::init()
     return true;
 }
 
-void ListItem::setText(const std::string &str)
+void ListItem::setText(const std::string &time, const std::string &chaptername)
 {
-    text = str;
+    text = time;
     std::string fontFile = "fonts/PingFang_1.ttf";
-    float fontSize = 60;
-    
-    textLabel = Label::createWithTTF(str, fontFile, fontSize, Size(200, 200));
+    float fontSize = 50;
+    Size textBoxSize = Size(800, 300);
+
+    textLabel = Label::createWithTTF(text+"\n"+chaptername, fontFile, fontSize, textBoxSize);
+    Point position[4] = {Point(1, 0), Point(-1, 0), Point(0, -1), Point(0, 1)};
+    for (int i = 0; i != 4; ++i) {
+        auto outline = Label::createWithTTF(text+"\n"+chaptername, fontFile, fontSize, textBoxSize);
+        this->addChild(outline);
+        outline->setPosition(textLabel->getPosition()+position[i]);
+        outline->setOpacity(100);
+        outline->setColor(Color3B::RED);
+    }
     this->addChild(textLabel);
 }
 
@@ -132,14 +141,15 @@ bool MenuLayer::init()
     for (int i = 0; i != listItemCount; ++i) {
         auto data = ListItem::create();
         dataList->addChild(data);
-        data->setPosition(visibleSize.width*0.75, -visibleSize.height*0.5 - listItemHeight*i);
-        data->setText(DataController::getInstance()->dataName[i]);
+        data->setPosition(visibleSize.width*0.67, -visibleSize.height*0.5 - listItemHeight*i);
+        data->setText(DataController::getInstance()->dataInfoList[i].dataName,
+                      DataController::getInstance()->dataInfoList[i].chapterName);
     }
     if (!listItemCount) {
         auto data = ListItem::create();
         dataList->addChild(data);
-        data->setPosition(visibleSize.width*0.75, -visibleSize.height*0.5);
-        data->setText("No Data");
+        data->setPosition(visibleSize.width*0.67, -visibleSize.height*0.5);
+        data->setText("No Data", "");
         listItemCount = 1;
     }
     dataPic = nullptr;
@@ -292,7 +302,9 @@ bool MenuLayer::init()
                     auto list = dataList->getChildren();
                     auto filename = static_cast<ListItem*>(list.at(currentListItemID))->text;
                     log("click on item %d: %s", currentListItemID, filename.c_str());
-                    GameController::getInstance()->enterGameScene(filename);
+                    if (filename != "No Data") {
+                        GameController::getInstance()->enterGameScene(filename);
+                    }
                 }
                 // hide list
                 if (dataList->getPositionY() < visibleSize.height*0.7) {
@@ -349,22 +361,29 @@ bool MenuLayer::init()
                 if (filename != "No Data") {
                     dataPic = Sprite::create();
                     auto pic = Sprite::create(FileUtils::getInstance()->getWritablePath()+filename+".png");
-                    pic->setScale(0.48);
+//                    CCASSERT(pic, "pic musn't be nullptr!!!");
+                    if (pic == nullptr) {
+                        pic = Sprite::create("frame/Data-Pic.png");
+                        pic->setScale(visibleSize.width/dataPic->getContentSize().width*0.6);
+                    } else {
+                        pic->setScale(0.58);
+                    }
                     dataPic->addChild(pic);
                     auto frame = Sprite::create("frame/Data-Pic.png");
-                    frame->setScale(visibleSize.width/frame->getContentSize().width/2);
+                    frame->setScale(visibleSize.width/frame->getContentSize().width*0.6);
                     dataPic->addChild(frame);
                 } else {
                     dataPic = Sprite::create("frame/Data-Pic.png");
+                    dataPic->setScale(visibleSize.width/dataPic->getContentSize().width*0.6);
                 }
-                this->addChild(dataPic);
-                dataPic->setPosition(visibleSize.width*0.25, visibleSize.height*0.5);
+                greyLayer->addChild(dataPic);
+                dataPic->setPosition(visibleSize.width*0.33, visibleSize.height*0.5);
                 dataPic->setOpacity(0);
-                dataPic->runAction(FadeIn::create(0.2));
+                dataPic->runAction(ActionFadeIn::create(0.2, 200));
                 auto dataPicChildren = dataPic->getChildren();
                 for (int i = 0; i != dataPicChildren.size(); ++i) {
                     static_cast<Sprite*>(dataPicChildren.at(i))->setOpacity(0);
-                    static_cast<Sprite*>(dataPicChildren.at(i))->runAction(FadeIn::create(0.2));
+                    static_cast<Sprite*>(dataPicChildren.at(i))->runAction(ActionFadeIn::create(0.2, 200));
                 }
                 break;
             }

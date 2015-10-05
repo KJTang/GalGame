@@ -21,7 +21,6 @@ bool GameScene::init()
     }
     
     visibleSize = Director::getInstance()->getVisibleSize();
-    isGameLoaded = false;
     isMissionCompleted = false;
     enableGetTouch = false;
     focus = TEXT;
@@ -70,8 +69,12 @@ bool GameScene::init()
     saveButton->setScale(1.5);
     saveButton->setPosition(Point(visibleSize.width*0.75, visibleSize.height*0.75));
     saveButton->setCallbackFunc([](){
-        log("save data");
-        DataController::getInstance()->saveData("test");
+        char datafile[50];
+        time_t curtime=time(0);
+        tm time =*localtime(&curtime);
+        sprintf(datafile, "%d年%02d月%02d日%02d时%02d分%02d秒", time.tm_year+1900, time.tm_mon+1, time.tm_mday, time.tm_hour, time.tm_min, time.tm_sec);
+        log("save data: %s", datafile);
+        DataController::getInstance()->saveData(datafile);
     });
     
     // screen touch listener
@@ -91,7 +94,6 @@ bool GameScene::init()
                     textLayer->blurOut();
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-//                            characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
                             characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
                         }
                     }
@@ -106,20 +108,10 @@ bool GameScene::init()
                     }
                 }
                 else {
-//                    log("isgameloaded=%d", isGameLoaded);
-                    if (!isGameLoaded) {
-                        // load saved game here
-                        ScriptController::getInstance()->runSaved("file2.txt");
-                        isMissionCompleted = false;
-                        isGameLoaded = true;
-                        enableGetTouch = true;
-                        this->scheduleUpdate();
-                    } else {
-                        if (enableGetTouch) {
-                            isMissionCompleted = true;
-                        }
-                        textLayer->onClick();
+                    if (enableGetTouch) {
+                        isMissionCompleted = true;
                     }
+                    textLayer->onClick();
                 }
                 focus = TEXT;
                 return false;
@@ -132,7 +124,6 @@ bool GameScene::init()
                     textLayer->blurIn();
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-//                            characters[j]->runAction(ActionBlur::create(0.5, LITTLE_TO_NONE));
                             characters[j]->runAction(ActionBlur::create(0.5, MUCH_TO_NONE));
                         }
                     }
@@ -143,7 +134,6 @@ bool GameScene::init()
                 } else if (focus == BACKGROUND) {
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-//                            characters[j]->runAction(ActionBlur::create(0.5, LITTLE_TO_NONE));
                             characters[j]->runAction(ActionBlur::create(0.5, MUCH_TO_NONE));
                         }
                     }
@@ -162,7 +152,6 @@ bool GameScene::init()
             auto bgs = bgp->getChildren();
             for (int j = 0; j != 4; ++j) {
                 if (characters[j]) {
-//                    characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
                     characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
                 }
             }
@@ -174,7 +163,6 @@ bool GameScene::init()
         } else if (focus == CHARACTER) {
             for (int j = 0; j != 4; ++j) {
                 if (characters[j]) {
-//                    characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
                     characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
                 }
             }
@@ -249,11 +237,9 @@ void GameScene::clear()
 
 void GameScene::startNewGame()
 {
-    isGameLoaded = true;
-    
     this->init();
     DataController::getInstance()->readFromScript();
-    ScriptController::getInstance()->runNew("file2.txt");
+    ScriptController::getInstance()->runNew("file.txt");
     
     isMissionCompleted = true;
     this->scheduleUpdate();
@@ -261,20 +247,23 @@ void GameScene::startNewGame()
 
 void GameScene::startSavedGame(std::string datafile)
 {
-    isGameLoaded = false;
-    
+    DataController::getInstance()->test(datafile);
     this->init();
     // variables
     DataController::getInstance()->readFromData(datafile);
     // flags and scene
     std::string path = FileUtils::getInstance()->getWritablePath()+datafile;
     std::ifstream fin(path.c_str());
+    std::string scriptpath;
     std::string str;
     fin>>str;
     bool bgp = false, text = false;
     bool character[4] = {false, false, false, false};
     while (str.size()) {
-        if (str == "pos") {
+        if (str == "scriptpath") {
+            fin>>scriptpath;
+            UserData.scriptPath = scriptpath;
+        } else if (str == "pos") {
             int dataPos;
             fin>>dataPos;
             ScriptController::getInstance()->setPos(dataPos);
@@ -363,6 +352,13 @@ void GameScene::startSavedGame(std::string datafile)
             log("load character %d =%s", i, characterFilename[i].c_str());
         }
     }
+    
+    // load saved game here
+    ScriptController::getInstance()->runSaved(scriptpath);
+//    isMissionCompleted = false;
+//    enableGetTouch = true;
+    isMissionCompleted = true;
+    this->scheduleUpdate();
 }
 
 void GameScene::enterSkipMode()
@@ -593,6 +589,33 @@ void GameScene::setTextShow()
 void GameScene::setTextStop()
 {
     textLayer->stopText();
+}
+
+void GameScene::setTextUpdate(const std::string &str)
+{
+    textToShow = str;
+    textLayer->setText(textToShow);
+    textLayer->setVisible(true);
+    
+    switch (gameMode) {
+        case MODE_NORMAL:
+            textLayer->showText();
+            break;
+        case MODE_SKIP:
+            textLayer->setSpeed(0.01);
+            textLayer->showText();
+            break;
+        case MODE_AUTO:
+            textLayer->setSpeed(0.2);
+            textLayer->showText();
+            break;
+        default:
+            break;
+    }
+    
+    textLayer->enableTouchListener = true;
+    // save data
+    UserData.textContent = textToShow;
 }
 
 void GameScene::setTextContent(std::string content)

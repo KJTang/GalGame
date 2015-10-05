@@ -27,8 +27,8 @@ private:
     int goBackPosMark, goBackLineMark;
     
     std::string getString();
-    int transStringToInt(std::string num);
-    float transStringToFloat(std::string num);
+    int transStringToInt(const std::string &num);
+    float transStringToFloat(const std::string &num);
     
     // error box
     bool hasErr;
@@ -60,18 +60,18 @@ public:
         return sharedScriptController;
     }
     
-    void runNew(std::string filename);
-    void runSaved(std::string filename);
+    void runNew(const std::string &filename);
+    void runSaved(const std::string &filename);
     
     // state
     void stateBegin();
     
-    void stateCommand(std::string cmd);
+    void stateCommand(const std::string &cmd);
     
-    void stateJump(std::string cmd);
+    void stateJump(const std::string &cmd);
     
-    bool isConditionFullFilled;  // used to judge if condition is fullfilled or not
-    void stateCondition(std::string cmd);
+    bool isConditionFullFilled;  // used to judge 'if' condition is fullfilled or not
+    void stateCondition(const std::string &cmd);
     
     void stateEnd();
     

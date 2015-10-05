@@ -24,16 +24,16 @@ bool DataController::init()
     if(!FileUtils::getInstance()->isFileExist(path))
     {
         std::ofstream fout(path);
-        fout<<0;
+        fout<<0<<std::endl;
         fout.close();
     } else {
         std::ifstream fin(path);
         fin>>dataCount;
-        
         for (int i = 0; i != dataCount; ++i) {
-            std::string temp;
-            fin>>temp;
-            dataName.push_back(temp);
+            dataInfo temp;
+            fin>>temp.dataName;
+            fin>>temp.chapterName;
+            dataInfoList.push_back(temp);
         }
         fin.close();
     }
@@ -108,12 +108,10 @@ void DataController::updateDataInfo()
 {
     std::string path = FileUtils::getInstance()->getWritablePath()+"DataInfo";
     std::ofstream fout(path);
-    dataCount = static_cast<int>(dataName.size());
-    fout<<dataCount;
-//    log("datainfo--------%d", dataCount);
+    dataCount = static_cast<int>(dataInfoList.size());
+    fout<<dataCount<<std::endl;
     for (int i = 0; i != dataCount; ++i) {
-        fout<<dataName[i]<<std::endl;
-        log("%s", dataName[i].c_str());
+        fout<<dataInfoList[i].dataName<<" "<<dataInfoList[i].chapterName<<std::endl;
     }
     fout.close();
 }
@@ -163,9 +161,12 @@ void DataController::readFromScript()
     }
 }
 
-void DataController::readFromData(std::string datafile)
+void DataController::readFromData(const std::string &datafile)
 {
     std::string path = FileUtils::getInstance()->getWritablePath()+datafile;
+    
+    CCASSERT(FileUtils::getInstance()->isFileExist(path), "datafile is not exist!!");
+    
     std::ifstream fin(path);
     
     std::string str;
@@ -177,21 +178,19 @@ void DataController::readFromData(std::string datafile)
             globalInt var;
             fin>>var.name;
             fin>>var.value;
-//            log("datacontroller : int %s %d", var.name.c_str(), var.value);
             Ints.push_back(var);
         } else if (str == "float") {
             globalFloat var;
             fin>>var.name;
             fin>>var.value;
-//            log("float %s %f", var.name.c_str(), var.value);
             Floats.push_back(var);
         } else if (str == "string") {
             globalString var;
             fin>>var.name;
             fin>>var.value;
-//            log("string %s -%s-", var.name.c_str(), var.value.c_str());
             Strings.push_back(var);
         } else {
+            
         }
     }
     log("variables loaded!");
@@ -199,14 +198,9 @@ void DataController::readFromData(std::string datafile)
     fin.close();
 }
 
-bool DataController::saveData(std::string datafile)
+bool DataController::saveData(const std::string &datafile)
 {
     std::string path = FileUtils::getInstance()->getWritablePath()+datafile;
-//    log("filepath = %s", path.c_str());
-
-//    if (FileUtils::getInstance()->isFileExist(path)) {
-//        return false;
-//    }
     
     using namespace std;
     std::ofstream fout(path.c_str());
@@ -214,6 +208,7 @@ bool DataController::saveData(std::string datafile)
     // save flags to GameScene::UserData
     GameScene::getInstance()->saveFlags();
     // flags
+    fout<<"scriptpath "<<GameScene::getInstance()->UserData.scriptPath<<endl;
     fout<<"pos "<<GameScene::getInstance()->UserData.pos<<endl;
     fout<<"lineID "<<GameScene::getInstance()->UserData.lineID<<endl;
     fout<<"gobackPos "<<GameScene::getInstance()->UserData.gobackPos<<endl;
@@ -271,45 +266,48 @@ bool DataController::saveData(std::string datafile)
     
     //保存为png
 //    pScreen->saveToFile(datafile+".png", Image::Format::PNG, true, [&](RenderTexture*, const std::string&) {
-//        log("saved");
 //    });
     pScreen->saveToFile(datafile+".png", Image::Format::PNG);
 
     // update
     bool found = false;
-    for (int i = 0; i != dataName.size(); ++i) {
-        if (dataName[i] == datafile) {
+    for (int i = 0; i != dataInfoList.size(); ++i) {
+        if (dataInfoList[i].dataName == datafile) {
             found = true;
             break;
         }
     }
     if (!found) {
-        dataName.push_back(datafile);
+        dataInfo temp;
+        temp.dataName = datafile;
+        temp.chapterName = GameScene::getInstance()->UserData.scriptPath;
+        dataInfoList.push_back(temp);
     }
     updateDataInfo();
     
     return true;
 }
 
-bool DataController::deleteData(std::string datafile)
+bool DataController::deleteData(const std::string &datafile)
 {
     std::string path = FileUtils::getInstance()->getWritablePath()+datafile;
     
     if (!FileUtils::getInstance()->isFileExist(path)) {
         return false;
     }
-    for (int i = 0; i != dataName.size(); ++i) {
-        if (dataName[i] == datafile) {
-            dataName.erase(dataName.begin() + i);
+    for (int i = 0; i != dataInfoList.size(); ++i) {
+        if (dataInfoList[i].dataName == datafile) {
+            dataInfoList.erase(dataInfoList.begin() + i);
             --dataCount;
             break;
         }
     }
     FileUtils::getInstance()->removeFile(path);
+    FileUtils::getInstance()->removeFile(path+".png");
     return true;
 }
 
-bool DataController::setInt(std::string name, int value)
+bool DataController::setInt(const std::string &name, int value)
 {
     for (int i = 0; i != Ints.size(); ++i) {
         if (name == Ints[i].name) {
@@ -320,7 +318,7 @@ bool DataController::setInt(std::string name, int value)
     return false;
 }
 
-int DataController::getInt(std::string name)
+int DataController::getInt(const std::string &name)
 {
     for (int i = 0; i != Ints.size(); ++i) {
         if (name == Ints[i].name) {
@@ -331,10 +329,10 @@ int DataController::getInt(std::string name)
     return -2;
 }
 
-void DataController::test()
+void DataController::test(const std::string &filename)
 {
     log("test------------------------");
-    std::string path = FileUtils::getInstance()->getWritablePath()+"test";
+    std::string path = FileUtils::getInstance()->getWritablePath()+filename;
     std::ifstream fin(path.c_str());
     
     std::string str;

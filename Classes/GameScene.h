@@ -33,8 +33,6 @@ private:
     Layer *characterLayer;
     Layer *menuLayer;
     ButtonSprite *quitButton, *saveButton;
-    // new or saved game
-    bool isGameLoaded;
     // game mode
     int gameMode;
     enum {
@@ -101,6 +99,7 @@ public:
     struct
     {
         // record the position in script
+        std::string scriptPath;
         int pos, lineID;
         int gobackPos, gobackLineID;
         bool isConditionFullFilled;
@@ -141,6 +140,7 @@ public:
     void setTextShow();
     void setTextStop();
     void setTextContent(std::string str);
+    void setTextUpdate(const std::string &str);
     void setTextSpeed(float sp);
     void setTextClear();
     // choices

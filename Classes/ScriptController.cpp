@@ -25,8 +25,9 @@ bool ScriptController::init()
     return true;
 }
 
-void ScriptController::runNew(std::string filename)
+void ScriptController::runNew(const std::string &filename)
 {
+    GameScene::getInstance()->UserData.scriptPath = filename;
     pos = 0, lineID = 1;
     goBackPosMark = -1, goBackLineMark = -1;
     isConditionFullFilled = false;
@@ -34,8 +35,9 @@ void ScriptController::runNew(std::string filename)
     data = FileUtils::getInstance()->getStringFromFile(filename.c_str());
 }
 
-void ScriptController::runSaved(std::string filename)
+void ScriptController::runSaved(const std::string &filename)
 {
+    GameScene::getInstance()->UserData.scriptPath = filename;
     if (choiceTablePos != -1) {
         pos = choiceTablePos;
         lineID = choiceTableLineID;
@@ -139,7 +141,7 @@ std::string ScriptController::getString()
     }
 }
 
-int ScriptController::transStringToInt(std::string num)
+int ScriptController::transStringToInt(const std::string &num)
 {
     int result = 0;
     for (int i = 0; i != num.size(); ++i) {
@@ -149,7 +151,7 @@ int ScriptController::transStringToInt(std::string num)
     return result;
 }
 
-float ScriptController::transStringToFloat(std::string num)
+float ScriptController::transStringToFloat(const std::string &num)
 {
     float result = 0;
     int dot = 0;
@@ -176,6 +178,9 @@ void ScriptController::stateBegin()
             stateCommand(str);
         } else if (str == "if" || str == "elif" || str == "else" || str == "endif") {
             stateCondition(str);
+        } else if (str == "log") {
+            log("scriptlog: %s", getString().c_str());
+            GameScene::getInstance()->isMissionCompleted = true;
         } else {
             showError(UNKNOWN_COMMAND);
         }
@@ -185,7 +190,7 @@ void ScriptController::stateBegin()
     }
 }
 
-void ScriptController::stateJump(std::string cmd)
+void ScriptController::stateJump(const std::string &cmd)
 {
     if (cmd == "#goback") {
         if (goBackPosMark == -1) {
@@ -209,13 +214,18 @@ void ScriptController::stateJump(std::string cmd)
             next = getString();
         }
         stateBegin();
+    } else if (cmd == "#newfile") {
+        // switch to another script file
+        std::string filename = getString();
+        runNew(filename);
+        GameScene::getInstance()->isMissionCompleted = true;
     } else {
         // do nothing
         stateEnd();
     }
 }
 
-void ScriptController::stateCommand(std::string cmd)
+void ScriptController::stateCommand(const std::string &cmd)
 {
     /** **********************
      *          set
@@ -287,6 +297,9 @@ void ScriptController::stateCommand(std::string cmd)
         // setting text
         else if (str == "text") {
             std::string str = getString();
+            if (str == "update") {
+                GameScene::getInstance()->setTextUpdate(getString());
+            }
             if (str == "content") {
                 std::string str = getString();
                 log("set text content = %s", str.c_str());
@@ -547,7 +560,7 @@ void ScriptController::stateCommand(std::string cmd)
     }
 }
 
-void ScriptController::stateCondition(std::string cmd)
+void ScriptController::stateCondition(const std::string &cmd)
 {   
     std::string str = cmd;
     if (isConditionFullFilled) {

@@ -52,7 +52,12 @@ private:
     void clear();
 public:
     int dataCount;
-    std::vector<std::string> dataName;
+//    std::vector<std::string> dataName;
+    struct dataInfo{
+        std::string dataName;
+        std::string chapterName;
+    };
+    std::vector<dataInfo> dataInfoList;
 private:
     DataController();
 public:
@@ -67,19 +72,20 @@ public:
             sharedDataController->init();
         }
         return sharedDataController;
-    }    void updateDataInfo();
+    }
+    void updateDataInfo();
     // load
     void readFromScript();
-    void readFromData(std::string datafile);
+    void readFromData(const std::string &datafile);
     // save
-    bool saveData(std::string datafile);
+    bool saveData(const std::string &datafile);
     // delete
-    bool deleteData(std::string datafile);
+    bool deleteData(const std::string &datafile);
     
-    bool setInt(std::string name, int value);
-    int getInt(std::string name);
+    bool setInt(const std::string &name, int value);
+    int getInt(const std::string &name);
     
-    void test();
+    void test(const std::string &filename);
 };
 
 #endif /* DataController_cpp */

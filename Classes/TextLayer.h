@@ -18,7 +18,7 @@ class TextLayer : public Layer
 private:
     Size visibleSize;
     Label *text;
-    Label *outline01, *outline02, *outline03, *outline04;
+    Label *outline[4];
     Sprite *bgChosen, *bgUnchosen;
     std::string strSave, strShow;
     int pos;

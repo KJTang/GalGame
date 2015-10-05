@@ -33,29 +33,14 @@ bool TextLayer::init()
     text->setPosition(Point(visibleSize.width*0.5, visibleSize.height*0.16));
     this->addChild(text, 5);
     
-    outline01 = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
-    outline01->setOpacity(100);
-    outline01->setPosition(text->getPosition()+Point(1, 0));
-    outline01->setColor(Color3B::RED);
-    this->addChild(outline01, 1);
-    
-    outline02 = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
-    outline02->setOpacity(100);
-    outline02->setPosition(text->getPosition()+Point(-1, 0));
-    outline02->setColor(Color3B::RED);
-    this->addChild(outline02, 2);
-    
-    outline03 = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
-    outline03->setOpacity(100);
-    outline03->setPosition(text->getPosition()+Point(0, 1));
-    outline03->setColor(Color3B::RED);
-    this->addChild(outline03, 3);
-    
-    outline04 = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
-    outline04->setOpacity(100);
-    outline04->setPosition(text->getPosition()+Point(0, -1));
-    outline04->setColor(Color3B::RED);
-    this->addChild(outline04, 4);
+    Point position[4] = {Point(1, 0), Point(-1, 0), Point(0, -1), Point(0, 1)};
+    for (int i = 0; i != 4; ++i) {
+        outline[i] = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
+        this->addChild(outline[i], i+1);
+        outline[i]->setPosition(text->getPosition()+position[i]);
+        outline[i]->setOpacity(100);
+        outline[i]->setColor(Color3B::RED);
+    }
     
     bgChosen = Sprite::create("frame/Text-Chosen.png");
     bgUnchosen = Sprite::create("frame/Text-Unchosen.png");
@@ -76,10 +61,9 @@ void TextLayer::showText()
 {
     if (textSpeed <= 0) {
         text->setString(strSave);
-        outline01->setString(strSave);
-        outline02->setString(strSave);
-        outline03->setString(strSave);
-        outline04->setString(strSave);
+        for (int i = 0; i != 4; ++i) {
+            outline[i]->setString(strSave);
+        }
         return;
     }
     pos = 0;
@@ -91,21 +75,18 @@ void TextLayer::stopText()
     this->unschedule(schedule_selector(TextLayer::textUpdate));
     // show all the text immediately
     text->setString(strSave);
-    
-    outline01->setString(strSave);
-    outline02->setString(strSave);
-    outline03->setString(strSave);
-    outline04->setString(strSave);
+    for (int i = 0; i != 4; ++i) {
+        outline[i]->setString(strSave);
+    }
 }
 
 void TextLayer::clearText()
 {
     pos = 0;
     text->setString("");
-    outline01->setString("");
-    outline02->setString("");
-    outline03->setString("");
-    outline04->setString("");
+    for (int i = 0; i != 4; ++i) {
+        outline[i]->setString("");
+    }
 }
 
 void TextLayer::textUpdate(float dt)
@@ -135,11 +116,9 @@ void TextLayer::textUpdate(float dt)
     }
     
     text->setString(strShow);
-    
-    outline01->setString(strShow);
-    outline02->setString(strShow);
-    outline03->setString(strShow);
-    outline04->setString(strShow);
+    for (int i = 0; i != 4; ++i) {
+        outline[i]->setString(strShow);
+    }
 }
 
 void TextLayer::onClick()

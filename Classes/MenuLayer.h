@@ -27,7 +27,7 @@ public:
     virtual bool init();
     CREATE_FUNC(ListItem);
     
-    void setText(const std::string &str);
+    void setText(const std::string &time, const std::string &chaptername);
     void setActive(bool active);
 };
 
