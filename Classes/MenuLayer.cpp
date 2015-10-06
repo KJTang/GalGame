@@ -112,7 +112,7 @@ bool MenuLayer::init()
     loadBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.30));
     loadBtn->setCallbackFunc([](){
         log("load Game");
-        GameController::getInstance()->enterGameScene("test");
+        GameController::getInstance()->enterGameScene();
     });
     auto gallaryBtn = ButtonSprite::create("title/gallary");
     rightMenu->addChild(gallaryBtn);
@@ -303,7 +303,25 @@ bool MenuLayer::init()
                     auto filename = static_cast<ListItem*>(list.at(currentListItemID))->text;
                     log("click on item %d: %s", currentListItemID, filename.c_str());
                     if (filename != "No Data") {
-                        GameController::getInstance()->enterGameScene(filename);
+                        this->runAction(Sequence::create(CallFunc::create([&]()
+                                                                          {
+                                                                              greyLayer->getChildByName("dataPic")->runAction(MoveBy::create(0.3, Vec2(-visibleSize.width*0.7, 0)));
+                                                                              dataList->runAction(MoveBy::create(0.3, Vec2(visibleSize.width*0.7, 0)));
+                                                                          }),
+                                                         DelayTime::create(0.3),
+                                                         CallFunc::create([&]()
+                                                                          {
+                                                                              auto dark = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
+                                                                              this->addChild(dark);
+                                                                              dark->setOpacity(0);
+                                                                              dark->runAction(FadeIn::create(0.3));
+                                                                          }),
+                                                         DelayTime::create(0.3),
+                                                         CallFunc::create([&, filename]()
+                                                                          {
+                                                                              GameController::getInstance()->enterGameScene(filename);
+                                                                          }),
+                                                         NULL));
                     }
                 }
                 // hide list
@@ -376,7 +394,7 @@ bool MenuLayer::init()
                     dataPic = Sprite::create("frame/Data-Pic.png");
                     dataPic->setScale(visibleSize.width/dataPic->getContentSize().width*0.6);
                 }
-                greyLayer->addChild(dataPic);
+                greyLayer->addChild(dataPic, 1, "dataPic");
                 dataPic->setPosition(visibleSize.width*0.33, visibleSize.height*0.5);
                 dataPic->setOpacity(0);
                 dataPic->runAction(ActionFadeIn::create(0.2, 200));

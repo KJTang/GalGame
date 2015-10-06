@@ -254,7 +254,10 @@ void GameScene::startSavedGame(std::string datafile)
     // flags and scene
     std::string path = FileUtils::getInstance()->getWritablePath()+datafile;
     std::ifstream fin(path.c_str());
+    // used later
     std::string scriptpath;
+    int choicetable = -1;
+    
     std::string str;
     fin>>str;
     bool bgp = false, text = false;
@@ -286,6 +289,7 @@ void GameScene::startSavedGame(std::string datafile)
         } else if (str == "choicetablePos") {
             int pos;
             fin>>pos;
+            choicetable = pos;
             ScriptController::getInstance()->choiceTablePos = pos;
         } else if (str == "choicetableLine") {
             int line;
@@ -353,11 +357,14 @@ void GameScene::startSavedGame(std::string datafile)
         }
     }
     
-    // load saved game here
+    // load saved game here (if there is a choicetable, we should read script at once)
+    if (choicetable != -1) {
+        isMissionCompleted = true;
+    } else {
+        isMissionCompleted = false;
+        enableGetTouch = true;
+    }
     ScriptController::getInstance()->runSaved(scriptpath);
-//    isMissionCompleted = false;
-//    enableGetTouch = true;
-    isMissionCompleted = true;
     this->scheduleUpdate();
 }
 
