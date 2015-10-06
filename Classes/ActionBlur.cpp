@@ -73,12 +73,20 @@ void ActionBlur::update(float dt)
                 glprogramState->setUniformInt("u_blur", blurValue[count/step*2]);
                 break;
             case LITTLE_TO_NONE:
+                if (5-count/step == 0) {
+                    // reset shader to default
+                    _target->setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+                }
                 glprogramState->setUniformInt("u_blur",  blurValue[5-count/step]);
                 break;
             case LITTLE_TO_MUCH:
                 glprogramState->setUniformInt("u_blur", blurValue[count/step+5]);
                 break;
             case MUCH_TO_NONE:
+                if (10-count/step*2 == 0) {
+                    // reset shader to default
+                    _target->setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+                }
                 glprogramState->setUniformInt("u_blur", blurValue[10-count/step*2]);
                 break;
             case MUCH_TO_LITTLE:

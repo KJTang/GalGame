@@ -7,6 +7,7 @@
 //
 
 #include "GameScene.h"
+#include "ActionFade.h"
 
 GameScene* GameScene::sharedGameScene = nullptr;
 
@@ -508,10 +509,17 @@ void GameScene::setCharacterClear(int id)
         return;
     }
     if (characters[id]) {
-        characters[id]->removeFromParentAndCleanup(true);
-        characters[id] = nullptr;
+        log("delete character%02d", id);
+        // cause "FadeOut" used default shader, so we should set it back
+        characters[id]->setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+        characters[id]->runAction(Sequence::create(FadeOut::create(0.2),
+                                                   CallFunc::create([=]()
+                                                                    {
+                                                                        characters[id]->removeFromParentAndCleanup(true);
+                                                                        characters[id] = nullptr;
+                                                                    }),
+                                                   NULL));
     }
-    characters[id] = nullptr;
     isMissionCompleted = true;
     
     // clear data
@@ -537,17 +545,23 @@ void GameScene::setCharacterStart(int id)
     characters[id]->setPosition(visibleSize.width * characterPositionX[id],
                                 visibleSize.height * characterPositionY[id]);
     
-    if (characterEffect[id]) {
-        log("characterEffect sth.");
-        characters[id]->runAction(characterEffect[id]);
-        characterEffect[id] = nullptr;
-    } else {
-        log("characterEffect none");
-//        characters[id]->runAction(FadeIn::create(5));
-    }
+//    if (characterEffect[id]) {
+//        log("characterEffect sth.");
+//        characters[id]->runAction(characterEffect[id]);
+//        characterEffect[id] = nullptr;
+//    } else {
+//        log("characterEffect none");
+////        characters[id]->runAction(FadeIn::create(5));
+//    }
     
+    // enter effect
+    characters[id]->setOpacity(0);
     if (focus != CHARACTER) {
-        characters[id]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+        characters[id]->runAction(Sequence::create(FadeIn::create(0.5),
+                                                   ActionBlur::create(0.5, NONE_TO_MUCH),
+                                                   NULL));
+    } else {
+        characters[id]->runAction(FadeIn::create(0.5));
     }
     isMissionCompleted = true;
     

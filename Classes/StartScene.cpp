@@ -40,5 +40,20 @@ bool StartScene::init()
 //    // data test
 //    DataController::getInstance()->test();
     
+//    // test
+//    auto sprite = Sprite::create("ch01.png");
+//    this->addChild(sprite);
+//    sprite->setScale(0.5);
+//    sprite->setPosition(visibleSize.width*0.5, visibleSize.height*0.5);
+//    sprite->setOpacity(0);
+//    sprite->runAction(Sequence::create(
+//                                       FadeIn::create(3),
+//                                       FadeOut::create(3),
+//                                       CallFunc::create([=]()
+//                                                        {
+//                                                            sprite->removeFromParentAndCleanup(true);
+//                                                        }),
+//                                       NULL));
+    
     return true;
 }
