@@ -55,13 +55,9 @@ public:
         return sharedGameController;
     }
     
-    // Data
-    void saveData(std::string dataname);
-    void loadData();
-    
     // Scene Control
     void enterStartScene();
-    void enterGameScene(std::string dataFilename = "");
+    void enterGameScene(const std::string &dataFilename = "");
     void enterConfigScene();
     void enterMemoryScene();
     void enterDataLoadScene();
@@ -69,12 +65,17 @@ public:
     void exitGame();
     
     // Audio Control
-    void loadBGM(std::string filename);
+    void loadBGM(const std::string &filename);
     void playBGM();
     void pauseBGM();
     void resumeBGM();
     void stopBGM();
     void setBGMVolume(float v);
+    
+    void loadSE(const std::string &filename);
+    void playSE(const std::string &filename);
+    void stopSE();
+    void setSEVolume(float v);
 };
 
 #endif /* GameController_cpp */

@@ -164,7 +164,7 @@ bool MenuLayer::init()
     touchType = NONE;
     // screen touch listener
     screenTouchListener = EventListenerTouchOneByOne::create();
-    screenTouchListener->setSwallowTouches(true);
+    screenTouchListener->setSwallowTouches(false);
     screenTouchListener->onTouchBegan = [&](Touch* touch, Event* event) {
         originPoint = touch->getLocation();
         startPoint = touch->getLocation();
@@ -203,15 +203,18 @@ bool MenuLayer::init()
             touch->getLocation().y < visibleSize.height*0.9) {
             touchType = LEFT;
             log("touch begin left");
+            screenTouchListener->setSwallowTouches(true);
         } else if (touch->getLocation().x > visibleSize.width*0.9 &&
                    touch->getLocation().y > visibleSize.height*0.1 &&
                    touch->getLocation().y < visibleSize.height*0.9) {
             touchType = RIGHT;
             log("touch begin right");
+            screenTouchListener->setSwallowTouches(true);
         } else if (touch->getLocation().y < visibleSize.height*0.1) {
             touchType = BOTTOM;
             dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height*0.5)));
             log("touch begin bottom");
+            screenTouchListener->setSwallowTouches(true);
         }
         return true;
     };
@@ -278,6 +281,7 @@ bool MenuLayer::init()
                 } else {
                     leftMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
                     greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
+                    screenTouchListener->setSwallowTouches(false);
                 }
                 break;
             }
@@ -289,6 +293,7 @@ bool MenuLayer::init()
                 } else {
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
                     greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
+                    screenTouchListener->setSwallowTouches(false);
                 }
                 break;
             }
@@ -393,6 +398,7 @@ void MenuLayer::sortDataList()
         currentListItemID = -1;
         static_cast<ListItem*>(dataListChildren.at(0))->setActive(false);
         greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
+        screenTouchListener->setSwallowTouches(false);
         return;
     }
     // focus on the item at middle of screen

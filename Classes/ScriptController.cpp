@@ -348,9 +348,13 @@ void ScriptController::stateCommand(const std::string &cmd)
             if (str == "name") {
                 std::string str = getString();
                 log("set se name = %s", str.c_str());
+                GameController::getInstance()->loadSE(str);
+                GameScene::getInstance()->isMissionCompleted = true;
             } else if (str == "start") {
                 std::string str = getString();
                 log("set se start = %s", str.c_str());
+                GameController::getInstance()->playSE(str);
+                GameScene::getInstance()->isMissionCompleted = true;
             } else {
                 showError(UNKNOWN_COMMAND);
             }

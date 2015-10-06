@@ -72,16 +72,6 @@ void GameController::LoadShader()
     GLProgramCache::getInstance()->addGLProgram(textClear, "textclear");
 }
 
-void GameController::saveData(std::string dataname)
-{
-    std::string path = FileUtils::getInstance()->getWritablePath()+"dataname";
-}
-
-void GameController::loadData()
-{
-    
-}
-
 void GameController::enterStartScene()
 {
     switch (currentState) {
@@ -106,7 +96,7 @@ void GameController::enterStartScene()
     currentState = STATE_START_SCENE;
 }
 
-void GameController::enterGameScene(std::string dataFilename)
+void GameController::enterGameScene(const std::string &dataFilename)
 {
     if (dataFilename.size()) {
         switch (currentState) {
@@ -114,6 +104,10 @@ void GameController::enterGameScene(std::string dataFilename)
                 static_cast<StartScene*>(Director::getInstance()->getRunningScene())->black->runAction(FadeIn::create(0.1));
                 Director::getInstance()->purgeCachedData();
                 Director::getInstance()->replaceScene(TransitionFade::create(0.5, GameScene::getInstance()));
+                GameScene::getInstance()->startSavedGame(dataFilename);
+                break;
+            case STATE_GAME_SCENE:
+                GameScene::getInstance()->clear();
                 GameScene::getInstance()->startSavedGame(dataFilename);
                 break;
             default:
@@ -151,7 +145,7 @@ void GameController::exitGame()
     exit(0);
 }
 
-void GameController::loadBGM(std::string filename)
+void GameController::loadBGM(const std::string &filename)
 {
     bgmFilename = filename;
     CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic(bgmFilename.c_str());
@@ -180,4 +174,24 @@ void GameController::stopBGM()
 void GameController::setBGMVolume(float v)
 {
     CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(v);
+}
+
+void GameController::loadSE(const std::string &filename)
+{
+    CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(filename.c_str());
+}
+
+void GameController::playSE(const std::string &filename)
+{
+    CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(filename.c_str());
+}
+
+void GameController::stopSE()
+{
+    CocosDenshion::SimpleAudioEngine::getInstance()->stopAllEffects();
+}
+
+void GameController::setSEVolume(float v)
+{
+    CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(v);
 }

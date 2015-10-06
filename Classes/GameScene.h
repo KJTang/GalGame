@@ -17,6 +17,7 @@
 
 #include "TextLayer.h"
 #include "ChoiceTableLayer.h"
+#include "MenuLayer.h"
 #include "GyroBackground.h"
 #include "ButtonSprite.h"
 
@@ -31,7 +32,7 @@ private:
     Size visibleSize;
     Layer *backgroundLayer;
     Layer *characterLayer;
-    Layer *menuLayer;
+    MenuLayer *menuLayer;
     ButtonSprite *quitButton, *saveButton;
     // game mode
     int gameMode;

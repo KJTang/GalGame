@@ -32,12 +32,13 @@ bool GameScene::init()
     this->addChild(backgroundLayer);
     characterLayer = Layer::create();
     this->addChild(characterLayer);
-    menuLayer = Layer::create();
-    this->addChild(menuLayer);
     // text
     textLayer = TextLayer::create();
     this->addChild(textLayer);
     textLayer->setVisible(false);
+    // menu
+    menuLayer = MenuLayer::create();
+    this->addChild(menuLayer, 10);
     // bgp
     bgp = nullptr;
     bgpDuration = 0, bgpScale = 1.5, bgpPositionX = 0, bgpPositionY = 0;
@@ -80,10 +81,8 @@ bool GameScene::init()
     
     // screen touch listener
     screenTouchListener = EventListenerTouchOneByOne::create();
-    screenTouchListener->setSwallowTouches(true);
-    Point touchStart, touchEnd;
+    screenTouchListener->setSwallowTouches(false);
     screenTouchListener->onTouchBegan = [&](Touch* touch, Event* event){
-        touchStart = touch->getLocation();
         return true;
     };
     screenTouchListener->onTouchEnded = [&](Touch* touch, Event* event){
@@ -220,14 +219,6 @@ void GameScene::clear()
     if (this->isScheduled(schedule_selector(GameScene::update))) {
         this->unscheduleUpdate();
     }
-//    if (touchListener) {
-//        _eventDispatcher->removeEventListener(touchListener);
-//        touchListener = nullptr;
-//    }
-//    if (textFinishListener) {
-//        _eventDispatcher->removeEventListener(textFinishListener);
-//        textFinishListener = nullptr;
-//    }
     if (screenTouchListener) {
         _eventDispatcher->removeEventListener(screenTouchListener);
         screenTouchListener = nullptr;
@@ -671,7 +662,7 @@ void GameScene::setTextClear()
 void GameScene::setChoiceNumber(int number)
 {
     choiceTable = ChoiceTableLayer::create();
-    this->addChild(choiceTable);
+    this->addChild(choiceTable, 9);
     
     choiceTable->setChoiceNumber(number);
     isMissionCompleted = true;

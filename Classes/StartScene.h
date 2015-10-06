@@ -10,6 +10,7 @@
 #define StartScene_cpp
 
 #include "cocos2d.h"
+#include "MenuLayer.h"
 
 using namespace cocos2d;
 
@@ -18,6 +19,7 @@ class StartScene : public Scene
 private:
     Size visibleSize;
     Layer *backgroundLayer;
+    MenuLayer *menuLayer;
 public:
     LayerColor *black;
 public:
