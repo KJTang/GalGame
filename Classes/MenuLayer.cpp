@@ -299,110 +299,15 @@ bool MenuLayer::init()
                     endPoint.y - originPoint.y > -20 && endPoint.y - originPoint.y < 20 &&
                     endPoint.x > visibleSize.width*0.5 && endPoint.x < visibleSize.width &&
                     endPoint.y > visibleSize.height*0.5-listItemHeight*0.5 && endPoint.y < visibleSize.height*0.5+listItemHeight*0.5) {
-                    auto list = dataList->getChildren();
-                    auto filename = static_cast<ListItem*>(list.at(currentListItemID))->text;
-                    log("click on item %d: %s", currentListItemID, filename.c_str());
+                    auto dataListChildren = dataList->getChildren();
+                    auto filename = static_cast<ListItem*>(dataListChildren.at(currentListItemID))->text;
+                    log("click on item %d(%d): %s", currentListItemID, (int)dataListChildren.size(), filename.c_str());
                     if (filename != "No Data") {
-                        this->runAction(Sequence::create(CallFunc::create([&]()
-                                                                          {
-                                                                              greyLayer->getChildByName("dataPic")->runAction(MoveBy::create(0.3, Vec2(-visibleSize.width*0.7, 0)));
-                                                                              dataList->runAction(MoveBy::create(0.3, Vec2(visibleSize.width*0.7, 0)));
-                                                                          }),
-                                                         DelayTime::create(0.3),
-                                                         CallFunc::create([&]()
-                                                                          {
-                                                                              auto dark = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
-                                                                              this->addChild(dark);
-                                                                              dark->setOpacity(0);
-                                                                              dark->runAction(FadeIn::create(0.3));
-                                                                          }),
-                                                         DelayTime::create(0.3),
-                                                         CallFunc::create([&, filename]()
-                                                                          {
-                                                                              GameController::getInstance()->enterGameScene(filename);
-                                                                          }),
-                                                         NULL));
+                        loadData(filename);
+                        return false;
                     }
                 }
-                // hide list
-                if (dataList->getPositionY() < visibleSize.height*0.7) {
-                    dataList->runAction(MoveTo::create(0.1, Vec2(0, 0)));
-                    currentListItemID = -1;
-                    auto list = dataList->getChildren();
-                    static_cast<ListItem*>(list.at(0))->setActive(false);
-                    greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
-                    return false;
-                }
-                // focus on the item at middle of screen
-                bool flag = false;
-                auto dataListChildren = dataList->getChildren();
-                for (int i = 0; i != listItemCount; ++i) {
-                    auto pos = visibleSize.height+listItemHeight*i;
-                    if (dataList->getPositionY() > pos - listItemHeight*0.5 &&
-                        dataList->getPositionY() < pos + listItemHeight*0.5)
-                    {
-                        currentListItemID = i;
-                        dataList->runAction(MoveTo::create(0.1, Vec2(0, pos)));
-                        static_cast<ListItem*>(dataListChildren.at(i))->setActive(true);
-                        flag = true;
-                    } else {
-                        static_cast<ListItem*>(dataListChildren.at(i))->setActive(false);
-                    }
-                }
-                if (!flag) {
-                    // focus on the item at end of the list
-                    if (dataList->getPositionY() > visibleSize.height+listItemHeight*(listItemCount-1)) {
-                        dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height+listItemHeight*(listItemCount-1))));
-                        static_cast<ListItem*>(dataListChildren.at(dataListChildren.size()-1))->setActive(true);
-                        if (dataListChildren.size() > 1) {
-                            static_cast<ListItem*>(dataListChildren.at(dataListChildren.size()-2))->setActive(false);
-                        }
-                        currentListItemID = static_cast<int>(dataListChildren.size())-1;
-                    }
-                    // focus on the item at head of the list
-                    else if (dataList->getPositionY() > visibleSize.height*0.7) {
-                        dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height)));
-                        greyLayer->runAction(ActionFadeIn::create(0.1, 150));
-                        static_cast<ListItem*>(dataListChildren.at(0))->setActive(true);
-                        if (dataListChildren.size() > 1) {
-                            static_cast<ListItem*>(dataListChildren.at(1))->setActive(false);
-                        }
-                        currentListItemID = 0;
-                    }
-                }
-                // draw data-pic
-                if (dataPic) {
-                    dataPic->removeFromParentAndCleanup(true);
-                    dataPic = nullptr;
-                }
-                auto filename = static_cast<ListItem*>(dataListChildren.at(currentListItemID))->text;
-                if (filename != "No Data") {
-                    dataPic = Sprite::create();
-                    auto pic = Sprite::create(FileUtils::getInstance()->getWritablePath()+filename+".png");
-//                    CCASSERT(pic, "pic musn't be nullptr!!!");
-                    if (pic == nullptr) {
-                        pic = Sprite::create("frame/Data-Pic.png");
-                        pic->setScale(visibleSize.width/dataPic->getContentSize().width*0.6);
-                    } else {
-                        pic->setScale(0.58);
-                    }
-                    dataPic->addChild(pic);
-                    auto frame = Sprite::create("frame/Data-Pic.png");
-                    frame->setScale(visibleSize.width/frame->getContentSize().width*0.6);
-                    dataPic->addChild(frame);
-                } else {
-                    dataPic = Sprite::create("frame/Data-Pic.png");
-                    dataPic->setScale(visibleSize.width/dataPic->getContentSize().width*0.6);
-                }
-                greyLayer->addChild(dataPic, 1, "dataPic");
-                dataPic->setPosition(visibleSize.width*0.33, visibleSize.height*0.5);
-                dataPic->setOpacity(0);
-                dataPic->runAction(ActionFadeIn::create(0.2, 200));
-                auto dataPicChildren = dataPic->getChildren();
-                for (int i = 0; i != dataPicChildren.size(); ++i) {
-                    static_cast<Sprite*>(dataPicChildren.at(i))->setOpacity(0);
-                    static_cast<Sprite*>(dataPicChildren.at(i))->runAction(ActionFadeIn::create(0.2, 200));
-                }
+                sortDataList();
                 break;
             }
             default:
@@ -413,4 +318,150 @@ bool MenuLayer::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(screenTouchListener, this);
     
     return true;
+}
+
+void MenuLayer::loadData(const std::string &filename)
+{
+    this->runAction(Sequence::create(CallFunc::create([&]()
+                                                      {
+                                                          greyLayer->getChildByName("dataPic")->runAction(MoveBy::create(0.3, Vec2(-visibleSize.width*0.7, 0)));
+                                                          dataList->runAction(MoveBy::create(0.3, Vec2(visibleSize.width*0.7, 0)));
+                                                      }),
+                                     CallFunc::create([&]()
+                                                      {
+                                                          auto dark = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
+                                                          this->addChild(dark);
+                                                          dark->setOpacity(0);
+                                                          dark->runAction(FadeIn::create(0.5));
+                                                      }),
+                                     DelayTime::create(0.5),
+                                     CallFunc::create([&, filename]()
+                                                      {
+                                                          GameController::getInstance()->enterGameScene(filename);
+                                                      }),
+                                     NULL));
+}
+
+void MenuLayer::deleteData(const std::string &filename)
+{
+    this->runAction(Sequence::create(CallFunc::create([&]()
+                                                      {
+                                                          auto dataListChildren = dataList->getChildren();
+                                                          dataListChildren.at(currentListItemID)->runAction(MoveBy::create(0.3, Vec2(visibleSize.width*0.5, 0)));
+                                                          log("id:%d size:%d", currentListItemID, (int)dataListChildren.size());
+                                                          if (currentListItemID == dataListChildren.size()-1) {
+                                                              dataList->runAction(MoveBy::create(0.1, Vec2(0, -listItemHeight)));
+                                                              dataListChildren.at(currentListItemID)->runAction(MoveBy::create(0.1, Vec2(0, listItemHeight)));
+                                                          } else {
+                                                              for (int i = currentListItemID+1; i < dataListChildren.size(); ++i) {
+                                                                  dataListChildren.at(i)->runAction(MoveBy::create(0.3, Vec2(0, listItemHeight)));
+                                                              }
+                                                          }
+                                                      }),
+                                     DelayTime::create(0.3),
+                                     CallFunc::create([&]()
+                                                      {
+                                                          --listItemCount;
+                                                          auto dataListChildren = dataList->getChildren();
+                                                          dataListChildren.at(currentListItemID)->removeFromParentAndCleanup(true);
+                                                          dataListChildren.erase(currentListItemID);
+                                                          DataController::getInstance()->deleteData(DataController::getInstance()->dataInfoList[currentListItemID].dataName);
+                                                          sortDataList();
+                                                      }),
+                                     NULL));
+}
+
+void MenuLayer::sortDataList()
+{
+    auto dataListChildren = dataList->getChildren();
+    if (!dataListChildren.size()) {
+        log("gotcha!");
+        dataList->runAction(MoveTo::create(0.1, Vec2(0, 0)));
+        currentListItemID = -1;
+        greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
+        // create "No Data"
+        auto data = ListItem::create();
+        dataList->addChild(data);
+        data->setPosition(visibleSize.width*0.67, -visibleSize.height*0.5);
+        data->setText("No Data", "");
+        listItemCount = 1;
+        return;
+    }
+    // hide list
+    if (dataList->getPositionY() < visibleSize.height*0.7) {
+        dataList->runAction(MoveTo::create(0.1, Vec2(0, 0)));
+        currentListItemID = -1;
+        static_cast<ListItem*>(dataListChildren.at(0))->setActive(false);
+        greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
+        return;
+    }
+    // focus on the item at middle of screen
+    bool flag = false;
+    for (int i = 0; i != listItemCount; ++i) {
+        auto pos = visibleSize.height+listItemHeight*i;
+        if (dataList->getPositionY() > pos - listItemHeight*0.5 &&
+            dataList->getPositionY() < pos + listItemHeight*0.5)
+        {
+            currentListItemID = i;
+            dataList->runAction(MoveTo::create(0.1, Vec2(0, pos)));
+            static_cast<ListItem*>(dataListChildren.at(i))->setActive(true);
+            flag = true;
+        } else {
+            static_cast<ListItem*>(dataListChildren.at(i))->setActive(false);
+        }
+    }
+    if (!flag) {
+        // focus on the item at end of the list
+        if (dataList->getPositionY() > visibleSize.height+listItemHeight*(listItemCount-1)) {
+            dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height+listItemHeight*(listItemCount-1))));
+            static_cast<ListItem*>(dataListChildren.at(dataListChildren.size()-1))->setActive(true);
+            if (dataListChildren.size() > 1) {
+                static_cast<ListItem*>(dataListChildren.at(dataListChildren.size()-2))->setActive(false);
+            }
+            currentListItemID = static_cast<int>(dataListChildren.size())-1;
+        }
+        // focus on the item at head of the list
+        else if (dataList->getPositionY() > visibleSize.height*0.7) {
+            dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height)));
+            greyLayer->runAction(ActionFadeIn::create(0.1, 150));
+            static_cast<ListItem*>(dataListChildren.at(0))->setActive(true);
+            if (dataListChildren.size() > 1) {
+                static_cast<ListItem*>(dataListChildren.at(1))->setActive(false);
+            }
+            currentListItemID = 0;
+        }
+    }
+    // draw data-pic
+    if (dataPic) {
+        dataPic->removeFromParentAndCleanup(true);
+        dataPic = nullptr;
+    }
+    auto filename = static_cast<ListItem*>(dataListChildren.at(currentListItemID))->text;
+    if (filename != "No Data") {
+        dataPic = Sprite::create();
+        auto pic = Sprite::create(FileUtils::getInstance()->getWritablePath()+filename+".png");
+        //                    CCASSERT(pic, "pic musn't be nullptr!!!");
+        if (pic == nullptr) {
+            pic = Sprite::create("frame/Data-Pic.png");
+            pic->setScale(visibleSize.width/dataPic->getContentSize().width*0.6);
+        } else {
+            pic->setScale(0.58);
+        }
+        dataPic->addChild(pic);
+        auto frame = Sprite::create("frame/Data-Pic.png");
+        frame->setScale(visibleSize.width/frame->getContentSize().width*0.6);
+        dataPic->addChild(frame);
+    } else {
+        dataPic = Sprite::create("frame/Data-Pic.png");
+        dataPic->setScale(visibleSize.width/dataPic->getContentSize().width*0.6);
+    }
+    greyLayer->addChild(dataPic, 1, "dataPic");
+    dataPic->setPosition(visibleSize.width*0.33, visibleSize.height*0.5);
+    dataPic->setOpacity(0);
+    dataPic->runAction(ActionFadeIn::create(0.2, 200));
+    auto dataPicChildren = dataPic->getChildren();
+    for (int i = 0; i != dataPicChildren.size(); ++i) {
+        static_cast<Sprite*>(dataPicChildren.at(i))->setOpacity(0);
+        static_cast<Sprite*>(dataPicChildren.at(i))->runAction(ActionFadeIn::create(0.2, 200));
+    }
 }

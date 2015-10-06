@@ -55,6 +55,10 @@ public:
     ~MenuLayer();
     virtual bool init();
     CREATE_FUNC(MenuLayer);
+    
+    void loadData(const std::string &filename);
+    void deleteData(const std::string &filename);
+    void sortDataList();
 };
 
 #endif /* MenuLayer_cpp */

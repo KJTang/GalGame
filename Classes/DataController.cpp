@@ -304,6 +304,8 @@ bool DataController::deleteData(const std::string &datafile)
     }
     FileUtils::getInstance()->removeFile(path);
     FileUtils::getInstance()->removeFile(path+".png");
+    CCASSERT(!(FileUtils::getInstance()->isFileExist(path)||FileUtils::getInstance()->isFileExist(path+".png")), "Data should be delete!!");
+    updateDataInfo();
     return true;
 }
 
