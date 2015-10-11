@@ -13,12 +13,14 @@
 
 using namespace cocos2d;
 
+const int MAX_CHOICE_NUMBER = 8;
+
 class ChoiceTableLayer : public Layer
 {
 private:
     Size visibleSize;
 
-    Vector<Label*> choices;
+    Vector<Sprite*> choices;
     int choiceNumber;
     int choiceResult;
     

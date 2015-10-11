@@ -48,6 +48,7 @@ void ScriptController::runSaved(const std::string &filename)
         lineID = choiceTableLineID;
     }
     data = FileUtils::getInstance()->getStringFromFile(filename.c_str());
+    DataController::getInstance()->test(filename);
 }
 
 std::string ScriptController::getString()

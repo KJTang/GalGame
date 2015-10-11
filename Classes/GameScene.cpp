@@ -53,6 +53,7 @@ bool GameScene::init()
     bgpDuration = 0, bgpScale = 1.5, bgpPositionX = 0, bgpPositionY = 0;
     // characters
     for (int i = 0; i != 4; ++i) {
+        UserData.characterFilename[i].clear();
         characters[i] = nullptr;
         characterDuration[i] = 0;
         characterScale[i] = 0.5;
@@ -103,13 +104,11 @@ bool GameScene::init()
                     textLayer->blurOut();
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-//                            characters[j]->runAction(ActionBlur2::create(0.5, NONE_TO_MUCH));
                             characters[j]->runAction(ActionBlur::create(0.5, 2000, 300));
                         }
                     }
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
-//                        bgs.at(j)->runAction(ActionBlur2::create(0.5, LITTLE_TO_MUCH));
                         bgs.at(j)->runAction(ActionBlur::create(0.5, 1500, 1000));
                     }
                 } else if (focus == BACKGROUND) {
@@ -117,10 +116,8 @@ bool GameScene::init()
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
                         if (!characterLayer->getChildren().size()) {
-//                            bgs.at(j)->runAction(ActionBlur2::create(0.5, NONE_TO_LITTLE));
                             bgs.at(j)->runAction(ActionBlur::create(0.5, 2000, 1500));
                         } else {
-//                            bgs.at(j)->runAction(ActionBlur2::create(0.5, NONE_TO_MUCH));
                             bgs.at(j)->runAction(ActionBlur::create(0.5, 1500, 1000));
                         }
                     }
@@ -142,25 +139,21 @@ bool GameScene::init()
                     textLayer->blurIn();
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-//                            characters[j]->runAction(ActionBlur2::create(0.5, MUCH_TO_NONE));
                             characters[j]->runAction(ActionBlur::create(0.5, 300, 0));
                         }
                     }
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
-//                        bgs.at(j)->runAction(ActionBlur2::create(0.5, MUCH_TO_LITTLE));
                         bgs.at(j)->runAction(ActionBlur::create(0.5, 1000, 1500));
                     }
                 } else if (focus == BACKGROUND) {
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-//                            characters[j]->runAction(ActionBlur2::create(0.5, MUCH_TO_NONE));
                             characters[j]->runAction(ActionBlur::create(0.5, 300, 0));
                         }
                     }
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
-//                        bgs.at(j)->runAction(ActionBlur2::create(0.5, NONE_TO_LITTLE));
                         bgs.at(j)->runAction(ActionBlur::create(0.5, 2000, 1500));
                     }
                 }
@@ -174,12 +167,10 @@ bool GameScene::init()
             auto bgs = bgp->getChildren();
             for (int j = 0; j != 4; ++j) {
                 if (characters[j]) {
-//                    characters[j]->runAction(ActionBlur2::create(0.5, NONE_TO_MUCH));
                     characters[j]->runAction(ActionBlur::create(0.5, 2000, 300));
                 }
             }
             for (int j = 0; j != bgs.size(); ++j) {
-//                bgs.at(j)->runAction(ActionBlur2::create(0.5, MUCH_TO_NONE));
                 bgs.at(j)->runAction(ActionBlur::create(0.5, 1000, 0));
             }
             focus = BACKGROUND;
@@ -187,13 +178,11 @@ bool GameScene::init()
         } else if (focus == CHARACTER) {
             for (int j = 0; j != 4; ++j) {
                 if (characters[j]) {
-//                    characters[j]->runAction(ActionBlur2::create(0.5, NONE_TO_MUCH));
                     characters[j]->runAction(ActionBlur::create(0.5, 2000, 300));
                 }
             }
             auto bgs = bgp->getChildren();
             for (int j = 0; j != bgs.size(); ++j) {
-//                bgs.at(j)->runAction(ActionBlur2::create(0.5, LITTLE_TO_NONE));
                 bgs.at(j)->runAction(ActionBlur::create(0.5, 1500, 0));
             }
             focus = BACKGROUND;

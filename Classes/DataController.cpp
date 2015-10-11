@@ -340,6 +340,7 @@ void DataController::test(const std::string &filename)
 {
     log("test------------------------");
     std::string path = FileUtils::getInstance()->getWritablePath()+filename;
+    log("%s", path.c_str());
     std::ifstream fin(path.c_str());
     
     std::string str;
