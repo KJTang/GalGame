@@ -8,6 +8,7 @@
 
 #include "GameScene.h"
 #include "ActionFade.h"
+#include "ActionBlur.h"
 
 const int choicetableOrder = 9;
 const int blacklayerOrder = 10;
@@ -102,21 +103,25 @@ bool GameScene::init()
                     textLayer->blurOut();
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-                            characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+//                            characters[j]->runAction(ActionBlur2::create(0.5, NONE_TO_MUCH));
+                            characters[j]->runAction(ActionBlur::create(0.5, 2000, 300));
                         }
                     }
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
-                        bgs.at(j)->runAction(ActionBlur::create(0.5, LITTLE_TO_MUCH));
+//                        bgs.at(j)->runAction(ActionBlur2::create(0.5, LITTLE_TO_MUCH));
+                        bgs.at(j)->runAction(ActionBlur::create(0.5, 1500, 1000));
                     }
                 } else if (focus == BACKGROUND) {
                     textLayer->blurOut();
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
                         if (!characterLayer->getChildren().size()) {
-                            bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
+//                            bgs.at(j)->runAction(ActionBlur2::create(0.5, NONE_TO_LITTLE));
+                            bgs.at(j)->runAction(ActionBlur::create(0.5, 2000, 1500));
                         } else {
-                            bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+//                            bgs.at(j)->runAction(ActionBlur2::create(0.5, NONE_TO_MUCH));
+                            bgs.at(j)->runAction(ActionBlur::create(0.5, 1500, 1000));
                         }
                     }
                 }
@@ -137,22 +142,26 @@ bool GameScene::init()
                     textLayer->blurIn();
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-                            characters[j]->runAction(ActionBlur::create(0.5, MUCH_TO_NONE));
+//                            characters[j]->runAction(ActionBlur2::create(0.5, MUCH_TO_NONE));
+                            characters[j]->runAction(ActionBlur::create(0.5, 300, 0));
                         }
                     }
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
-                        bgs.at(j)->runAction(ActionBlur::create(0.5, MUCH_TO_LITTLE));
+//                        bgs.at(j)->runAction(ActionBlur2::create(0.5, MUCH_TO_LITTLE));
+                        bgs.at(j)->runAction(ActionBlur::create(0.5, 1000, 1500));
                     }
                 } else if (focus == BACKGROUND) {
                     for (int j = 0; j != 4; ++j) {
                         if (characters[j]) {
-                            characters[j]->runAction(ActionBlur::create(0.5, MUCH_TO_NONE));
+//                            characters[j]->runAction(ActionBlur2::create(0.5, MUCH_TO_NONE));
+                            characters[j]->runAction(ActionBlur::create(0.5, 300, 0));
                         }
                     }
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
-                        bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
+//                        bgs.at(j)->runAction(ActionBlur2::create(0.5, NONE_TO_LITTLE));
+                        bgs.at(j)->runAction(ActionBlur::create(0.5, 2000, 1500));
                     }
                 }
                 focus = CHARACTER;
@@ -165,23 +174,27 @@ bool GameScene::init()
             auto bgs = bgp->getChildren();
             for (int j = 0; j != 4; ++j) {
                 if (characters[j]) {
-                    characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+//                    characters[j]->runAction(ActionBlur2::create(0.5, NONE_TO_MUCH));
+                    characters[j]->runAction(ActionBlur::create(0.5, 2000, 300));
                 }
             }
             for (int j = 0; j != bgs.size(); ++j) {
-                bgs.at(j)->runAction(ActionBlur::create(0.5, MUCH_TO_NONE));
+//                bgs.at(j)->runAction(ActionBlur2::create(0.5, MUCH_TO_NONE));
+                bgs.at(j)->runAction(ActionBlur::create(0.5, 1000, 0));
             }
             focus = BACKGROUND;
             return false;
         } else if (focus == CHARACTER) {
             for (int j = 0; j != 4; ++j) {
                 if (characters[j]) {
-                    characters[j]->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+//                    characters[j]->runAction(ActionBlur2::create(0.5, NONE_TO_MUCH));
+                    characters[j]->runAction(ActionBlur::create(0.5, 2000, 300));
                 }
             }
             auto bgs = bgp->getChildren();
             for (int j = 0; j != bgs.size(); ++j) {
-                bgs.at(j)->runAction(ActionBlur::create(0.5, LITTLE_TO_NONE));
+//                bgs.at(j)->runAction(ActionBlur2::create(0.5, LITTLE_TO_NONE));
+                bgs.at(j)->runAction(ActionBlur::create(0.5, 1500, 0));
             }
             focus = BACKGROUND;
             return false;
@@ -417,12 +430,12 @@ void GameScene::setBgpStart()
         if (focus == TEXT) {
             auto bgs = bgp->getChildren();
             for (int j = 0; j != bgs.size(); ++j) {
-                bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+                bgs.at(j)->runAction(ActionBlur::create(0.5, 2000, 1000));
             }
         } else if (focus == CHARACTER) {
             auto bgs = bgp->getChildren();
             for (int j = 0; j != bgs.size(); ++j) {
-                bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
+                bgs.at(j)->runAction(ActionBlur::create(0.5, 2000, 1500));
             }
         }
         isMissionCompleted = true;
@@ -576,7 +589,7 @@ void GameScene::setCharacterStart(int id)
     characters[id]->setOpacity(0);
     if (focus != CHARACTER) {
         characters[id]->runAction(Sequence::create(FadeIn::create(0.5),
-                                                   ActionBlur::create(0.5, NONE_TO_MUCH),
+                                                   ActionBlur::create(0.5, 2000, 300),
                                                    NULL));
     } else {
         characters[id]->runAction(FadeIn::create(0.5));

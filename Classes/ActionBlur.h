@@ -13,28 +13,21 @@
 
 using namespace cocos2d;
 
-enum {
-    NONE_TO_LITTLE,
-    NONE_TO_MUCH,
-    LITTLE_TO_NONE,
-    LITTLE_TO_MUCH,
-    MUCH_TO_NONE,
-    MUCH_TO_LITTLE
-};
+const int NONE = 0;
 
 class ActionBlur : public ActionInterval
 {
 private:
     int count, step;
-    int blurType;
-    int blurValue[11];
+    int startLevel, endLevel;
+    int delta;
     GLProgram *blur;
 public:
     ActionBlur();
     ~ActionBlur();
-    virtual bool init(float duration, int type);
+    virtual bool init(float duration, int startLevel, int endLevel);
     virtual void update(float dt);
-    static ActionBlur* create(float duration, int type);
+    static ActionBlur* create(float duration, int startLevel, int endLevel);
 };
 
 #endif /* ActionBlur_cpp */

@@ -21,8 +21,6 @@
 #include "GyroBackground.h"
 #include "ButtonSprite.h"
 
-#include "ActionBlur.h"
-
 using namespace cocos2d;
 
 class GameScene : public Scene
