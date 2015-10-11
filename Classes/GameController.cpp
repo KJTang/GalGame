@@ -109,6 +109,15 @@ void GameController::enterGameScene(const std::string &dataFilename)
             case STATE_GAME_SCENE:
                 GameScene::getInstance()->clear();
                 GameScene::getInstance()->startSavedGame(dataFilename);
+                
+//                GameScene::getInstance()->clear();
+//                Director::getInstance()->purgeCachedData();
+//                Director::getInstance()->replaceScene(TransitionFade::create(0.5, StartScene::create()));
+//
+//                static_cast<StartScene*>(Director::getInstance()->getRunningScene())->black->runAction(FadeIn::create(0.1));
+//                Director::getInstance()->purgeCachedData();
+//                Director::getInstance()->replaceScene(TransitionFade::create(0.5, GameScene::getInstance()));
+//                GameScene::getInstance()->startSavedGame(dataFilename);
                 break;
             default:
                 break;

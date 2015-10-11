@@ -132,26 +132,8 @@ bool MenuLayer::init()
         GameController::getInstance()->enterConfigScene();
     });
 
-    // create datalist
-    dataList = Layer::create();
-    this->addChild(dataList);
-    listItemCount = DataController::getInstance()->dataCount;
-    listItemHeight = visibleSize.height*0.3;
-    currentListItemID = -1;
-    for (int i = 0; i != listItemCount; ++i) {
-        auto data = ListItem::create();
-        dataList->addChild(data);
-        data->setPosition(visibleSize.width*0.67, -visibleSize.height*0.5 - listItemHeight*i);
-        data->setText(DataController::getInstance()->dataInfoList[i].dataName,
-                      DataController::getInstance()->dataInfoList[i].chapterName);
-    }
-    if (!listItemCount) {
-        auto data = ListItem::create();
-        dataList->addChild(data);
-        data->setPosition(visibleSize.width*0.67, -visibleSize.height*0.5);
-        data->setText("No Data", "");
-        listItemCount = 1;
-    }
+    // init data
+    dataList = nullptr;
     dataPic = nullptr;
     // touch event
     enum TOUCH_TYPE
@@ -192,7 +174,7 @@ bool MenuLayer::init()
         } else if (rightMenu->getPositionX() < 0) {
             touchType = RIGHT;
             return true;
-        } else if (dataList->getPositionY() > 0) {
+        } else if (dataList && dataList->getPositionY() > 0) {
             touchType = BOTTOM;
             return true;
         }
@@ -212,6 +194,9 @@ bool MenuLayer::init()
             screenTouchListener->setSwallowTouches(true);
         } else if (touch->getLocation().y < visibleSize.height*0.1) {
             touchType = BOTTOM;
+            // create new datalist
+            this->createDataList();
+            CCASSERT(dataList, "dataList can't be nullptr");
             dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height*0.5)));
             log("touch begin bottom");
             screenTouchListener->setSwallowTouches(true);
@@ -325,8 +310,35 @@ bool MenuLayer::init()
     return true;
 }
 
+void MenuLayer::createDataList()
+{
+    dataPic = nullptr;
+    
+    dataList = Layer::create();
+    this->addChild(dataList);
+    listItemCount = DataController::getInstance()->dataCount;
+    listItemHeight = visibleSize.height*0.3;
+    currentListItemID = -1;
+    for (int i = 0; i != listItemCount; ++i) {
+        auto data = ListItem::create();
+        dataList->addChild(data);
+        data->setPosition(visibleSize.width*0.67, -visibleSize.height*0.5 - listItemHeight*i);
+        data->setText(DataController::getInstance()->dataInfoList[i].dataName,
+                      DataController::getInstance()->dataInfoList[i].chapterName);
+    }
+    if (!listItemCount) {
+        auto data = ListItem::create();
+        dataList->addChild(data);
+        data->setPosition(visibleSize.width*0.67, -visibleSize.height*0.5);
+        data->setText("No Data", "");
+        listItemCount = 1;
+    }
+    dataPic = nullptr;
+}
+
 void MenuLayer::loadData(const std::string &filename)
 {
+    
     this->runAction(Sequence::create(CallFunc::create([&]()
                                                       {
                                                           greyLayer->getChildByName("dataPic")->runAction(MoveBy::create(0.3, Vec2(-visibleSize.width*0.7, 0)));
@@ -399,6 +411,9 @@ void MenuLayer::sortDataList()
         static_cast<ListItem*>(dataListChildren.at(0))->setActive(false);
         greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
         screenTouchListener->setSwallowTouches(false);
+        // remove old datalist
+        dataList->removeFromParentAndCleanup(true);
+        dataList = nullptr;
         return;
     }
     // focus on the item at middle of screen

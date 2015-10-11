@@ -29,16 +29,27 @@ bool ActionBlur::init(float duration, int type)
         count = 0;
         blurType = type;
         blurValue[0] = 0;
+//        blurValue[1] = 2000;
+//        blurValue[2] = 1500;
+//        blurValue[3] = 1200;
+//        blurValue[4] = 1050;
+//        blurValue[5] = 900;
+//        blurValue[6] = 750;
+//        blurValue[7] = 600;
+//        blurValue[8] = 500;
+//        blurValue[9] = 450;
+//        blurValue[10] = 400;
+        
         blurValue[1] = 2000;
         blurValue[2] = 1500;
-        blurValue[3] = 1200;
-        blurValue[4] = 1050;
-        blurValue[5] = 900;
-        blurValue[6] = 750;
-        blurValue[7] = 600;
-        blurValue[8] = 500;
-        blurValue[9] = 450;
-        blurValue[10] = 400;
+        blurValue[3] = 1300;
+        blurValue[4] = 1200;
+        blurValue[5] = 1100;
+        blurValue[6] = 1000;
+        blurValue[7] = 900;
+        blurValue[8] = 800;
+        blurValue[9] = 700;
+        blurValue[10] = 600;
         
         blur = new GLProgram();
         blur->initWithFilenames("BlurVertexShader.vert", "BlurFragmentShader.frag");
@@ -76,6 +87,7 @@ void ActionBlur::update(float dt)
                 if (5-count/step == 0) {
                     // reset shader to default
                     _target->setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+                    return;
                 }
                 glprogramState->setUniformInt("u_blur",  blurValue[5-count/step]);
                 break;
@@ -86,6 +98,7 @@ void ActionBlur::update(float dt)
                 if (10-count/step*2 == 0) {
                     // reset shader to default
                     _target->setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+                    return;
                 }
                 glprogramState->setUniformInt("u_blur", blurValue[10-count/step*2]);
                 break;

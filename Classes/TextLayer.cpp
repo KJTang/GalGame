@@ -26,11 +26,11 @@ bool TextLayer::init()
     textSpeed = 0.1;
     
     std::string fontFile = "fonts/PingFang_1.ttf";
-    float fontSize = 50;
-    Size textBoxSize = Size(1500, 300);
+    float fontSize = 55;
+    Size textBoxSize = Size(1600, 300);
     
     text = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
-    text->setPosition(Point(visibleSize.width*0.5, visibleSize.height*0.16));
+    text->setPosition(Point(visibleSize.width*0.5, visibleSize.height*0.15));
     this->addChild(text, 5);
     
     Point position[4] = {Point(1, 0), Point(-1, 0), Point(0, -1), Point(0, 1)};

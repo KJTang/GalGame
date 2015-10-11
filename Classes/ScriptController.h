@@ -87,7 +87,7 @@ public:
     // used for data saving
     bool isChoiceTableShowing;
     int choiceTablePos, choiceTableLineID;
-
+    int textPos, textLineID;
 };
 
 #endif /* ScriptController_cpp */

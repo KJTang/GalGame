@@ -9,6 +9,10 @@
 #include "GameScene.h"
 #include "ActionFade.h"
 
+const int choicetableOrder = 9;
+const int blacklayerOrder = 10;
+const int menulayerOrder = 11;
+
 GameScene* GameScene::sharedGameScene = nullptr;
 
 GameScene::GameScene(){}
@@ -36,9 +40,13 @@ bool GameScene::init()
     textLayer = TextLayer::create();
     this->addChild(textLayer);
     textLayer->setVisible(false);
+    // black layer
+    blackLayer = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
+    this->addChild(blackLayer, blacklayerOrder);
+    blackLayer->setOpacity(0);
     // menu
     menuLayer = MenuLayer::create();
-    this->addChild(menuLayer, 10);
+    this->addChild(menuLayer, menulayerOrder);
     // bgp
     bgp = nullptr;
     bgpDuration = 0, bgpScale = 1.5, bgpPositionX = 0, bgpPositionY = 0;
@@ -101,10 +109,15 @@ bool GameScene::init()
                     for (int j = 0; j != bgs.size(); ++j) {
                         bgs.at(j)->runAction(ActionBlur::create(0.5, LITTLE_TO_MUCH));
                     }
-                } else if (focus == BACKGROUND) {                    textLayer->blurOut();
+                } else if (focus == BACKGROUND) {
+                    textLayer->blurOut();
                     auto bgs = bgp->getChildren();
                     for (int j = 0; j != bgs.size(); ++j) {
-                        bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+                        if (!characterLayer->getChildren().size()) {
+                            bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
+                        } else {
+                            bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+                        }
                     }
                 }
                 else {
@@ -216,9 +229,9 @@ void GameScene::clear()
     
     GameController::getInstance()->stopBGM();
 
-    if (this->isScheduled(schedule_selector(GameScene::update))) {
+//    if (this->isScheduled(schedule_selector(GameScene::update))) {   // this 'if' is no use
         this->unscheduleUpdate();
-    }
+//    }
     if (screenTouchListener) {
         _eventDispatcher->removeEventListener(screenTouchListener);
         screenTouchListener = nullptr;
@@ -239,7 +252,7 @@ void GameScene::startNewGame()
 
 void GameScene::startSavedGame(std::string datafile)
 {
-    DataController::getInstance()->test(datafile);
+    log("GameScene::startSavedGame");
     this->init();
     // variables
     DataController::getInstance()->readFromData(datafile);
@@ -326,16 +339,23 @@ void GameScene::startSavedGame(std::string datafile)
             fin>>str;
             if (str == "content") {
                 fin>>str;
-                setTextContent(str);
-                setTextShow();
                 log("load text =%s", str.c_str());
-                textLayer->onClick();
+            } else if (str == "pos") {
+                int pos;
+                fin>>pos;
+                ScriptController::getInstance()->textPos = pos;
+                log("set text pos = %d", ScriptController::getInstance()->textPos);
+            } else if (str == "lineid") {
+                int lineid;
+                fin>>lineid;
+                ScriptController::getInstance()->textLineID = lineid;
             }
         } else {
             break;
         }
         fin>>str;
     }
+    fin.close();
     
     // show
     if (bgp) {
@@ -349,15 +369,16 @@ void GameScene::startSavedGame(std::string datafile)
         }
     }
     
-    // load saved game here (if there is a choicetable, we should read script at once)
-    if (choicetable != -1) {
-        isMissionCompleted = true;
-    } else {
-        isMissionCompleted = false;
-        enableGetTouch = true;
-    }
-    ScriptController::getInstance()->runSaved(scriptpath);
-    this->scheduleUpdate();
+    // load
+    this->runAction(Sequence::create(DelayTime::create(0.3),  // wait, make sure bgp, character... are loaded,
+                                                              // and they will not modify 'isMissionCompleted'
+                                     CallFunc::create([=]()
+                                                      {
+                                                          isMissionCompleted = true;
+                                                          ScriptController::getInstance()->runSaved(scriptpath);
+                                                          this->scheduleUpdate();
+                                                      }),
+                                     NULL));
 }
 
 void GameScene::enterSkipMode()
@@ -381,39 +402,45 @@ void GameScene::setBgpFilename(std::string filename)
 
 void GameScene::setBgpStart()
 {
-    if (bgp) {
-        bgp->removeFromParentAndCleanup(true);
-        bgp = nullptr;
-    }
-    bgp = GyroBackground::create(bgpFilename, bgpScale);
-    backgroundLayer->addChild(bgp);
-    
-    bgp->setScale(visibleSize.width/bgp->getContentSize().width*bgpScale);
-    bgp->setPosition(Point(visibleSize.width*bgpPositionX, visibleSize.height*bgpPositionY));
-    
-    if (focus == TEXT) {
-        auto bgs = bgp->getChildren();
-        for (int j = 0; j != bgs.size(); ++j) {
-            bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+    blackLayer->runAction(Sequence::create(FadeIn::create(0.15),
+                                           CallFunc::create([&]() {
+        if (bgp) {
+            bgp->removeFromParentAndCleanup(true);
+            bgp = nullptr;
         }
-    } else if (focus == CHARACTER) {
-        auto bgs = bgp->getChildren();
-        for (int j = 0; j != bgs.size(); ++j) {
-            bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
+        bgp = GyroBackground::create(bgpFilename, bgpScale);
+        backgroundLayer->addChild(bgp);
+        
+        bgp->setScale(visibleSize.width/bgp->getContentSize().width*bgpScale);
+        bgp->setPosition(Point(visibleSize.width*bgpPositionX, visibleSize.height*bgpPositionY));
+        
+        if (focus == TEXT) {
+            auto bgs = bgp->getChildren();
+            for (int j = 0; j != bgs.size(); ++j) {
+                bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_MUCH));
+            }
+        } else if (focus == CHARACTER) {
+            auto bgs = bgp->getChildren();
+            for (int j = 0; j != bgs.size(); ++j) {
+                bgs.at(j)->runAction(ActionBlur::create(0.5, NONE_TO_LITTLE));
+            }
         }
-    }
-    isMissionCompleted = true;
-    
-    // save data
-    UserData.bgpFilename = bgpFilename;
-    UserData.bgpScale = bgpScale;
-    UserData.bgpPositionX = bgpPositionX;
-    UserData.bgpPositionY = bgpPositionY;
-    
-    // set default
-    bgpScale = 1.5;
-    bgpDuration = 0;
-    bgpPositionX = 0, bgpPositionY = 0;
+        isMissionCompleted = true;
+        
+        // save data
+        UserData.bgpFilename = bgpFilename;
+        UserData.bgpScale = bgpScale;
+        UserData.bgpPositionX = bgpPositionX;
+        UserData.bgpPositionY = bgpPositionY;
+        
+        // set default
+        bgpScale = 1.5;
+        bgpDuration = 0;
+        bgpPositionX = 0, bgpPositionY = 0;
+    }),
+                                           DelayTime::create(0.2),
+                                           FadeOut::create(0.15),
+                                           NULL));
 }
 
 void GameScene::setBgpDuration(float d)
@@ -596,6 +623,8 @@ void GameScene::setTextShow()
     textLayer->enableTouchListener = true;
     // save data
     UserData.textContent = textToShow;
+    UserData.textPos = ScriptController::getInstance()->textPos;
+    UserData.textLineID = ScriptController::getInstance()->textLineID;
 }
 
 void GameScene::setTextStop()
@@ -628,6 +657,8 @@ void GameScene::setTextUpdate(const std::string &str)
     textLayer->enableTouchListener = true;
     // save data
     UserData.textContent = textToShow;
+    UserData.textPos = ScriptController::getInstance()->textPos;
+    UserData.textLineID = ScriptController::getInstance()->textLineID;
 }
 
 void GameScene::setTextContent(std::string content)
@@ -649,6 +680,8 @@ void GameScene::setTextClear()
     isMissionCompleted = true;
     // clear data
     UserData.textContent.clear();
+    UserData.textPos = -1;
+    UserData.textLineID = -1;
 }
 //
 //void GameScene::enableTextFinishedEventListener(bool b)
@@ -662,7 +695,7 @@ void GameScene::setTextClear()
 void GameScene::setChoiceNumber(int number)
 {
     choiceTable = ChoiceTableLayer::create();
-    this->addChild(choiceTable, 9);
+    this->addChild(choiceTable, choicetableOrder);
     
     choiceTable->setChoiceNumber(number);
     isMissionCompleted = true;
@@ -686,6 +719,17 @@ void GameScene::setChoiceShow()
     // initalize the choose result
     DataController::getInstance()->setInt("choiceresult", -1);
     isMissionCompleted = true;
+}
+
+/**
+ * wait
+ */
+
+void GameScene::setWaitTime(float time)
+{
+    this->runAction(Sequence::create(DelayTime::create(time),
+                                     CallFunc::create([&](){isMissionCompleted = true;}),
+                                     NULL));
 }
 
 /**

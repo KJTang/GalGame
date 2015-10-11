@@ -228,6 +228,8 @@ bool DataController::saveData(const std::string &datafile)
     }
     if (GameScene::getInstance()->UserData.textContent.size()) {
         fout<<"text content "<<GameScene::getInstance()->UserData.textContent<<endl;
+        fout<<"text pos "<<GameScene::getInstance()->UserData.textPos<<endl;
+        fout<<"text lineid "<<GameScene::getInstance()->UserData.textLineID<<endl;
     }
     for (int i = 0; i != 4; ++i) {
         if (GameScene::getInstance()->UserData.characterFilename[i].size()) {
@@ -284,7 +286,10 @@ bool DataController::saveData(const std::string &datafile)
         dataInfoList.push_back(temp);
     }
     updateDataInfo();
-    
+
+    // TEST
+    DataController::getInstance()->test(datafile);
+
     return true;
 }
 

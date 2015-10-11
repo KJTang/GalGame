@@ -35,7 +35,6 @@ bool StartScene::init()
     black = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
     this->addChild(black);
     black->setOpacity(0);
-
     
 //    // data test
 //    DataController::getInstance()->test();

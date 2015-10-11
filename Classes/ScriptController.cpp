@@ -19,6 +19,7 @@ bool ScriptController::init()
     pos = 0, lineID = 1;
     goBackPosMark = -1, goBackLineMark = -1;
     choiceTablePos = -1, choiceTableLineID = -1;
+    textPos = -1;
     isChoiceTableShowing = false;
     isConditionFullFilled = false;
     hasErr = false;
@@ -38,6 +39,10 @@ void ScriptController::runNew(const std::string &filename)
 void ScriptController::runSaved(const std::string &filename)
 {
     GameScene::getInstance()->UserData.scriptPath = filename;
+    if (textPos != -1) {
+        pos = textPos;
+        lineID = textLineID;
+    }
     if (choiceTablePos != -1) {
         pos = choiceTablePos;
         lineID = choiceTableLineID;
@@ -170,7 +175,6 @@ float ScriptController::transStringToFloat(const std::string &num)
 void ScriptController::stateBegin()
 {
     std::string str = getString();
-    log("-------------------------------------------%s----", str.c_str());
     if (str.size()) {
         if (str[0] == '#') {
             stateJump(str);
@@ -233,6 +237,7 @@ void ScriptController::stateCommand(const std::string &cmd)
      */
     if (cmd == "set") {
         std::string str = getString();
+        log("-------------------------------------------%s----", str.c_str());
         // setting bgp
         if (str == "bgp") {
             std::string str = getString();
@@ -296,11 +301,12 @@ void ScriptController::stateCommand(const std::string &cmd)
         }
         // setting text
         else if (str == "text") {
+            textPos = pos - 9;
+            textLineID = lineID;
             std::string str = getString();
             if (str == "update") {
                 GameScene::getInstance()->setTextUpdate(getString());
-            }
-            if (str == "content") {
+            } else if (str == "content") {
                 std::string str = getString();
                 log("set text content = %s", str.c_str());
                 GameScene::getInstance()->setTextContent(str);
@@ -430,6 +436,10 @@ void ScriptController::stateCommand(const std::string &cmd)
                 showError(UNKNOWN_COMMAND);
             }
         }
+        // wait
+        else if (str == "wait") {
+            GameScene::getInstance()->setWaitTime(transStringToFloat(getString()));
+        }
         else {
             showError(UNKNOWN_COMMAND);
         }
@@ -441,10 +451,11 @@ void ScriptController::stateCommand(const std::string &cmd)
      */
     else if (cmd == "get") {
         std::string str = getString();
+        log("-------------------------------------------%s----", str.c_str());
         // touch event
         if (str == "touch") {
             log("waiting for a screen touch");
-            GameScene::getInstance()->enableScreenTouchEventListener(true, transStringToFloat(getString()));
+            GameScene::getInstance()->enableScreenTouchEventListener(true, 0);
         }
         // get info of bgp
         else if (str == "bgp") {

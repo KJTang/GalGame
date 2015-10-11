@@ -32,6 +32,7 @@ private:
     Size visibleSize;
     Layer *backgroundLayer;
     Layer *characterLayer;
+    LayerColor *blackLayer;
     MenuLayer *menuLayer;
     ButtonSprite *quitButton, *saveButton;
     // game mode
@@ -116,6 +117,7 @@ public:
         float characterPositionX[4], characterPositionY[4];
         // text
         std::string textContent;
+        int textPos, textLineID;
         // choice table
         int choiceTablePos, choiceTableLineID;
     }UserData;
@@ -149,6 +151,8 @@ public:
     void setChoiceContent(int id, std::string content);
     void setChoiceChoosable(int id, bool choosable);
     void setChoiceShow();
+    // wait
+    void setWaitTime(float time);
     /**
      * get
      */

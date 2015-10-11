@@ -51,6 +51,7 @@ private:
     float listItemHeight;
     int currentListItemID;
     
+    void createDataList();
     void loadData(const std::string &filename);
     void deleteData(const std::string &filename);
     void sortDataList();
