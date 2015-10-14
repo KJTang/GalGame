@@ -20,30 +20,60 @@ bool ChoiceTableLayer::init()
  
     visibleSize = Director::getInstance()->getVisibleSize();
     choiceNumber = 0;
+    tempResult = -1;
     choiceResult = -1;
+    chosen = nullptr;
     
     touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);
-    touchListener->onTouchBegan = [](Touch *touch, Event *event) {
+    touchListener->onTouchBegan = [&](Touch *touch, Event *event) {
         auto target = static_cast<Sprite*>(event->getCurrentTarget());
         // relative position
         Point locationInNode = target->convertToNodeSpace(touch->getLocation());
         Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
         if (rect.containsPoint(locationInNode))
         {
-            target->runAction(MoveBy::create(0.05, Vec2(10, -10)));
+            for (int i = 0; i != choiceNumber; ++i) {
+                if (target == choices.at(i)) {
+                    tempResult = i;
+                    target->setOpacity(0);
+                    chosen = Sprite::create("frame/ChoiceTable-Chosen.png");
+                    this->addChild(chosen, -1);
+                    chosen->setPosition(target->getPosition());
+                    continue;
+                } else {
+                    log("++++++++++++++++++++++++++    %d", i);
+                    choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*(choiceNumber - i)),
+                                                              MoveTo::create(0.8, position[i]+Point(visibleSize.width*2, 0)),
+                                                              NULL));
+                }
+            }
+            
+            
             return true;
         }
         return false;
     };
     touchListener->onTouchEnded = [&](Touch* touch, Event* event){
         auto target = static_cast<Sprite*>(event->getCurrentTarget());
-        target->runAction(MoveBy::create(0.05, Vec2(-10, 10)));
-        for (int i = 0; i != choiceNumber; ++i) {
-            if (target == choices.at(i)) {
-                setChoiceResult(i);
-                // TODO
-                return true;
+        target->setOpacity(255);
+        if (chosen) {
+            chosen->removeFromParentAndCleanup(true);
+            chosen = nullptr;
+        }
+        if (tempResult != -1) {
+            if ((tempResult && static_cast<Sprite*>(choices.at(0))->getPositionX() > visibleSize.width) ||
+                (tempResult == 0 && static_cast<Sprite*>(choices.at(1))->getPositionX() > visibleSize.width)) {
+                setChoiceResult(tempResult);
+                return false;
+            }
+            for (int i = 0; i != choices.size(); ++i) {
+                if (i != tempResult) {
+                    choices.at(i)->stopAllActions();
+                    choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*(choiceNumber - i)),
+                                                              MoveTo::create(0.5, position[i]+Point(visibleSize.width, 0)),
+                                                              NULL));
+                }
             }
         }
         return true;
@@ -71,9 +101,10 @@ void ChoiceTableLayer::setChoiceNumber(int number)
         Sprite *newChoice = Sprite::create("frame/ChoiceTable-Unchosen.png");
         choices.pushBack(newChoice);
         newChoice->setPosition(visibleSize.width*(origin+0.05*i), visibleSize.height*(0.80-0.10*i));
+        position.push_back(Point(visibleSize.width*(origin+0.05*i), visibleSize.height*(0.80-0.10*i)));
         
         Label *label = Label::createWithTTF("", fontFile, fontSize, textBoxSize, TextHAlignment::CENTER);
-        newChoice->addChild(label, 5, "label");
+        newChoice->addChild(label, 6, "label");
         label->setPosition(Point(newChoice->getContentSize()*0.5) + Point(0, 15));
 
         Point position[4] = {Point(1, 0), Point(-1, 0), Point(0, -1), Point(0, 1)};
@@ -115,7 +146,9 @@ void ChoiceTableLayer::showChoiceTable()
 {
     for (int i = 0; i != choices.size(); ++i) {
         this->addChild(choices.at(i));
-        choices.at(i)->runAction(MoveBy::create(1.2-0.1*i, Vec2(visibleSize.width, 0)));
+        choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*(choiceNumber - i)),
+                                                  MoveBy::create(0.8, Vec2(visibleSize.width, 0)),
+                                                  NULL));
     }
 }
 

@@ -21,7 +21,10 @@ private:
     Size visibleSize;
 
     Vector<Sprite*> choices;
+    std::vector<Point> position;
+    Sprite *chosen;
     int choiceNumber;
+    int tempResult;
     int choiceResult;
     
     EventListenerTouchOneByOne *touchListener;
