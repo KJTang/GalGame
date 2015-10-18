@@ -12,6 +12,9 @@
 #include "DataController.h"
 
 #include "GyroBackground.h"
+#include "PromptBoxSprite.h"
+
+using namespace cocos2d::ui;
 
 StartScene::StartScene(){}
 
@@ -38,6 +41,12 @@ bool StartScene::init()
     
 //    // data test
 //    DataController::getInstance()->test();
+    
+    auto test = PromptBoxSprite::create();
+    this->addChild(test);
+    test->setPosition(visibleSize.width+test->getContentSize().width/2, visibleSize.height*0.8);
+    test->setText("提示提示提示提示提示提示");
+    test->start();
     
     return true;
 }

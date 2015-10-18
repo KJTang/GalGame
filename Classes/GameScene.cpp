@@ -13,6 +13,7 @@
 const int choicetableOrder = 9;
 const int blacklayerOrder = 10;
 const int menulayerOrder = 11;
+const int historylayerOrder = 12;
 
 GameScene* GameScene::sharedGameScene = nullptr;
 
@@ -27,6 +28,7 @@ bool GameScene::init()
     }
     
     visibleSize = Director::getInstance()->getVisibleSize();
+    
     isMissionCompleted = false;
     enableGetTouch = false;
     focus = TEXT;
@@ -41,6 +43,9 @@ bool GameScene::init()
     textLayer = TextLayer::create();
     this->addChild(textLayer);
     textLayer->setVisible(false);
+    historyText.clear();
+    historyLayer = HistoryLayer::create();
+    this->addChild(historyLayer, historylayerOrder);
     // black layer
     blackLayer = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
     this->addChild(blackLayer, blacklayerOrder);
@@ -661,6 +666,11 @@ void GameScene::setTextUpdate(const std::string &str)
     UserData.textContent = textToShow;
     UserData.textPos = ScriptController::getInstance()->textPos;
     UserData.textLineID = ScriptController::getInstance()->textLineID;
+    // text history
+    if (historyText.size() >= 10) {
+        historyText.erase(historyText.begin());
+    }
+    historyText.push_back(textToShow);
 }
 
 void GameScene::setTextContent(std::string content)

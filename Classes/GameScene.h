@@ -16,6 +16,7 @@
 #include "DataController.h"
 
 #include "TextLayer.h"
+#include "HistoryLayer.h"
 #include "ChoiceTableLayer.h"
 #include "MenuLayer.h"
 #include "GyroBackground.h"
@@ -57,6 +58,10 @@ private:
     // text
     TextLayer *textLayer;
     std::string textToShow;
+    HistoryLayer *historyLayer;
+public:
+    std::vector<std::string> historyText;
+private:
     // choices
     ChoiceTableLayer *choiceTable;
 

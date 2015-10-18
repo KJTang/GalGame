@@ -10,6 +10,7 @@
 #define MenuLayer_cpp
 
 #include "cocos2d.h"
+#include "ButtonSprite.h"
 
 using namespace cocos2d;
 
@@ -19,6 +20,7 @@ private:
     Size visibleSize;
     Label *textLabel;
     Sprite *chosen, *unchosen;
+    ButtonSprite *deleteBtnUnchosen, *deleteBtnChosen;
 public:
     std::string text;
 public:
@@ -36,7 +38,7 @@ class MenuLayer : public Layer
 private:
     Size visibleSize;
     
-    Layer *greyLayer;
+    Layer *blackLayer;
     // event
     EventListenerTouchOneByOne *screenTouchListener;
     int touchType;
@@ -52,9 +54,10 @@ private:
     int currentListItemID;
     
     void createDataList();
-    void loadData(const std::string &filename);
-    void deleteData(const std::string &filename);
     void sortDataList();
+    void loadData(const std::string &filename);
+public:
+    void deleteData(const std::string &filename);
 public:
     MenuLayer();
     ~MenuLayer();

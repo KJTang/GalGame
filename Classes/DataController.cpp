@@ -7,6 +7,7 @@
 //
 
 #include "DataController.h"
+#include "PromptBoxSprite.h"
 
 #include <iostream>
 
@@ -267,9 +268,15 @@ bool DataController::saveData(const std::string &datafile)
     pScreen->end();
     
     //保存为png
-//    pScreen->saveToFile(datafile+".png", Image::Format::PNG, true, [&](RenderTexture*, const std::string&) {
-//    });
-    pScreen->saveToFile(datafile+".png", Image::Format::PNG);
+    pScreen->saveToFile(datafile+".png", Image::Format::PNG, true, [&](RenderTexture*, const std::string&) {
+        // when saved, create a PromptBox
+        auto prompt = PromptBoxSprite::create();
+        Director::getInstance()->getRunningScene()->addChild(prompt, 20);
+        auto visibleSize = Director::getInstance()->getVisibleSize();
+        prompt->setPosition(visibleSize.width+prompt->getContentSize().width/2, visibleSize.height*0.8);
+        prompt->setText("Data Saved");
+        prompt->start();
+    });
 
     // update
     bool found = false;

@@ -12,6 +12,8 @@
 
 #include "ActionFade.h"
 
+const int blackOpacity = 200;
+
 /**
  *   ListItem
  */
@@ -29,6 +31,8 @@ bool ListItem::init()
     chosen = Sprite::create("frame/Data-Chosen.png");
     this->addChild(chosen);
     chosen->setOpacity(0);
+    
+    deleteBtnUnchosen = nullptr, deleteBtnChosen = nullptr;
     
     return true;
 }
@@ -58,10 +62,43 @@ void ListItem::setActive(bool active)
         this->runAction(ScaleTo::create(0.1, 1.1));
         chosen->runAction(FadeIn::create(0.1));
         unchosen->runAction(FadeOut::create(0.1));
+        // deleteBtn
+        if (deleteBtnUnchosen) {
+            deleteBtnUnchosen->removeFromParentAndCleanup(true);
+        }
+        deleteBtnUnchosen = ButtonSprite::create("frame/Data-Delete-Unchosen.png");
+        chosen->addChild(deleteBtnUnchosen);
+        deleteBtnUnchosen->setScale(2);
+        deleteBtnUnchosen->setPosition(chosen->getPosition()+chosen->getContentSize()-deleteBtnUnchosen->getContentSize()*1.5);
+        deleteBtnUnchosen->setCallbackFunc([&](){
+            if (deleteBtnChosen) {
+                deleteBtnChosen->removeFromParentAndCleanup(true);
+            }
+            deleteBtnChosen = ButtonSprite::create("frame/Data-Delete-Chosen.png");
+            chosen->addChild(deleteBtnChosen);
+            deleteBtnChosen->setScale(2);
+            deleteBtnChosen->setPosition(chosen->getPosition()+chosen->getContentSize()-deleteBtnChosen->getContentSize()*1.1);
+            deleteBtnChosen->setCallbackFunc([&](){
+                log("delete data");
+                static_cast<MenuLayer*>(this->getParent()->getParent())->deleteData(this->text);
+            });
+            
+            deleteBtnUnchosen->removeFromParentAndCleanup(true);
+            deleteBtnUnchosen = nullptr;
+        });
     } else {
         this->runAction(ScaleTo::create(0.1, 1));
         unchosen->runAction(FadeIn::create(0.1));
         chosen->runAction(FadeOut::create(0.1));
+        // deleteBtn
+        if (deleteBtnUnchosen) {
+            deleteBtnUnchosen->removeFromParentAndCleanup(true);
+            deleteBtnUnchosen = nullptr;
+        }
+        if (deleteBtnChosen) {
+            deleteBtnChosen->removeFromParentAndCleanup(true);
+            deleteBtnChosen = nullptr;
+        }
     }
 }
 
@@ -78,10 +115,10 @@ bool MenuLayer::init()
     }
     
     visibleSize = Director::getInstance()->getVisibleSize();
-    // create greylayer
-    greyLayer = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
-    this->addChild(greyLayer);
-    greyLayer->setOpacity(0);
+    // create blackLayer
+    blackLayer = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
+    this->addChild(blackLayer);
+    blackLayer->setOpacity(0);
     // create menu
     leftMenu = Layer::create();
     this->addChild(leftMenu);
@@ -217,7 +254,7 @@ bool MenuLayer::init()
                 if (relativePos < 0) {
                     relativePos = 0;
                 }
-                greyLayer->setOpacity(relativePos / (visibleSize.width*0.3) * 150);
+                blackLayer->setOpacity(relativePos / (visibleSize.width*0.3) * blackOpacity);
                 break;
             }
             case RIGHT:
@@ -232,7 +269,7 @@ bool MenuLayer::init()
                 if (relativePos < 0) {
                     relativePos = 0;
                 }
-                greyLayer->setOpacity(relativePos / (visibleSize.width*0.3) * 150);
+                blackLayer->setOpacity(relativePos / (visibleSize.width*0.3) * blackOpacity);
                 break;
             }
             case BOTTOM:
@@ -247,7 +284,7 @@ bool MenuLayer::init()
                 {
                     relativePos = 0;
                 }
-                greyLayer->setOpacity(relativePos / (visibleSize.height*0.5) * 150);
+                blackLayer->setOpacity(relativePos / (visibleSize.height*0.5) * blackOpacity);
                 break;
             }
             default:
@@ -262,10 +299,10 @@ bool MenuLayer::init()
             {
                 if (leftMenu->getPositionX() > visibleSize.width*0.15) {
                     leftMenu->runAction(MoveTo::create(0.1, Vec2(visibleSize.width*0.3, 0)));
-                    greyLayer->runAction(ActionFadeIn::create(0.1, 150));
+                    blackLayer->runAction(ActionFadeIn::create(0.1, blackOpacity));
                 } else {
                     leftMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
-                    greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
+                    blackLayer->runAction(ActionFadeOut::create(0.1, blackLayer->getOpacity()));
                     screenTouchListener->setSwallowTouches(false);
                 }
                 break;
@@ -274,10 +311,10 @@ bool MenuLayer::init()
             {
                 if (rightMenu->getPositionX() < -visibleSize.width*0.15) {
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(-visibleSize.width*0.3, 0)));
-                    greyLayer->runAction(ActionFadeIn::create(0.1, 150));
+                    blackLayer->runAction(ActionFadeIn::create(0.1, blackOpacity));
                 } else {
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
-                    greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
+                    blackLayer->runAction(ActionFadeOut::create(0.1, blackLayer->getOpacity()));
                     screenTouchListener->setSwallowTouches(false);
                 }
                 break;
@@ -341,7 +378,9 @@ void MenuLayer::loadData(const std::string &filename)
     
     this->runAction(Sequence::create(CallFunc::create([&]()
                                                       {
-                                                          greyLayer->getChildByName("dataPic")->runAction(MoveBy::create(0.3, Vec2(-visibleSize.width*0.7, 0)));
+                                                          if (blackLayer->getChildByName("dataPic")) {
+                                                              blackLayer->getChildByName("dataPic")->runAction(MoveBy::create(0.3, Vec2(-visibleSize.width*0.7, 0)));
+                                                          }
                                                           dataList->runAction(MoveBy::create(0.3, Vec2(visibleSize.width*0.7, 0)));
                                                       }),
                                      CallFunc::create([&]()
@@ -363,6 +402,7 @@ void MenuLayer::deleteData(const std::string &filename)
 {
     this->runAction(Sequence::create(CallFunc::create([&]()
                                                       {
+//                                                          CCASSERT(dataList, "");
                                                           auto dataListChildren = dataList->getChildren();
                                                           dataListChildren.at(currentListItemID)->runAction(MoveBy::create(0.3, Vec2(visibleSize.width*0.5, 0)));
                                                           log("id:%d size:%d", currentListItemID, (int)dataListChildren.size());
@@ -395,7 +435,7 @@ void MenuLayer::sortDataList()
         log("gotcha!");
         dataList->runAction(MoveTo::create(0.1, Vec2(0, 0)));
         currentListItemID = -1;
-        greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
+        blackLayer->runAction(ActionFadeOut::create(0.1, blackLayer->getOpacity()));
         // create "No Data"
         auto data = ListItem::create();
         dataList->addChild(data);
@@ -409,7 +449,7 @@ void MenuLayer::sortDataList()
         dataList->runAction(MoveTo::create(0.1, Vec2(0, 0)));
         currentListItemID = -1;
         static_cast<ListItem*>(dataListChildren.at(0))->setActive(false);
-        greyLayer->runAction(ActionFadeOut::create(0.1, greyLayer->getOpacity()));
+        blackLayer->runAction(ActionFadeOut::create(0.1, blackLayer->getOpacity()));
         screenTouchListener->setSwallowTouches(false);
         // remove old datalist
         dataList->removeFromParentAndCleanup(true);
@@ -444,7 +484,7 @@ void MenuLayer::sortDataList()
         // focus on the item at head of the list
         else if (dataList->getPositionY() > visibleSize.height*0.7) {
             dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height)));
-            greyLayer->runAction(ActionFadeIn::create(0.1, 150));
+            blackLayer->runAction(ActionFadeIn::create(0.1, blackOpacity));
             static_cast<ListItem*>(dataListChildren.at(0))->setActive(true);
             if (dataListChildren.size() > 1) {
                 static_cast<ListItem*>(dataListChildren.at(1))->setActive(false);
@@ -476,7 +516,7 @@ void MenuLayer::sortDataList()
         dataPic = Sprite::create("frame/Data-Pic.png");
         dataPic->setScale(visibleSize.width/dataPic->getContentSize().width*0.6);
     }
-    greyLayer->addChild(dataPic, 1, "dataPic");
+    blackLayer->addChild(dataPic, 1, "dataPic");
     dataPic->setPosition(visibleSize.width*0.33, visibleSize.height*0.5);
     dataPic->setOpacity(0);
     dataPic->runAction(ActionFadeIn::create(0.2, 200));

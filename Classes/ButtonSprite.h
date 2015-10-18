@@ -1,13 +1,4 @@
-//
-//  ButtonSprite.h
-//  Test
-//
-//  Created by KJTang on 15/7/15.
-//
-//
-
-#ifndef ButtonSprite_cpp
-#define ButtonSprite_cpp
+#pragma once
 
 #include "cocos2d.h"
 
@@ -19,18 +10,16 @@ private:
     cocos2d::Size visibleSize;
     EventListenerTouchOneByOne* touchListener;
     Point startPoint, endPoint;
-    void (*callbackFunc)();
+    std::function<void()> callbackFunc;
 public:
     ButtonSprite();
     ~ButtonSprite();
-    
-    static ButtonSprite* create(std::string filename);
-    
-    virtual bool initWithFile(std::string filename);
-    virtual void onEnter();
-    
-    virtual void onClicked();
-    void setCallbackFunc(void (*func)());
-};
 
-#endif /* ButtonSprite_cpp */
+    static ButtonSprite* create(const std::string &filename);
+
+    virtual bool initWithFile(const std::string &filename);
+    virtual void onEnter();
+
+    virtual void onClicked();
+    void setCallbackFunc(const std::function<void()> &callbackFunc);
+};
