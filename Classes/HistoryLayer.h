@@ -18,7 +18,8 @@ class HistoryLayer : public Layer
 private:
     Size visibleSize;
     EventListenerTouchOneByOne *screenTouchListener;
-    Point touchStart;
+    Point touchStart, touchMoving, touchEnd;
+    float startTime, endTime, deltaTime;
     Layer *historyBoard, *blackLayer;
     bool isHistoryShowing;
 public:
@@ -28,6 +29,7 @@ public:
     CREATE_FUNC(HistoryLayer);
 private:
     void createHistoryBoard();
+    void autoMove(bool b);
 public:
     void setHistory(const std::vector<std::string> &history);
 };
