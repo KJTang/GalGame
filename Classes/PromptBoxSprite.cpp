@@ -52,12 +52,12 @@ void PromptBoxSprite::setText(const std::string &t)
 
 void PromptBoxSprite::start()
 {
-    this->runAction(Sequence::create(MoveBy::create(0.3, Vec2(-bg->getContentSize().width, 0)),
+    this->runAction(Sequence::create(MoveBy::create(0.3, Vec2(bg->getContentSize().width, 0)),
                                      DelayTime::create(2),
-                                     MoveBy::create(0.3, Vec2(bg->getContentSize().width, 0)),
+                                     MoveBy::create(0.3, Vec2(-bg->getContentSize().width, 0)),
                                      CallFunc::create([&]()
                                                           {
-//                                                              this->removeFromParentAndCleanup(true);
+                                                              this->removeFromParentAndCleanup(true);
                                                           }),
                                      NULL));
 }

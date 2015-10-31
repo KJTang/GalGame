@@ -273,7 +273,7 @@ bool DataController::saveData(const std::string &datafile)
         auto prompt = PromptBoxSprite::create();
         Director::getInstance()->getRunningScene()->addChild(prompt, 20);
         auto visibleSize = Director::getInstance()->getVisibleSize();
-        prompt->setPosition(visibleSize.width+prompt->getContentSize().width/2, visibleSize.height*0.8);
+        prompt->setPosition(-prompt->getContentSize().width/2, visibleSize.height*0.8);
         prompt->setText("Data Saved");
         prompt->start();
     });

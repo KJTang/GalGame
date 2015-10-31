@@ -21,7 +21,6 @@ private:
     Size visibleSize;
     Point startPoint, endPoint;
     Vector<Sprite*> choices;
-    std::vector<Point> position;
     Sprite *chosen;
     int choiceNumber;
     int tempResult;
@@ -37,7 +36,7 @@ public:
     CREATE_FUNC(ChoiceTableLayer);
     
     void setChoiceNumber(int number);
-    void setChoiceContent(int id, std::string content);
+    void setChoiceContent(int id, const std::string& content);
     void setChoiceChoosable(int id, bool choosable);
     
     void showChoiceTable();

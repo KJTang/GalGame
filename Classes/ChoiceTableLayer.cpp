@@ -45,24 +45,6 @@ bool ChoiceTableLayer::init()
                     break;
                 }
             }
-            
-//            for (int i = 0; i != choiceNumber; ++i) {
-//                if (target == choices.at(i)) {
-//                    tempResult = i;
-//                    target->setOpacity(0);
-//                    chosen = Sprite::create("frame/ChoiceTable-Chosen.png");
-//                    this->addChild(chosen, -1);
-//                    chosen->setPosition(target->getPosition());
-//                    continue;
-//                } else {
-//                    log("++++++++++++++++++++++++++    %d", i);
-//                    choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*(choiceNumber - i)),
-//                                                              MoveTo::create(0.8, position[i]+Point(visibleSize.width*2, 0)),
-//                                                              NULL));
-//                }
-//            }
-            
-            
             return true;
         }
         return false;
@@ -83,11 +65,9 @@ bool ChoiceTableLayer::init()
             this->runAction(Sequence::create(CallFunc::create([&]()
                                                               {
                                                                   for (int i = 0; i != choices.size(); ++i) {
-                                                                      choices.at(i)->runAction(FadeOut::create(0.5));
-                                                                      auto children = choices.at(i)->getChildren();
-                                                                      for (int j = 0; j != children.size(); ++j) {
-                                                                          children.at(j)->runAction(FadeOut::create(0.5));
-                                                                      }
+                                                                      choices.at(i)->runAction(Sequence::create(DelayTime::create(0.1*i),
+                                                                                                                MoveBy::create(0.3, Vec2(choices.at(i)->getContentSize().width, 0)),
+                                                                                                                NULL));
                                                                   }
                                                               }),
                                              DelayTime::create(0.5),
@@ -96,25 +76,9 @@ bool ChoiceTableLayer::init()
                                                                   this->setChoiceResult(tempResult);
                                                               }),
                                              NULL));
-//            setChoiceResult(tempResult);
             return false;
         }
 
-//        if (tempResult != -1) {
-//            if ((tempResult && static_cast<Sprite*>(choices.at(0))->getPositionX() > visibleSize.width) ||
-//                (tempResult == 0 && static_cast<Sprite*>(choices.at(1))->getPositionX() > visibleSize.width)) {
-//                setChoiceResult(tempResult);
-//                return false;
-//            }
-//            for (int i = 0; i != choices.size(); ++i) {
-//                if (i != tempResult) {
-//                    choices.at(i)->stopAllActions();
-//                    choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*(choiceNumber - i)),
-//                                                              MoveTo::create(0.5, position[i]+Point(visibleSize.width, 0)),
-//                                                              NULL));
-//                }
-//            }
-//        }
         return true;
     };
     
@@ -139,8 +103,7 @@ void ChoiceTableLayer::setChoiceNumber(int number)
     for (int i = 0; i != choiceNumber; ++i) {
         Sprite *newChoice = Sprite::create("frame/ChoiceTable-Unchosen.png");
         choices.pushBack(newChoice);
-        newChoice->setPosition(visibleSize.width*(origin+0.05*i), visibleSize.height*(0.80-0.10*i));
-        position.push_back(Point(visibleSize.width*(origin+0.05*i), visibleSize.height*(0.80-0.10*i)));
+        newChoice->setPosition(visibleSize.width+newChoice->getContentSize().width/2, visibleSize.height*(0.30+0.10*i));
         
         Label *label = Label::createWithTTF("", fontFile, fontSize, textBoxSize, TextHAlignment::CENTER);
         newChoice->addChild(label, 6, "label");
@@ -161,7 +124,7 @@ void ChoiceTableLayer::setChoiceNumber(int number)
     }
 }
 
-void ChoiceTableLayer::setChoiceContent(int id, std::string content)
+void ChoiceTableLayer::setChoiceContent(int id, const std::string& content)
 {
     if (id >= choiceNumber || id < 0) {
         return;
@@ -185,8 +148,8 @@ void ChoiceTableLayer::showChoiceTable()
 {
     for (int i = 0; i != choices.size(); ++i) {
         this->addChild(choices.at(i));
-        choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*(choiceNumber - i)),
-                                                  MoveBy::create(0.8, Vec2(visibleSize.width, 0)),
+        choices.at(i)->runAction(Sequence::create(DelayTime::create(0.1*i),
+                                                  MoveBy::create(0.3, Vec2(-choices.at(i)->getContentSize().width, 0)),
                                                   NULL));
     }
 }

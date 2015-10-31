@@ -44,7 +44,7 @@ bool StartScene::init()
     
     auto test = PromptBoxSprite::create();
     this->addChild(test);
-    test->setPosition(visibleSize.width+test->getContentSize().width/2, visibleSize.height*0.8);
+    test->setPosition(-test->getContentSize().width/2, visibleSize.height*0.8);
     test->setText("提示提示提示提示提示提示");
     test->start();
     
