@@ -157,18 +157,33 @@ void HistoryLayer::setHistory(const std::vector<std::string> &history)
     auto textHeight = 300.0;
     
     if (history.size() == 0) {
+        auto bg = Sprite::create("frame/Text-Unchosen.png");
+        historyBoard->addChild(bg);
+        bg->setScaleY(0.8);
+        bg->setPosition(visibleSize.width*0.5, textHeight+visibleSize.height-150+30);
+        
         auto text = Label::createWithTTF("No History", fontFile, fontSize, textBoxSize);
         historyBoard->addChild(text);
         text->setPosition(visibleSize.width*0.5, textHeight+visibleSize.height-150);
     } else {
         for (int i = static_cast<int>(history.size()); i != 0; --i) {
-            log("info:%s", history[i-1].substr(0, 7).c_str());
+//            log("info:%s", history[i-1].c_str());
             if (history[i-1].substr(0, 8) == "@choice@") {
+                auto bg = Sprite::create("frame/Text-Unchosen.png");
+                historyBoard->addChild(bg);
+                bg->setScaleY(0.8);
+                bg->setPosition(visibleSize.width*0.5, textHeight*(history.size()-i+1)+visibleSize.height-150+30);
+
                 auto text = Label::createWithTTF("选项："+history[i-1].substr(8), fontFile, fontSize, textBoxSize);
                 historyBoard->addChild(text);
                 text->setTextColor(Color4B::GREEN);
                 text->setPosition(visibleSize.width*0.5, textHeight*(history.size()-i+1)+visibleSize.height-150);
             } else {
+                auto bg = Sprite::create("frame/Text-Unchosen.png");
+                historyBoard->addChild(bg);
+                bg->setScaleY(0.8);
+                bg->setPosition(visibleSize.width*0.5, textHeight*(history.size()-i+1)+visibleSize.height-150+30);
+                
                 auto text = Label::createWithTTF(history[i-1], fontFile, fontSize, textBoxSize);
                 historyBoard->addChild(text);
                 text->setPosition(visibleSize.width*0.5, textHeight*(history.size()-i+1)+visibleSize.height-150);
