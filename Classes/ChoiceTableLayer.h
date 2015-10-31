@@ -19,7 +19,7 @@ class ChoiceTableLayer : public Layer
 {
 private:
     Size visibleSize;
-
+    Point startPoint, endPoint;
     Vector<Sprite*> choices;
     std::vector<Point> position;
     Sprite *chosen;

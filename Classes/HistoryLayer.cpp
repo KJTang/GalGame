@@ -33,16 +33,14 @@ bool HistoryLayer::init()
     
     screenTouchListener->onTouchBegan = [&](Touch *touch, Event *event) {
         startTime = static_cast<float>(clock())/CLOCKS_PER_SEC;
-        log("time start %.2f", startTime);
         touchStart = touch->getLocation();
         touchMoving = touchStart;
-        log("ishistory %d", isHistoryShowing);
         if (isHistoryShowing) {
             ///////////
             static_cast<HistoryLayer*>(event->getCurrentTarget())->autoMove(false);
             screenTouchListener->setSwallowTouches(true);
             return true;
-        } else if (touchStart.y > visibleSize.height*0.8) {
+        } else if (touchStart.y > visibleSize.height*0.9) {
             screenTouchListener->setSwallowTouches(true);
             this->createHistoryBoard();
             this->setHistory(GameScene::getInstance()->historyText);
@@ -72,9 +70,7 @@ bool HistoryLayer::init()
     };
     screenTouchListener->onTouchEnded = [&](Touch *touch, Event *event) {
         endTime = static_cast<float>(clock())/CLOCKS_PER_SEC;
-        log("time end %.2f", endTime);
         touchEnd = touch->getLocation();
-        log("pos=%.2f, %.2f", touchEnd.x-touchStart.x, touchEnd.y-touchStart.y);
         deltaTime = endTime - startTime;
         if (deltaTime < 0.1) {
             ///////////
@@ -166,10 +162,17 @@ void HistoryLayer::setHistory(const std::vector<std::string> &history)
         text->setPosition(visibleSize.width*0.5, textHeight+visibleSize.height-150);
     } else {
         for (int i = static_cast<int>(history.size()); i != 0; --i) {
-            log("info:%s", history[i-1].c_str());
-            auto text = Label::createWithTTF(history[i-1], fontFile, fontSize, textBoxSize);
-            historyBoard->addChild(text);
-            text->setPosition(visibleSize.width*0.5, textHeight*(history.size()-i+1)+visibleSize.height-150);
+            log("info:%s", history[i-1].substr(0, 7).c_str());
+            if (history[i-1].substr(0, 8) == "@choice@") {
+                auto text = Label::createWithTTF("选项："+history[i-1].substr(8), fontFile, fontSize, textBoxSize);
+                historyBoard->addChild(text);
+                text->setTextColor(Color4B::GREEN);
+                text->setPosition(visibleSize.width*0.5, textHeight*(history.size()-i+1)+visibleSize.height-150);
+            } else {
+                auto text = Label::createWithTTF(history[i-1], fontFile, fontSize, textBoxSize);
+                historyBoard->addChild(text);
+                text->setPosition(visibleSize.width*0.5, textHeight*(history.size()-i+1)+visibleSize.height-150);
+            }
         }
     }
 }

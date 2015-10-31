@@ -23,7 +23,7 @@ bool TextLayer::init()
     
     visibleSize = Director::getInstance()->getVisibleSize();
     pos = 0;
-    textSpeed = 0.1;
+    textSpeed = 0.05;
     
     std::string fontFile = "fonts/PingFang_1.ttf";
     float fontSize = 55;

@@ -80,7 +80,9 @@ void ListItem::setActive(bool active)
             deleteBtnChosen->setPosition(chosen->getPosition()+chosen->getContentSize()-deleteBtnChosen->getContentSize()*1.1);
             deleteBtnChosen->setCallbackFunc([&](){
                 log("delete data");
-                static_cast<MenuLayer*>(this->getParent()->getParent())->deleteData(this->text);
+                if (this->text != "No Data") {
+                    static_cast<MenuLayer*>(this->getParent()->getParent())->deleteData(this->text);
+                }
             });
             
             deleteBtnUnchosen->removeFromParentAndCleanup(true);
@@ -403,15 +405,16 @@ void MenuLayer::deleteData(const std::string &filename)
     this->runAction(Sequence::create(CallFunc::create([&]()
                                                       {
 //                                                          CCASSERT(dataList, "");
+                                                          screenTouchListener->setEnabled(false);
                                                           auto dataListChildren = dataList->getChildren();
-                                                          dataListChildren.at(currentListItemID)->runAction(MoveBy::create(0.3, Vec2(visibleSize.width*0.5, 0)));
-                                                          log("id:%d size:%d", currentListItemID, (int)dataListChildren.size());
+                                                          dataListChildren.at(currentListItemID)->runAction(MoveBy::create(0.2, Vec2(visibleSize.width*0.5, 0)));
+//                                                          log("id:%d size:%d", currentListItemID, (int)dataListChildren.size());
                                                           if (currentListItemID == dataListChildren.size()-1) {
                                                               dataList->runAction(MoveBy::create(0.1, Vec2(0, -listItemHeight)));
                                                               dataListChildren.at(currentListItemID)->runAction(MoveBy::create(0.1, Vec2(0, listItemHeight)));
                                                           } else {
                                                               for (int i = currentListItemID+1; i < dataListChildren.size(); ++i) {
-                                                                  dataListChildren.at(i)->runAction(MoveBy::create(0.3, Vec2(0, listItemHeight)));
+                                                                  dataListChildren.at(i)->runAction(MoveBy::create(0.2, Vec2(0, listItemHeight)));
                                                               }
                                                           }
                                                       }),
@@ -424,6 +427,7 @@ void MenuLayer::deleteData(const std::string &filename)
                                                           dataListChildren.erase(currentListItemID);
                                                           DataController::getInstance()->deleteData(DataController::getInstance()->dataInfoList[currentListItemID].dataName);
                                                           sortDataList();
+                                                          screenTouchListener->setEnabled(true);
                                                       }),
                                      NULL));
 }

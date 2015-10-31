@@ -7,6 +7,7 @@
 //
 
 #include "ChoiceTableLayer.h"
+#include "GameScene.h"
 
 ChoiceTableLayer::ChoiceTableLayer(){}
 
@@ -27,6 +28,7 @@ bool ChoiceTableLayer::init()
     touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);
     touchListener->onTouchBegan = [&](Touch *touch, Event *event) {
+        startPoint = touch->getLocation();
         auto target = static_cast<Sprite*>(event->getCurrentTarget());
         // relative position
         Point locationInNode = target->convertToNodeSpace(touch->getLocation());
@@ -40,14 +42,25 @@ bool ChoiceTableLayer::init()
                     chosen = Sprite::create("frame/ChoiceTable-Chosen.png");
                     this->addChild(chosen, -1);
                     chosen->setPosition(target->getPosition());
-                    continue;
-                } else {
-                    log("++++++++++++++++++++++++++    %d", i);
-                    choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*(choiceNumber - i)),
-                                                              MoveTo::create(0.8, position[i]+Point(visibleSize.width*2, 0)),
-                                                              NULL));
+                    break;
                 }
             }
+            
+//            for (int i = 0; i != choiceNumber; ++i) {
+//                if (target == choices.at(i)) {
+//                    tempResult = i;
+//                    target->setOpacity(0);
+//                    chosen = Sprite::create("frame/ChoiceTable-Chosen.png");
+//                    this->addChild(chosen, -1);
+//                    chosen->setPosition(target->getPosition());
+//                    continue;
+//                } else {
+//                    log("++++++++++++++++++++++++++    %d", i);
+//                    choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*(choiceNumber - i)),
+//                                                              MoveTo::create(0.8, position[i]+Point(visibleSize.width*2, 0)),
+//                                                              NULL));
+//                }
+//            }
             
             
             return true;
@@ -61,21 +74,47 @@ bool ChoiceTableLayer::init()
             chosen->removeFromParentAndCleanup(true);
             chosen = nullptr;
         }
-        if (tempResult != -1) {
-            if ((tempResult && static_cast<Sprite*>(choices.at(0))->getPositionX() > visibleSize.width) ||
-                (tempResult == 0 && static_cast<Sprite*>(choices.at(1))->getPositionX() > visibleSize.width)) {
-                setChoiceResult(tempResult);
-                return false;
-            }
-            for (int i = 0; i != choices.size(); ++i) {
-                if (i != tempResult) {
-                    choices.at(i)->stopAllActions();
-                    choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*(choiceNumber - i)),
-                                                              MoveTo::create(0.5, position[i]+Point(visibleSize.width, 0)),
-                                                              NULL));
-                }
-            }
+        endPoint = touch->getLocation();
+        // relative position
+        Point locationInNode = target->convertToNodeSpace(endPoint);
+        Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
+        if (rect.containsPoint(locationInNode))
+        {
+            this->runAction(Sequence::create(CallFunc::create([&]()
+                                                              {
+                                                                  for (int i = 0; i != choices.size(); ++i) {
+                                                                      choices.at(i)->runAction(FadeOut::create(0.5));
+                                                                      auto children = choices.at(i)->getChildren();
+                                                                      for (int j = 0; j != children.size(); ++j) {
+                                                                          children.at(j)->runAction(FadeOut::create(0.5));
+                                                                      }
+                                                                  }
+                                                              }),
+                                             DelayTime::create(0.5),
+                                             CallFunc::create([&]()
+                                                              {
+                                                                  this->setChoiceResult(tempResult);
+                                                              }),
+                                             NULL));
+//            setChoiceResult(tempResult);
+            return false;
         }
+
+//        if (tempResult != -1) {
+//            if ((tempResult && static_cast<Sprite*>(choices.at(0))->getPositionX() > visibleSize.width) ||
+//                (tempResult == 0 && static_cast<Sprite*>(choices.at(1))->getPositionX() > visibleSize.width)) {
+//                setChoiceResult(tempResult);
+//                return false;
+//            }
+//            for (int i = 0; i != choices.size(); ++i) {
+//                if (i != tempResult) {
+//                    choices.at(i)->stopAllActions();
+//                    choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*(choiceNumber - i)),
+//                                                              MoveTo::create(0.5, position[i]+Point(visibleSize.width, 0)),
+//                                                              NULL));
+//                }
+//            }
+//        }
         return true;
     };
     
@@ -158,6 +197,11 @@ void ChoiceTableLayer::setChoiceResult(int result)
     for (int i = 0; i != listeners.size(); ++i) {
         listeners.at(i)->setEnabled(false);
     }
+    // record choice result
+    if (GameScene::getInstance()->historyText.size() >= 30) {
+        GameScene::getInstance()->historyText.erase(GameScene::getInstance()->historyText.begin());
+    }
+    GameScene::getInstance()->historyText.push_back("@choice@"+static_cast<Label*>(choices.at(result)->getChildByName("label"))->getString());
 }
 
 int ChoiceTableLayer::getChoiceReuslt()

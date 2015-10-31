@@ -667,7 +667,7 @@ void GameScene::setTextUpdate(const std::string &str)
     UserData.textPos = ScriptController::getInstance()->textPos;
     UserData.textLineID = ScriptController::getInstance()->textLineID;
     // text history
-    if (historyText.size() >= 10) {
+    if (historyText.size() >= 30) {
         historyText.erase(historyText.begin());
     }
     historyText.push_back(textToShow);
