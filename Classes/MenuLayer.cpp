@@ -230,7 +230,8 @@ bool MenuLayer::init()
                    touch->getLocation().y < visibleSize.height*0.9) {
             touchType = RIGHT;
             log("touch begin right");
-            screenTouchListener->setSwallowTouches(true);
+            ///////////
+            screenTouchListener->setSwallowTouches(false);
         } else if (touch->getLocation().y < visibleSize.height*0.1) {
             touchType = BOTTOM;
             // create new datalist
@@ -314,6 +315,8 @@ bool MenuLayer::init()
                 if (rightMenu->getPositionX() < -visibleSize.width*0.15) {
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(-visibleSize.width*0.3, 0)));
                     blackLayer->runAction(ActionFadeIn::create(0.1, blackOpacity));
+                    ////////
+                    screenTouchListener->setSwallowTouches(true);
                 } else {
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
                     blackLayer->runAction(ActionFadeOut::create(0.1, blackLayer->getOpacity()));
@@ -436,7 +439,12 @@ void MenuLayer::sortDataList()
 {
     auto dataListChildren = dataList->getChildren();
     if (!dataListChildren.size()) {
-        log("gotcha!");
+//        log("all data cleared!");
+        // delete pic when all data cleared
+        if (dataPic) {
+            dataPic->removeFromParentAndCleanup(true);
+            dataPic = nullptr;
+        }
         dataList->runAction(MoveTo::create(0.1, Vec2(0, 0)));
         currentListItemID = -1;
         blackLayer->runAction(ActionFadeOut::create(0.1, blackLayer->getOpacity()));
@@ -510,7 +518,7 @@ void MenuLayer::sortDataList()
             pic = Sprite::create("frame/Data-Pic.png");
             pic->setScale(visibleSize.width/dataPic->getContentSize().width*0.6);
         } else {
-            pic->setScale(0.58);
+            pic->setScale(1.16);
         }
         dataPic->addChild(pic);
         auto frame = Sprite::create("frame/Data-Pic.png");
@@ -527,6 +535,6 @@ void MenuLayer::sortDataList()
     auto dataPicChildren = dataPic->getChildren();
     for (int i = 0; i != dataPicChildren.size(); ++i) {
         static_cast<Sprite*>(dataPicChildren.at(i))->setOpacity(0);
-        static_cast<Sprite*>(dataPicChildren.at(i))->runAction(ActionFadeIn::create(0.2, 200));
+        static_cast<Sprite*>(dataPicChildren.at(i))->runAction(ActionFadeIn::create(0.3, 200));
     }
 }

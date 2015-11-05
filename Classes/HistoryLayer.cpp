@@ -72,8 +72,10 @@ bool HistoryLayer::init()
         endTime = static_cast<float>(clock())/CLOCKS_PER_SEC;
         touchEnd = touch->getLocation();
         deltaTime = endTime - startTime;
-        if (deltaTime < 0.1) {
-            ///////////
+        auto speed = (touchEnd.y - touchStart.y)/deltaTime;
+        log("++++++++++++Speed = %.2f", speed);
+        if (speed < -3000 || speed > 3000) {
+            ///////////x
             static_cast<HistoryLayer*>(event->getCurrentTarget())->autoMove(true);
         } else {
             if (historyBoard->getPositionY() >= -300) {
@@ -106,8 +108,9 @@ void HistoryLayer::createHistoryBoard()
 void HistoryLayer::autoMove(bool b)
 {
     if (b) {
-        if (touchEnd.y > touchStart.y) {
-            auto distance = (touchEnd.y - touchStart.y)*(0.2/deltaTime);
+        auto speed = (touchEnd.y - touchStart.y)/deltaTime;
+        if (speed > 0) {
+            auto distance = speed * 0.1;
             if (historyBoard->getPositionY() + distance >= -300) {
                 historyBoard->runAction(Sequence::create(CallFunc::create([&]()
                                                                           {
@@ -127,7 +130,7 @@ void HistoryLayer::autoMove(bool b)
                 isHistoryShowing = true;
             }
         } else {
-            auto distance = (touchEnd.y - touchStart.y)*(0.2/deltaTime);
+            auto distance = speed * 0.1;
             auto maxHeight = -static_cast<int>(GameScene::getInstance()->historyText.size())*300.0-150;
             if (static_cast<int>(GameScene::getInstance()->historyText.size()) == 0) {
                 maxHeight = -450;

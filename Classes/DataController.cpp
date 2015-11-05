@@ -257,9 +257,12 @@ bool DataController::saveData(const std::string &datafile)
     // save screen shot
     auto visibleSize = Director::getInstance()->getVisibleSize();
     //定义一个屏幕大小的渲染纹理
-    RenderTexture* pScreen = RenderTexture::create(visibleSize.width, visibleSize.height, Texture2D::PixelFormat::RGBA8888);
+    RenderTexture* pScreen = RenderTexture::create(visibleSize.width*0.5, visibleSize.height*0.5, Texture2D::PixelFormat::RGBA8888);
     //获得当前的场景指针
     Scene* pCurScene = Director::getInstance()->getRunningScene();
+    // 缩小屏幕截屏区域
+    pCurScene->setScale(0.5);
+    pCurScene->setAnchorPoint(Point(0, 0));
     //渲染纹理开始捕捉
     pScreen->begin();
     //当前场景参与绘制
@@ -268,7 +271,12 @@ bool DataController::saveData(const std::string &datafile)
     pScreen->end();
     
     //保存为png
-    pScreen->saveToFile(datafile+".png", Image::Format::PNG, true, [&](RenderTexture*, const std::string&) {
+    pScreen->setScale(0.5);
+    pScreen->saveToFile(datafile+".png", Image::Format::PNG, true, [&, pCurScene](RenderTexture*, const std::string&) {
+        // 恢复屏幕尺寸
+        pCurScene->setScale(1);
+        pCurScene->setAnchorPoint(Point(0.5, 0.5));
+        
         // when saved, create a PromptBox
         auto prompt = PromptBoxSprite::create();
         Director::getInstance()->getRunningScene()->addChild(prompt, 20);
