@@ -25,8 +25,8 @@ bool PromptBoxSprite::init()
     bg->setPosition(this->getPosition());
     
     std::string fontFile = "fonts/PingFang_1.ttf";
-    float fontSize = 55;
-    Size textBoxSize = Size(500, 200);
+    float fontSize = 55/(Director::getInstance()->getContentScaleFactor());
+    Size textBoxSize = Size(500, 200)/(Director::getInstance()->getContentScaleFactor());
     text = Label::createWithTTF("", fontFile, fontSize, textBoxSize, TextHAlignment::LEFT, TextVAlignment::CENTER);
     this->addChild(text, 5);
     text->setTextColor(Color4B::WHITE);

@@ -12,7 +12,7 @@
 #include "DataController.h"
 
 #include "GyroBackground.h"
-#include "PromptBoxSprite.h"
+#include "GallaryLayer.h"
 
 using namespace cocos2d::ui;
 
@@ -26,6 +26,7 @@ bool StartScene::init()
         return false;
     
     visibleSize = Director::getInstance()->getVisibleSize();
+    log("visibleSize = %.2f, %.2f", visibleSize.width, visibleSize.height);
     
     backgroundLayer = Layer::create();
     this->addChild(backgroundLayer);
@@ -34,6 +35,7 @@ bool StartScene::init()
     // menu
     menuLayer = MenuLayer::create();
     this->addChild(menuLayer);
+    menuLayer->startSceneType();
     // black
     black = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
     this->addChild(black);
@@ -42,11 +44,8 @@ bool StartScene::init()
 //    // data test
 //    DataController::getInstance()->test();
     
-    auto test = PromptBoxSprite::create();
+    auto test = GallaryLayer::create();
     this->addChild(test);
-    test->setPosition(-test->getContentSize().width/2, visibleSize.height*0.8);
-    test->setText("提示提示提示提示提示提示");
-    test->start();
     
     return true;
 }

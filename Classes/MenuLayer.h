@@ -63,6 +63,9 @@ public:
     ~MenuLayer();
     virtual bool init();
     CREATE_FUNC(MenuLayer);
+    
+    void gameSceneType();
+    void startSceneType();
 };
 
 #endif /* MenuLayer_cpp */

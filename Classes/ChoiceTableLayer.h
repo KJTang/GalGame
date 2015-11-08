@@ -20,6 +20,7 @@ class ChoiceTableLayer : public Layer
 private:
     Size visibleSize;
     Point startPoint, endPoint;
+    bool moved; // judge if the choice is lose focus
     Vector<Sprite*> choices;
     Sprite *chosen;
     int choiceNumber;

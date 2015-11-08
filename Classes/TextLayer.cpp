@@ -26,8 +26,8 @@ bool TextLayer::init()
     textSpeed = 0.05;
     
     std::string fontFile = "fonts/PingFang_1.ttf";
-    float fontSize = 55;
-    Size textBoxSize = Size(1600, 300);
+    float fontSize = 55/(Director::getInstance()->getContentScaleFactor());
+    Size textBoxSize = Size(1600, 300)/(Director::getInstance()->getContentScaleFactor());
     
     text = Label::createWithTTF("", fontFile, fontSize, textBoxSize);
     text->setPosition(Point(visibleSize.width*0.5, visibleSize.height*0.15));

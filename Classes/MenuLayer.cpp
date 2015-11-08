@@ -13,7 +13,6 @@
 #include "ActionFade.h"
 
 const int blackOpacity = 200;
-
 /**
  *   ListItem
  */
@@ -25,7 +24,7 @@ bool ListItem::init()
     if (!Sprite::init()) {
         return false;
     }
-    
+
     unchosen = Sprite::create("frame/Data-Unchosen.png");
     this->addChild(unchosen);
     chosen = Sprite::create("frame/Data-Chosen.png");
@@ -41,8 +40,8 @@ void ListItem::setText(const std::string &time, const std::string &chaptername)
 {
     text = time;
     std::string fontFile = "fonts/PingFang_1.ttf";
-    float fontSize = 50;
-    Size textBoxSize = Size(800, 300);
+    float fontSize = 50/(Director::getInstance()->getContentScaleFactor());
+    Size textBoxSize = Size(800, 300)/(Director::getInstance()->getContentScaleFactor());
 
     textLabel = Label::createWithTTF(text+"\n"+chaptername, fontFile, fontSize, textBoxSize);
     Point position[4] = {Point(1, 0), Point(-1, 0), Point(0, -1), Point(0, 1)};
@@ -121,55 +120,6 @@ bool MenuLayer::init()
     blackLayer = LayerColor::create(Color4B::BLACK, visibleSize.width, visibleSize.height);
     this->addChild(blackLayer);
     blackLayer->setOpacity(0);
-    // create menu
-    leftMenu = Layer::create();
-    this->addChild(leftMenu);
-    auto infoBtn = ButtonSprite::create("title/info");
-    leftMenu->addChild(infoBtn);
-    infoBtn->setScale(visibleSize.height/infoBtn->getContentSize().height/10);
-    infoBtn->setAnchorPoint(Point(0, 0));
-    infoBtn->setPosition(Point(-visibleSize.width*0.3, visibleSize.height*0.0));
-    infoBtn->setCallbackFunc([](){
-        log("enter InfoScene");
-    });
-    
-    rightMenu = Layer::create();
-    this->addChild(rightMenu);
-    auto startBtn = ButtonSprite::create("title/start");
-    rightMenu->addChild(startBtn);
-    startBtn->setScale(visibleSize.height/startBtn->getContentSize().height/15);
-    startBtn->setAnchorPoint(Point(0, 0));
-    startBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.40));
-    startBtn->setCallbackFunc([](){
-        log("start Game");
-        GameController::getInstance()->enterGameScene();
-    });
-    auto loadBtn = ButtonSprite::create("title/load");
-    rightMenu->addChild(loadBtn);
-    loadBtn->setScale(visibleSize.height/loadBtn->getContentSize().height/15);
-    loadBtn->setAnchorPoint(Point(0, 0));
-    loadBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.30));
-    loadBtn->setCallbackFunc([](){
-        log("load Game");
-        GameController::getInstance()->enterGameScene();
-    });
-    auto gallaryBtn = ButtonSprite::create("title/gallary");
-    rightMenu->addChild(gallaryBtn);
-    gallaryBtn->setScale(visibleSize.height/gallaryBtn->getContentSize().height/15);
-    gallaryBtn->setAnchorPoint(Point(0, 0));
-    gallaryBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.20));
-    gallaryBtn->setCallbackFunc([](){
-        log("enter GallaryScene");
-    });
-    auto configBtn = ButtonSprite::create("title/config");
-    rightMenu->addChild(configBtn);
-    configBtn->setScale(visibleSize.height/configBtn->getContentSize().height/15);
-    configBtn->setAnchorPoint(Point(0, 0));
-    configBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.10));
-    configBtn->setCallbackFunc([](){
-        log("enter ConfigScene");
-        GameController::getInstance()->enterConfigScene();
-    });
 
     // init data
     dataList = nullptr;
@@ -263,8 +213,8 @@ bool MenuLayer::init()
             case RIGHT:
             {
                 rightMenu->setPositionX(rightMenu->getPositionX()+touch->getLocation().x-startPoint.x);
-                if (rightMenu->getPositionX() < -visibleSize.width*0.3) {
-                    rightMenu->setPositionX(-visibleSize.width*0.3);
+                if (rightMenu->getPositionX() < -visibleSize.width*0.2) {
+                    rightMenu->setPositionX(-visibleSize.width*0.2);
                 }
                 startPoint = touch->getLocation();
                 
@@ -272,7 +222,7 @@ bool MenuLayer::init()
                 if (relativePos < 0) {
                     relativePos = 0;
                 }
-                blackLayer->setOpacity(relativePos / (visibleSize.width*0.3) * blackOpacity);
+                blackLayer->setOpacity(relativePos / (visibleSize.width*0.2) * blackOpacity);
                 break;
             }
             case BOTTOM:
@@ -313,7 +263,7 @@ bool MenuLayer::init()
             case RIGHT:
             {
                 if (rightMenu->getPositionX() < -visibleSize.width*0.15) {
-                    rightMenu->runAction(MoveTo::create(0.1, Vec2(-visibleSize.width*0.3, 0)));
+                    rightMenu->runAction(MoveTo::create(0.1, Vec2(-visibleSize.width*0.2, 0)));
                     blackLayer->runAction(ActionFadeIn::create(0.1, blackOpacity));
                     ////////
                     screenTouchListener->setSwallowTouches(true);
@@ -537,4 +487,117 @@ void MenuLayer::sortDataList()
         static_cast<Sprite*>(dataPicChildren.at(i))->setOpacity(0);
         static_cast<Sprite*>(dataPicChildren.at(i))->runAction(ActionFadeIn::create(0.3, 200));
     }
+}
+
+void MenuLayer::gameSceneType()
+{
+    // create menu
+    leftMenu = Layer::create();
+    this->addChild(leftMenu);
+    auto infoBtn = ButtonSprite::create("title/info");
+    leftMenu->addChild(infoBtn);
+    infoBtn->setScale(visibleSize.height/infoBtn->getContentSize().height/10);
+    infoBtn->setAnchorPoint(Point(0, 0));
+    infoBtn->setPosition(Point(-visibleSize.width*0.3, visibleSize.height*0.0));
+    infoBtn->setCallbackFunc([](){
+        log("enter InfoScene");
+    });
+    
+    rightMenu = Layer::create();
+    this->addChild(rightMenu);
+    auto titleBtn = ButtonSprite::create("button/title.png");
+    rightMenu->addChild(titleBtn);
+    titleBtn->setScale(visibleSize.height/titleBtn->getContentSize().height/15);
+    titleBtn->setAnchorPoint(Point(0, 0));
+    titleBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.30));
+    titleBtn->setCallbackFunc([](){
+        log("title");
+        GameController::getInstance()->enterStartScene();
+        // when quit GameScene, we should clear it
+        GameScene::getInstance()->clear();
+    });
+    auto autoBtn = ButtonSprite::create("button/auto.png");
+    rightMenu->addChild(autoBtn);
+    autoBtn->setScale(visibleSize.height/autoBtn->getContentSize().height/15);
+    autoBtn->setAnchorPoint(Point(0, 0));
+    autoBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.20));
+    autoBtn->setCallbackFunc([](){
+        log("auto");
+    });
+    auto saveBtn = ButtonSprite::create("button/save.png");
+    rightMenu->addChild(saveBtn);
+    saveBtn->setScale(visibleSize.height/saveBtn->getContentSize().height/15);
+    saveBtn->setAnchorPoint(Point(0, 0));
+    saveBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.10));
+    saveBtn->setCallbackFunc([&](){
+        log("save");
+        this->runAction(Sequence::create(CallFunc::create([&]()
+                                                          {
+                                                              rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
+                                                              blackLayer->runAction(ActionFadeOut::create(0.1, blackLayer->getOpacity()));
+                                                              screenTouchListener->setSwallowTouches(false);
+                                                          }),
+                                         DelayTime::create(0.1),
+                                         CallFunc::create([&]()
+                                                          {
+                                                              char datafile[50];
+                                                              time_t curtime=time(0);
+                                                              tm time =*localtime(&curtime);
+                                                              sprintf(datafile, "%d年%02d月%02d日%02d时%02d分%02d秒", time.tm_year+1900, time.tm_mon+1, time.tm_mday, time.tm_hour, time.tm_min, time.tm_sec);
+                                                              log("save data: %s", datafile);
+                                                              DataController::getInstance()->saveData(datafile);
+                                                          }),
+                                         NULL));
+    });
+}
+
+void MenuLayer::startSceneType()
+{
+    // create menu
+    leftMenu = Layer::create();
+    this->addChild(leftMenu);
+    auto infoBtn = ButtonSprite::create("title/info");
+    leftMenu->addChild(infoBtn);
+    infoBtn->setScale(visibleSize.height/infoBtn->getContentSize().height/10);
+    infoBtn->setAnchorPoint(Point(0, 0));
+    infoBtn->setPosition(Point(-visibleSize.width*0.3, visibleSize.height*0.0));
+    infoBtn->setCallbackFunc([](){
+        log("enter InfoScene");
+    });
+    
+    rightMenu = Layer::create();
+    this->addChild(rightMenu);
+    auto startBtn = ButtonSprite::create("button/start.png");
+    rightMenu->addChild(startBtn);
+    startBtn->setScale(visibleSize.height/startBtn->getContentSize().height/15);
+    startBtn->setAnchorPoint(Point(0, 0));
+    startBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.40));
+    startBtn->setCallbackFunc([](){
+        log("start Game");
+        GameController::getInstance()->enterGameScene();
+    });
+    auto stuffBtn = ButtonSprite::create("button/stuff.png");
+    rightMenu->addChild(stuffBtn);
+    stuffBtn->setScale(visibleSize.height/stuffBtn->getContentSize().height/15);
+    stuffBtn->setAnchorPoint(Point(0, 0));
+    stuffBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.30));
+    stuffBtn->setCallbackFunc([](){
+        log("stuff");
+    });
+    auto extraBtn = ButtonSprite::create("button/extra.png");
+    rightMenu->addChild(extraBtn);
+    extraBtn->setScale(visibleSize.height/extraBtn->getContentSize().height/15);
+    extraBtn->setAnchorPoint(Point(0, 0));
+    extraBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.20));
+    extraBtn->setCallbackFunc([](){
+        log("extra");
+    });
+    auto helpBtn = ButtonSprite::create("button/help.png");
+    rightMenu->addChild(helpBtn);
+    helpBtn->setScale(visibleSize.height/helpBtn->getContentSize().height/15);
+    helpBtn->setAnchorPoint(Point(0, 0));
+    helpBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.10));
+    helpBtn->setCallbackFunc([](){
+        log("help");
+    });
 }

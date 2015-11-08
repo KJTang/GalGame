@@ -24,6 +24,7 @@ bool ChoiceTableLayer::init()
     tempResult = -1;
     choiceResult = -1;
     chosen = nullptr;
+    moved = false;
     
     touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);
@@ -49,7 +50,21 @@ bool ChoiceTableLayer::init()
         }
         return false;
     };
-    touchListener->onTouchEnded = [&](Touch* touch, Event* event){
+    touchListener->onTouchMoved = [&](Touch *touch, Event *event) {
+        if ((touch->getLocation()-startPoint).length() >= 100) {
+            log("movvvvvvvvvvvvvvved");
+            moved = true;
+            auto target = static_cast<Sprite*>(event->getCurrentTarget());
+            target->setOpacity(255);
+            if (chosen) {
+                chosen->removeFromParentAndCleanup(true);
+                chosen = nullptr;
+            }
+            return false;
+        }
+        return true;
+    };
+    touchListener->onTouchEnded = [&](Touch* touch, Event* event) {
         auto target = static_cast<Sprite*>(event->getCurrentTarget());
         target->setOpacity(255);
         if (chosen) {
@@ -57,16 +72,13 @@ bool ChoiceTableLayer::init()
             chosen = nullptr;
         }
         endPoint = touch->getLocation();
-        // relative position
-        Point locationInNode = target->convertToNodeSpace(endPoint);
-        Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
-        if (rect.containsPoint(locationInNode))
+        if (!moved && std::abs(endPoint.x - startPoint.x) < 50 && std::abs(endPoint.y - startPoint.y) < 50)
         {
             this->runAction(Sequence::create(CallFunc::create([&]()
                                                               {
                                                                   for (int i = 0; i != choices.size(); ++i) {
                                                                       choices.at(i)->runAction(Sequence::create(DelayTime::create(0.1*i),
-                                                                                                                MoveBy::create(0.3, Vec2(choices.at(i)->getContentSize().width, 0)),
+                                                                                                                MoveBy::create(0.3, Vec2(visibleSize.width*0.5, 0)),
                                                                                                                 NULL));
                                                                   }
                                                               }),
@@ -78,6 +90,7 @@ bool ChoiceTableLayer::init()
                                              NULL));
             return false;
         }
+        moved = false;
 
         return true;
     };
@@ -91,8 +104,8 @@ void ChoiceTableLayer::setChoiceNumber(int number)
     
     choiceNumber = number;
     std::string fontFile = "fonts/PingFang_1.ttf";
-    float fontSize = 60;
-    Size textBoxSize = Size(500, 60);
+    float fontSize = 60/(Director::getInstance()->getContentScaleFactor());
+    Size textBoxSize = Size(500, 60)/(Director::getInstance()->getContentScaleFactor());
     
     double origin = 0.0;
     if (choiceNumber%2) {
@@ -103,11 +116,11 @@ void ChoiceTableLayer::setChoiceNumber(int number)
     for (int i = 0; i != choiceNumber; ++i) {
         Sprite *newChoice = Sprite::create("frame/ChoiceTable-Unchosen.png");
         choices.pushBack(newChoice);
-        newChoice->setPosition(visibleSize.width+newChoice->getContentSize().width/2, visibleSize.height*(0.30+0.10*i));
+        newChoice->setPosition(visibleSize.width*1.2, visibleSize.height*(0.30+0.10*i));
         
         Label *label = Label::createWithTTF("", fontFile, fontSize, textBoxSize, TextHAlignment::CENTER);
         newChoice->addChild(label, 6, "label");
-        label->setPosition(Point(newChoice->getContentSize()*0.5) + Point(0, 15));
+        label->setPosition(Point(newChoice->getContentSize()*0.5) + Point(0, 15)/Director::getInstance()->getContentScaleFactor());
 
         Point position[4] = {Point(1, 0), Point(-1, 0), Point(0, -1), Point(0, 1)};
         for (int i = 0; i != 4; ++i) {
@@ -149,7 +162,7 @@ void ChoiceTableLayer::showChoiceTable()
     for (int i = 0; i != choices.size(); ++i) {
         this->addChild(choices.at(i));
         choices.at(i)->runAction(Sequence::create(DelayTime::create(0.1*i),
-                                                  MoveBy::create(0.3, Vec2(-choices.at(i)->getContentSize().width, 0)),
+                                                  MoveBy::create(0.3, Vec2(-visibleSize.width*0.5, 0)),
                                                   NULL));
     }
 }

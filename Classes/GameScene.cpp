@@ -53,6 +53,7 @@ bool GameScene::init()
     // menu
     menuLayer = MenuLayer::create();
     this->addChild(menuLayer, menulayerOrder);
+    menuLayer->gameSceneType();
     // bgp
     bgp = nullptr;
     bgpDuration = 0, bgpScale = 1.5, bgpPositionX = 0, bgpPositionY = 0;
@@ -68,32 +69,7 @@ bool GameScene::init()
     }
     // choices
     choiceTable = nullptr;
-    
-    // buttons
-    quitButton = ButtonSprite::create("title/start");
-    menuLayer->addChild(quitButton);
-    quitButton->setScale(1.5);
-    quitButton->setPosition(Point(visibleSize.width*0.75, visibleSize.height*0.25));
-    quitButton->setCallbackFunc([](){
-        log("back to StartScene");
-        GameController::getInstance()->enterStartScene();
-        // when quit GameScene, we should clear it
-        GameScene::getInstance()->clear();
-    });
-    
-    saveButton = ButtonSprite::create("title/load");
-    menuLayer->addChild(saveButton);
-    saveButton->setScale(1.5);
-    saveButton->setPosition(Point(visibleSize.width*0.75, visibleSize.height*0.75));
-    saveButton->setCallbackFunc([](){
-        char datafile[50];
-        time_t curtime=time(0);
-        tm time =*localtime(&curtime);
-        sprintf(datafile, "%d年%02d月%02d日%02d时%02d分%02d秒", time.tm_year+1900, time.tm_mon+1, time.tm_mday, time.tm_hour, time.tm_min, time.tm_sec);
-        log("save data: %s", datafile);
-        DataController::getInstance()->saveData(datafile);
-    });
-    
+        
     // screen touch listener
     screenTouchListener = EventListenerTouchOneByOne::create();
     screenTouchListener->setSwallowTouches(false);

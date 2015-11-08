@@ -20,7 +20,6 @@
 #include "ChoiceTableLayer.h"
 #include "MenuLayer.h"
 #include "GyroBackground.h"
-#include "ButtonSprite.h"
 
 using namespace cocos2d;
 
@@ -33,7 +32,6 @@ private:
     Layer *characterLayer;
     LayerColor *blackLayer;
     MenuLayer *menuLayer;
-    ButtonSprite *quitButton, *saveButton;
     // game mode
     int gameMode;
     enum {

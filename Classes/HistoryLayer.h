@@ -17,6 +17,7 @@ class HistoryLayer : public Layer
 {
 private:
     Size visibleSize;
+    float contentHeight;
     EventListenerTouchOneByOne *screenTouchListener;
     Point touchStart, touchMoving, touchEnd;
     float startTime, endTime, deltaTime;
