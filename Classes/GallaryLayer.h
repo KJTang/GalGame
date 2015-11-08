@@ -13,12 +13,24 @@
 
 using namespace cocos2d;
 
+class GallaryContent : public Layer
+{
+private:
+    Size visibleSize;
+    EventListenerTouchOneByOne *touchListener;
+public:
+    GallaryContent();
+    ~GallaryContent();
+    virtual bool init();
+    CREATE_FUNC(GallaryContent);
+};
+
 class GallaryLayer : public Layer
 {
 private:
     Size visibleSize;
     Layer *blackLayer, *contentLayer;
-    EventListenerTouchOneByOne *touchListenner;
+    EventListenerTouchOneByOne *touchListener;
     Point touchStart;
     bool inTouchEvent;
 public:

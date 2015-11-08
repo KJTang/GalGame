@@ -11,6 +11,7 @@
 
 #include "cocos2d.h"
 #include "MenuLayer.h"
+#include "GallaryLayer.h"
 
 using namespace cocos2d;
 
@@ -20,6 +21,9 @@ private:
     Size visibleSize;
     Layer *backgroundLayer;
     MenuLayer *menuLayer;
+    GallaryLayer *gallaryLayer;
+    
+    EventListenerTouchOneByOne *touchlListener;
 public:
     LayerColor *black;
 public:
