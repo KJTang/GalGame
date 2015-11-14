@@ -23,7 +23,6 @@ bool ChoiceTableLayer::init()
     choiceNumber = 0;
     tempResult = -1;
     choiceResult = -1;
-    chosen = nullptr;
     moved = false;
     
     touchListener = EventListenerTouchOneByOne::create();
@@ -34,16 +33,13 @@ bool ChoiceTableLayer::init()
         // relative position
         Point locationInNode = target->convertToNodeSpace(touch->getLocation());
         Rect rect = Rect(0, 0, target->getContentSize().width, target->getContentSize().height);
-        if (rect.containsPoint(locationInNode))
-        {
+        if (rect.containsPoint(locationInNode)) {
             for (int i = 0; i != choiceNumber; ++i) {
-                if (target == choices.at(i)) {
+                if (target == choices.at(i*2)) {
                     tempResult = i;
-                    target->setOpacity(0);
-                    chosen = Sprite::create("frame/ChoiceTable-Chosen.png");
-                    this->addChild(chosen, -1);
-                    chosen->setPosition(target->getPosition());
-                    break;
+                    choices.at(i*2+1)->setVisible(true);
+                } else {
+                    choices.at(i*2+1)->setVisible(false);
                 }
             }
             return true;
@@ -52,33 +48,24 @@ bool ChoiceTableLayer::init()
     };
     touchListener->onTouchMoved = [&](Touch *touch, Event *event) {
         if ((touch->getLocation()-startPoint).length() >= 100) {
-            log("movvvvvvvvvvvvvvved");
             moved = true;
-            auto target = static_cast<Sprite*>(event->getCurrentTarget());
-            target->setOpacity(255);
-            if (chosen) {
-                chosen->removeFromParentAndCleanup(true);
-                chosen = nullptr;
-            }
+            choices.at(tempResult*2+1)->setVisible(false);
             return false;
         }
         return true;
     };
     touchListener->onTouchEnded = [&](Touch* touch, Event* event) {
-        auto target = static_cast<Sprite*>(event->getCurrentTarget());
-        target->setOpacity(255);
-        if (chosen) {
-            chosen->removeFromParentAndCleanup(true);
-            chosen = nullptr;
-        }
+        choices.at(tempResult*2+1)->setVisible(false);
         endPoint = touch->getLocation();
-        if (!moved && std::abs(endPoint.x - startPoint.x) < 50 && std::abs(endPoint.y - startPoint.y) < 50)
-        {
+        if (!moved && std::abs(endPoint.x - startPoint.x) < 50 && std::abs(endPoint.y - startPoint.y) < 50) {
             this->runAction(Sequence::create(CallFunc::create([&]()
                                                               {
-                                                                  for (int i = 0; i != choices.size(); ++i) {
-                                                                      choices.at(i)->runAction(Sequence::create(DelayTime::create(0.1*i),
-                                                                                                                MoveBy::create(0.3, Vec2(visibleSize.width*0.5, 0)),
+                                                                  for (int i = 0; i != choices.size(); i += 2) {
+                                                                      choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*i),
+                                                                                                                MoveBy::create(0.3, Vec2(visibleSize.width*0.8, 0)),
+                                                                                                                NULL));
+                                                                      choices.at(i+1)->runAction(Sequence::create(DelayTime::create(0.05*i),
+                                                                                                                MoveBy::create(0.3, Vec2(visibleSize.width*0.8, 0)),
                                                                                                                 NULL));
                                                                   }
                                                               }),
@@ -93,6 +80,10 @@ bool ChoiceTableLayer::init()
         moved = false;
 
         return true;
+    };
+    touchListener->onTouchCancelled = [&](Touch *touch, Event *event) {
+        log("touch canceled");
+        return false;
     };
     
     return true;
@@ -116,16 +107,21 @@ void ChoiceTableLayer::setChoiceNumber(int number)
     for (int i = 0; i != choiceNumber; ++i) {
         Sprite *newChoice = Sprite::create("frame/ChoiceTable-Unchosen.png");
         choices.pushBack(newChoice);
-        newChoice->setPosition(visibleSize.width*1.2, visibleSize.height*(0.30+0.10*i));
+        newChoice->setPosition(visibleSize.width*1.5, visibleSize.height*(0.30+0.10*i));
+        
+        Sprite *chosen = Sprite::create("frame/ChoiceTable-Chosen.png");
+        choices.pushBack(chosen);
+        chosen->setPosition(newChoice->getPosition());
+        chosen->setVisible(false);
         
         Label *label = Label::createWithTTF("", fontFile, fontSize, textBoxSize, TextHAlignment::CENTER);
-        newChoice->addChild(label, 6, "label");
+        newChoice->addChild(label, 5, "label");
         label->setPosition(Point(newChoice->getContentSize()*0.5) + Point(0, 15)/Director::getInstance()->getContentScaleFactor());
 
         Point position[4] = {Point(1, 0), Point(-1, 0), Point(0, -1), Point(0, 1)};
         for (int i = 0; i != 4; ++i) {
             auto outline = Label::createWithTTF("", fontFile, fontSize, textBoxSize, TextHAlignment::CENTER);
-            newChoice->addChild(outline);
+            newChoice->addChild(outline, i+1);
             outline->setPosition(label->getPosition()+position[i]);
             outline->setOpacity(100);
             outline->setColor(Color3B::RED);
@@ -142,7 +138,7 @@ void ChoiceTableLayer::setChoiceContent(int id, const std::string& content)
     if (id >= choiceNumber || id < 0) {
         return;
     }
-    auto choiceList = choices.at(id)->getChildren();
+    auto choiceList = choices.at(id*2)->getChildren();
     for (int i = 0; i != choiceList.size(); ++i) {
         static_cast<Label*>(choiceList.at(i))->setString(content);
     }
@@ -154,16 +150,21 @@ void ChoiceTableLayer::setChoiceChoosable(int id, bool choosable)
         return;
     }
     listeners.at(id)->setEnabled(choosable);
-    static_cast<Label*>(choices.at(id)->getChildByName("label"))->setTextColor(Color4B::GRAY);
+    static_cast<Label*>(choices.at(id*2)->getChildByName("label"))->setTextColor(Color4B::GRAY);
 }
 
 void ChoiceTableLayer::showChoiceTable()
 {
-    for (int i = 0; i != choices.size(); ++i) {
+    for (int i = 0; i != choices.size(); i += 2) {
         this->addChild(choices.at(i));
-        choices.at(i)->runAction(Sequence::create(DelayTime::create(0.1*i),
-                                                  MoveBy::create(0.3, Vec2(-visibleSize.width*0.5, 0)),
+        this->addChild(choices.at(i+1));
+        choices.at(i)->runAction(Sequence::create(DelayTime::create(0.05*i),
+                                                  MoveBy::create(0.5, Vec2(-visibleSize.width*0.8, 0)),
                                                   NULL));
+        choices.at(i+1)->runAction(Sequence::create(DelayTime::create(0.05*i),
+                                                  MoveBy::create(0.5, Vec2(-visibleSize.width*0.8, 0)),
+                                                  NULL));
+        choices.at(i+1)->setVisible(false);
     }
 }
 
@@ -177,7 +178,7 @@ void ChoiceTableLayer::setChoiceResult(int result)
     if (GameScene::getInstance()->historyText.size() >= 30) {
         GameScene::getInstance()->historyText.erase(GameScene::getInstance()->historyText.begin());
     }
-    GameScene::getInstance()->historyText.push_back("@choice@"+static_cast<Label*>(choices.at(result)->getChildByName("label"))->getString());
+    GameScene::getInstance()->historyText.push_back("@choice@"+static_cast<Label*>(choices.at(result*2)->getChildByName("label"))->getString());
 }
 
 int ChoiceTableLayer::getChoiceReuslt()

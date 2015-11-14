@@ -22,7 +22,6 @@ private:
     Point startPoint, endPoint;
     bool moved; // judge if the choice is lose focus
     Vector<Sprite*> choices;
-    Sprite *chosen;
     int choiceNumber;
     int tempResult;
     int choiceResult;

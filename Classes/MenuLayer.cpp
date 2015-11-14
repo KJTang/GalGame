@@ -173,14 +173,13 @@ bool MenuLayer::init()
             touch->getLocation().y > visibleSize.height*0.1 &&
             touch->getLocation().y < visibleSize.height*0.9) {
             touchType = LEFT;
-            log("touch begin left");
+//            log("touch begin left");
             screenTouchListener->setSwallowTouches(true);
         } else if (touch->getLocation().x > visibleSize.width*0.9 &&
                    touch->getLocation().y > visibleSize.height*0.1 &&
                    touch->getLocation().y < visibleSize.height*0.9) {
             touchType = RIGHT;
-            log("touch begin right");
-            ///////////
+//            log("touch begin right");
             screenTouchListener->setSwallowTouches(false);
         } else if (touch->getLocation().y < visibleSize.height*0.1) {
             touchType = BOTTOM;
@@ -188,7 +187,7 @@ bool MenuLayer::init()
             this->createDataList();
             CCASSERT(dataList, "dataList can't be nullptr");
             dataList->runAction(MoveTo::create(0.1, Vec2(0, visibleSize.height*0.5)));
-            log("touch begin bottom");
+//            log("touch begin bottom");
             screenTouchListener->setSwallowTouches(true);
         }
         return true;
@@ -265,7 +264,6 @@ bool MenuLayer::init()
                 if (rightMenu->getPositionX() < -visibleSize.width*0.15) {
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(-visibleSize.width*0.2, 0)));
                     blackLayer->runAction(ActionFadeIn::create(0.1, blackOpacity));
-                    ////////
                     screenTouchListener->setSwallowTouches(true);
                 } else {
                     rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
@@ -283,13 +281,39 @@ bool MenuLayer::init()
                     endPoint.y > visibleSize.height*0.5-listItemHeight*0.5 && endPoint.y < visibleSize.height*0.5+listItemHeight*0.5) {
                     auto dataListChildren = dataList->getChildren();
                     auto filename = static_cast<ListItem*>(dataListChildren.at(currentListItemID))->text;
-                    log("click on item %d(%d): %s", currentListItemID, (int)dataListChildren.size(), filename.c_str());
+//                    log("click on item %d(%d): %s", currentListItemID, (int)dataListChildren.size(), filename.c_str());
                     if (filename != "No Data") {
                         loadData(filename);
                         return false;
                     }
                 }
                 sortDataList();
+                break;
+            }
+            default:
+                break;
+        }
+        return false;
+    };
+    screenTouchListener->onTouchCancelled = [&](Touch *touch, Event *event) {
+//        log("touch cancelled, type=%d", touchType);
+        switch (touchType) {
+            case LEFT:
+            {
+                leftMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
+                blackLayer->runAction(ActionFadeOut::create(0.1, blackLayer->getOpacity()));
+                screenTouchListener->setSwallowTouches(false);
+                break;
+            }
+            case RIGHT:
+            {
+                rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
+                blackLayer->runAction(ActionFadeOut::create(0.1, blackLayer->getOpacity()));
+                screenTouchListener->setSwallowTouches(false);
+                break;
+            }
+            case BOTTOM:
+            {
                 break;
             }
             default:
