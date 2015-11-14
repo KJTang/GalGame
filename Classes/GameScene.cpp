@@ -74,6 +74,9 @@ bool GameScene::init()
     screenTouchListener = EventListenerTouchOneByOne::create();
     screenTouchListener->setSwallowTouches(false);
     screenTouchListener->onTouchBegan = [&](Touch* touch, Event* event){
+        if (gameMode == MODE_AUTO) {
+            gameMode = MODE_NORMAL;
+        }
         return true;
     };
     screenTouchListener->onTouchEnded = [&](Touch* touch, Event* event){
@@ -372,6 +375,7 @@ void GameScene::enterSkipMode()
 void GameScene::enterAutoMode()
 {
     gameMode = MODE_AUTO;
+    isMissionCompleted = true;
 }
 
 /**
@@ -596,7 +600,7 @@ void GameScene::setTextShow()
             textLayer->showText();
             break;
         case MODE_AUTO:
-            textLayer->setSpeed(0.2);
+            textLayer->setSpeed(0.05);
             textLayer->showText();
             break;
         default:
@@ -630,7 +634,7 @@ void GameScene::setTextUpdate(const std::string &str)
             textLayer->showText();
             break;
         case MODE_AUTO:
-            textLayer->setSpeed(0.2);
+            textLayer->setSpeed(0.05);
             textLayer->showText();
             break;
         default:
@@ -736,7 +740,8 @@ void GameScene::enableScreenTouchEventListener(bool btouch, float delay)
                                                  NULL));
                 break;
             case MODE_AUTO:
-                this->runAction(Sequence::create(DelayTime::create(delay),
+                this->runAction(Sequence::create(DelayTime::create(0.5),
+//                                                 DelayTime::create(delay),
                                                  CallFunc::create([&](){isMissionCompleted=true;}),
                                                  NULL));
             default:

@@ -545,8 +545,20 @@ void MenuLayer::gameSceneType()
     autoBtn->setScale(visibleSize.height/autoBtn->getContentSize().height/15);
     autoBtn->setAnchorPoint(Point(0, 0));
     autoBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.20));
-    autoBtn->setCallbackFunc([](){
+    autoBtn->setCallbackFunc([&](){
         log("auto");
+        this->runAction(Sequence::create(CallFunc::create([&]()
+                                                          {
+                                                              rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
+                                                              blackLayer->runAction(ActionFadeOut::create(0.1, blackLayer->getOpacity()));
+                                                              screenTouchListener->setSwallowTouches(false);
+                                                          }),
+                                         DelayTime::create(0.1),
+                                         CallFunc::create([&]()
+                                                          {
+                                                              GameScene::getInstance()->enterAutoMode();
+                                                          }),
+                                         NULL));
     });
     auto saveBtn = ButtonSprite::create("button/save.png");
     rightMenu->addChild(saveBtn);
@@ -621,7 +633,26 @@ void MenuLayer::startSceneType()
     helpBtn->setScale(visibleSize.height/helpBtn->getContentSize().height/15);
     helpBtn->setAnchorPoint(Point(0, 0));
     helpBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.10));
-    helpBtn->setCallbackFunc([](){
+    helpBtn->setCallbackFunc([&](){
         log("help");
+        auto temp = Sprite::create("HelloWorld.png");
+        this->addChild(temp);
+        temp->setOpacity(0);
+        temp->setPosition(visibleSize.width*0.3, visibleSize.height/2);
+        temp->setScale(visibleSize.height/temp->getContentSize().height*0.3, visibleSize.height/temp->getContentSize().height*0.5);
+        temp->runAction(FadeIn::create(0.2));
+        
+        auto touchListener = EventListenerTouchOneByOne::create();
+        touchListener->setSwallowTouches(true);
+        touchListener->onTouchBegan = [&, temp](Touch *touch, Event *event) {
+            temp->runAction(Sequence::create(FadeOut::create(0.2),
+                                             CallFunc::create([&]()
+                                                              {
+                                                                  temp->removeFromParent();
+                                                              }),
+                                             NULL));
+            return false;
+        };
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, temp);
     });
 }
