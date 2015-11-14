@@ -8,6 +8,60 @@
 
 #include "GallaryLayer.h"
 
+#include <fstream>
+#include <string>
+
+/***************
+ GallaryList
+ ***************/
+GallaryList::GallaryList(){}
+GallaryList::~GallaryList(){}
+
+bool GallaryList::init()
+{
+    if (!Layer::init()) {
+        return false;
+    }
+    visibleSize = Director::getInstance()->getVisibleSize();
+    
+    auto test = Sprite::create("HelloWorld.png");
+    this->addChild(test);
+    test->setScale(1, visibleSize.height/test->getContentSize().height*0.3);
+    
+    GallaryLayer::setGallaryState(5, true);
+    GallaryLayer::setGallaryState(9, true);
+    
+    log("get %d", GallaryLayer::getGallaryState(5));
+    log("get %d", GallaryLayer::getGallaryState(6));
+    
+    touchListener = EventListenerTouchOneByOne::create();
+    touchListener->setSwallowTouches(false);
+    touchListener->onTouchBegan = [&, test](Touch *touch, Event *event) {
+        startPoint = touch->getLocation();
+        // relative position
+        auto locationInNode = test->convertToNodeSpace(touch->getLocation());
+        auto rect = cocos2d::Rect(0, 0, test->getContentSize().width, test->getContentSize().height);
+        if (rect.containsPoint(locationInNode)) {
+            touchListener->setSwallowTouches(true);
+            return true;
+        }
+        return false;
+    };
+    touchListener ->onTouchMoved = [&](Touch *touch, Event *event) {
+        auto currentPoint = touch->getLocation();
+        this->setPositionX(this->getPositionX() + currentPoint.x - startPoint.x);
+        startPoint = currentPoint;
+        return true;
+    };
+    touchListener->onTouchEnded = [&](Touch *touch, Event *event) {
+        touchListener->setSwallowTouches(false);
+        return true;
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+    
+    return true;
+}
+
 /***************
  GallaryContent
  ***************/
@@ -24,7 +78,11 @@ bool GallaryContent::init()
     
     auto pic = Sprite::create("HelloWorld.png");
     this->addChild(pic);
-    pic->setPosition(visibleSize.width*0.5, visibleSize.height*1.5);
+    pic->setPosition(visibleSize.width*0.5, visibleSize.height*1.8);
+    
+    auto list = GallaryList::create();
+    this->addChild(list);
+    list->setPosition(visibleSize.width/2, visibleSize.height*1.3);
     
     return true;
 }
@@ -90,4 +148,47 @@ bool GallaryLayer::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
     
     return true;
+}
+
+void GallaryLayer::setGallaryState(int id, bool state)
+{
+    std::string path = FileUtils::getInstance()->getWritablePath()+"Gallary.txt";
+    int picCount = 10; // TODO: gallary pic count, as a temp var here
+    if (!FileUtils::getInstance()->isFileExist(path)) {
+        log("file not exist");
+        std::ofstream fout(path);
+        std::string str(picCount, '0');
+        fout<<str;
+        fout.close();
+    }
+    
+    log("file exist");
+    std::string str = FileUtils::getInstance()->getStringFromFile(path);
+    log("file: %s\n------", str.c_str());
+    if (state) {
+        str.replace(str.begin()+id, str.begin()+id+1, "1");
+    } else {
+        str.replace(str.begin()+id, str.begin()+id+1, "0");
+    }
+    log("file: %s\n------", str.c_str());
+    std::ofstream fout(path);
+    fout<<str;
+    fout.close();
+}
+
+bool GallaryLayer::getGallaryState(int id)
+{
+    std::string path = FileUtils::getInstance()->getWritablePath()+"Gallary.txt";
+    int picCount = 10; // TODO: gallary pic count, as a temp var here
+    if (!FileUtils::getInstance()->isFileExist(path)) {
+        log("file not exist");
+        std::ofstream fout(path);
+        std::string str(picCount, '0');
+        fout<<str;
+        fout.close();
+        return false;
+    }
+    
+    std::string str = FileUtils::getInstance()->getStringFromFile(path);
+    return str.at(id) == '1' ? 1 : 0;
 }
