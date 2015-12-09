@@ -441,6 +441,20 @@ void ScriptController::stateCommand(const std::string &cmd)
         else if (str == "wait") {
             GameScene::getInstance()->setWaitTime(transStringToFloat(getString()));
         }
+        // enable/disable gallary pictures
+        else if (str == "gallary") {
+            int id = transStringToInt(getString());
+            std::string choosable = getString();
+            if (choosable == "true") {
+                GallaryLayer::setGallaryState(id, true);
+                GameScene::getInstance()->isMissionCompleted = true;
+            } else if (choosable == "false") {
+                GallaryLayer::setGallaryState(id, false);
+                GameScene::getInstance()->isMissionCompleted = true;
+            } else {
+                showError(UNKNOWN_COMMAND);
+            }
+        }
         else {
             showError(UNKNOWN_COMMAND);
         }

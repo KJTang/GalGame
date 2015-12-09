@@ -30,12 +30,12 @@ bool GallaryList::init()
     currentThumb = 0;
     isClick = false;
     
-//    GallaryLayer::setGallaryState(0, true);
-//    GallaryLayer::setGallaryState(1, true);
-//    GallaryLayer::setGallaryState(3, true);
-//    GallaryLayer::setGallaryState(4, true);
-//    GallaryLayer::setGallaryState(5, true);
-//    GallaryLayer::setGallaryState(9, true);
+    GallaryLayer::setGallaryState(0, true);
+    GallaryLayer::setGallaryState(1, true);
+    GallaryLayer::setGallaryState(3, true);
+    GallaryLayer::setGallaryState(4, true);
+    GallaryLayer::setGallaryState(5, true);
+    GallaryLayer::setGallaryState(9, true);
 
     for (int i = 0; i != picCount; ++i) {
         char name[30];
@@ -84,7 +84,7 @@ bool GallaryList::init()
                 currentThumb = -picCount + 1;
             }
             if (isClick) {
-                log("clicked: %d", currentThumb);
+//                log("clicked: %d", currentThumb);
                 cocos2d::Point locationInNode = target->thumbs.at(-currentThumb)->convertToNodeSpace(touch->getLocation());
                 cocos2d::Rect rect = cocos2d::Rect(0, 0, target->thumbs.at(-currentThumb)->getContentSize().width, target->thumbs.at(-currentThumb)->getContentSize().height);
                 // open display mode
@@ -135,18 +135,31 @@ void GallaryList::onPicClick(int id) {
 }
 
 void GallaryList::onPicChange(int id) {
-    char filename[30];
-    sprintf(filename, "gallary/gallary%d.png", id);
-    auto newPic = Sprite::create(filename);
-    newPic->retain();
-    auto loadPicAction = Sequence::create(DelayTime::create(0.5),
-                                          CallFunc::create([&, newPic]
-                                                           {
-                                                               static_cast<GallaryContent*>(this->getParent())->setDisplayPic(newPic);
-                                                           }),
-                                          NULL);
-    loadPicAction->setTag(tag_loadPic);
-    this->runAction(loadPicAction);
+    if (GallaryLayer::getGallaryState(id)) {
+        char filename[30];
+        sprintf(filename, "gallary/gallary%d.png", id);
+        auto newPic = Sprite::create(filename);
+        newPic->retain();
+        auto loadPicAction = Sequence::create(DelayTime::create(0.5),
+                                              CallFunc::create([&, newPic]
+                                                               {
+                                                                   static_cast<GallaryContent*>(this->getParent())->setDisplayPic(newPic);
+                                                               }),
+                                              NULL);
+        loadPicAction->setTag(tag_loadPic);
+        this->runAction(loadPicAction);
+    } else {
+        auto newPic = Sprite::create("gallary/blank.png");
+        newPic->retain();
+        auto loadPicAction = Sequence::create(DelayTime::create(0.5),
+                                              CallFunc::create([&, newPic]
+                                                               {
+                                                                   static_cast<GallaryContent*>(this->getParent())->setDisplayPic(newPic);
+                                                               }),
+                                              NULL);
+        loadPicAction->setTag(tag_loadPic);
+        this->runAction(loadPicAction);
+    }
 }
 
 /***************
@@ -167,6 +180,7 @@ bool GallaryContent::init()
     currentPic = Sprite::create("HelloWorld.png");
     this->addChild(currentPic);
     currentPic->setPosition(visibleSize.width*0.5, visibleSize.height*1.7);
+    currentPic->setScale(visibleSize.width/currentPic->getContentSize().width*0.8);
     
     auto list = GallaryList::create();
     this->addChild(list);
@@ -182,6 +196,7 @@ void GallaryContent::setDisplayPic(Sprite *pic) {
     currentPic = pic;
     this->addChild(currentPic);
     currentPic->setPosition(visibleSize.width*0.5, visibleSize.height*1.7);
+    currentPic->setScale(visibleSize.width/currentPic->getContentSize().width*0.8);
     currentPic->setOpacity(0);
     currentPic->runAction(FadeIn::create(0.5));
 }
@@ -253,22 +268,22 @@ void GallaryLayer::setGallaryState(int id, bool state)
 {
     std::string path = FileUtils::getInstance()->getWritablePath()+"Gallary.txt";
     if (!FileUtils::getInstance()->isFileExist(path)) {
-        log("file not exist");
+//        log("file not exist");
         std::ofstream fout(path);
         std::string str(picCount, '0');
         fout<<str;
         fout.close();
     }
     
-    log("file exist");
+//    log("file exist");
     std::string str = FileUtils::getInstance()->getStringFromFile(path);
-    log("file: %s\n------", str.c_str());
+//    log("file: %s\n------", str.c_str());
     if (state) {
         str.replace(str.begin()+id, str.begin()+id+1, "1");
     } else {
         str.replace(str.begin()+id, str.begin()+id+1, "0");
     }
-    log("file: %s\n------", str.c_str());
+//    log("file: %s\n------", str.c_str());
     std::ofstream fout(path);
     fout<<str;
     fout.close();
@@ -278,7 +293,7 @@ bool GallaryLayer::getGallaryState(int id)
 {
     std::string path = FileUtils::getInstance()->getWritablePath()+"Gallary.txt";
     if (!FileUtils::getInstance()->isFileExist(path)) {
-        log("file not exist");
+//        log("file not exist");
         std::ofstream fout(path);
         std::string str(picCount, '0');
         fout<<str;
