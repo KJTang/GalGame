@@ -518,14 +518,14 @@ void MenuLayer::gameSceneType()
     // create menu
     leftMenu = Layer::create();
     this->addChild(leftMenu);
-    auto infoBtn = ButtonSprite::create("title/info");
-    leftMenu->addChild(infoBtn);
-    infoBtn->setScale(visibleSize.height/infoBtn->getContentSize().height/10);
-    infoBtn->setAnchorPoint(Point(0, 0));
-    infoBtn->setPosition(Point(-visibleSize.width*0.3, visibleSize.height*0.0));
-    infoBtn->setCallbackFunc([](){
-        log("enter InfoScene");
-    });
+//    auto infoBtn = ButtonSprite::create("title/info");
+//    leftMenu->addChild(infoBtn);
+//    infoBtn->setScale(visibleSize.height/infoBtn->getContentSize().height/10);
+//    infoBtn->setAnchorPoint(Point(0, 0));
+//    infoBtn->setPosition(Point(-visibleSize.width*0.3, visibleSize.height*0.0));
+//    infoBtn->setCallbackFunc([](){
+//        log("enter InfoScene");
+//    });
     
     rightMenu = Layer::create();
     this->addChild(rightMenu);
@@ -592,14 +592,14 @@ void MenuLayer::startSceneType()
     // create menu
     leftMenu = Layer::create();
     this->addChild(leftMenu);
-    auto infoBtn = ButtonSprite::create("title/info");
-    leftMenu->addChild(infoBtn);
-    infoBtn->setScale(visibleSize.height/infoBtn->getContentSize().height/10);
-    infoBtn->setAnchorPoint(Point(0, 0));
-    infoBtn->setPosition(Point(-visibleSize.width*0.3, visibleSize.height*0.0));
-    infoBtn->setCallbackFunc([](){
-        log("enter InfoScene");
-    });
+//    auto infoBtn = ButtonSprite::create("title/info");
+//    leftMenu->addChild(infoBtn);
+//    infoBtn->setScale(visibleSize.height/infoBtn->getContentSize().height/10);
+//    infoBtn->setAnchorPoint(Point(0, 0));
+//    infoBtn->setPosition(Point(-visibleSize.width*0.3, visibleSize.height*0.0));
+//    infoBtn->setCallbackFunc([](){
+//        log("enter InfoScene");
+//    });
     
     rightMenu = Layer::create();
     this->addChild(rightMenu);

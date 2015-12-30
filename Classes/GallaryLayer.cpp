@@ -49,6 +49,13 @@ bool GallaryList::init()
         if (!GallaryLayer::getGallaryState(i)) {
             listItem->setOpacity(100);
         }
+        auto itemFrame = Sprite::create("frame/Data-Pic.png"); // TODO: need to be change
+//        listItem->addChild(itemFrame, -1);
+        this->addChild(itemFrame, -1);
+//        listItem->setOpacity(100);
+        itemFrame->setPosition(Vec2(visibleSize.width/2+thumbSpace*i, 0));
+        itemFrame->setAnchorPoint(Point(0.5, 0.5));
+        itemFrame->setScale(thumbWidth/itemFrame->getContentSize().width*1.03, visibleSize.height/itemFrame->getContentSize().height/4*1.05);
         
         touchListener = EventListenerTouchOneByOne::create();
         touchListener->setSwallowTouches(true);
@@ -179,12 +186,17 @@ bool GallaryContent::init()
     
     currentPic = Sprite::create("HelloWorld.png");
     this->addChild(currentPic);
-    currentPic->setPosition(visibleSize.width*0.5, visibleSize.height*1.7);
+    currentPic->setPosition(visibleSize.width*0.5, visibleSize.height*1.65);
     currentPic->setScale(visibleSize.width/currentPic->getContentSize().width*0.8);
+    
+    picFrame = Sprite::create("frame/Data-Pic.png"); // TODO: need to be change
+    this->addChild(picFrame, -1);
+    picFrame->setPosition(visibleSize.width*0.5, visibleSize.height*1.65);
+    picFrame->setScale(visibleSize.width/picFrame->getContentSize().width*0.8*1.03, visibleSize.width/picFrame->getContentSize().width*0.8*(9/16.0)/(3/4.0)*1.03);
     
     auto list = GallaryList::create();
     this->addChild(list);
-    list->setPosition(0, visibleSize.height*1.2);
+    list->setPosition(0, visibleSize.height*1.18);
     
     return true;
 }
@@ -195,10 +207,13 @@ void GallaryContent::setDisplayPic(Sprite *pic) {
     }
     currentPic = pic;
     this->addChild(currentPic);
-    currentPic->setPosition(visibleSize.width*0.5, visibleSize.height*1.7);
+    currentPic->setPosition(visibleSize.width*0.5, visibleSize.height*1.65);
     currentPic->setScale(visibleSize.width/currentPic->getContentSize().width*0.8);
     currentPic->setOpacity(0);
     currentPic->runAction(FadeIn::create(0.5));
+    
+    picFrame->setOpacity(0);
+    picFrame->runAction(FadeIn::create(0.5));
 }
 
 /**************

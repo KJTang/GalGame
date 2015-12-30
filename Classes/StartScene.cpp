@@ -28,7 +28,7 @@ bool StartScene::init()
     backgroundLayer = Layer::create();
     this->addChild(backgroundLayer);
     
-    auto pic = GyroBackground::create("title/title", 1.5);
+    auto pic = GyroBackground::create("bg/HelloWorld.png", 1.5);
     backgroundLayer->addChild(pic, -1);
     
     // menu

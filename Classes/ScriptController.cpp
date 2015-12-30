@@ -212,7 +212,7 @@ void ScriptController::stateJump(const std::string &cmd)
         goBackPosMark = pos;
         goBackLineMark = lineID;
         stateBegin();
-    } else if (cmd == "#goto") {
+    } else if (cmd == "#") {
         std::string id = getString();
         std::string next = getString();
         while (next != ("#"+id)) {
