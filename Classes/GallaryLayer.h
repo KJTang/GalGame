@@ -46,7 +46,6 @@ class GallaryContent : public Layer
 {
 private:
     Size visibleSize;
-    EventListenerTouchOneByOne *touchListener;
     Sprite *currentPic, *picFrame;
 public:
     GallaryContent();
@@ -56,6 +55,7 @@ public:
     
     // set displaying pic
     void setDisplayPic(Sprite *pic);
+    Sprite* getDisplayPic();
 };
 
 class GallaryLayer : public Layer

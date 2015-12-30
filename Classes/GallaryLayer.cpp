@@ -50,9 +50,7 @@ bool GallaryList::init()
             listItem->setOpacity(100);
         }
         auto itemFrame = Sprite::create("frame/Data-Pic.png"); // TODO: need to be change
-//        listItem->addChild(itemFrame, -1);
         this->addChild(itemFrame, -1);
-//        listItem->setOpacity(100);
         itemFrame->setPosition(Vec2(visibleSize.width/2+thumbSpace*i, 0));
         itemFrame->setAnchorPoint(Point(0.5, 0.5));
         itemFrame->setScale(thumbWidth/itemFrame->getContentSize().width*1.03, visibleSize.height/itemFrame->getContentSize().height/4*1.05);
@@ -64,13 +62,22 @@ bool GallaryList::init()
             event->getCurrentTarget()->stopActionByTag(tag_loadPic);
             startPoint = touch->getLocation();
             movePoint = startPoint;
-            // relative position
+            // touch on list
             auto locationInNode = listItem->convertToNodeSpace(touch->getLocation());
             auto rect = cocos2d::Rect(0, 0, listItem->getContentSize().width, listItem->getContentSize().height);
             if (rect.containsPoint(locationInNode)) {
                 touchListener->setSwallowTouches(true);
                 return true;
             }
+            // touch on pic
+            auto displayPic = static_cast<GallaryContent*>(this->getParent())->getDisplayPic();
+            auto locationInNode2 = displayPic->convertToNodeSpace(touch->getLocation());
+            auto rect2 = cocos2d::Rect(0, 0, displayPic->getContentSize().width*displayPic->getScaleX(), displayPic->getContentSize().height*displayPic->getScaleY());
+            if (rect2.containsPoint(locationInNode2)) {
+                touchListener->setSwallowTouches(true);
+                return true;
+            }
+
             return false;
         };
         touchListener ->onTouchMoved = [&](Touch *touch, Event *event) {
@@ -91,12 +98,13 @@ bool GallaryList::init()
                 currentThumb = -picCount + 1;
             }
             if (isClick) {
-//                log("clicked: %d", currentThumb);
-                cocos2d::Point locationInNode = target->thumbs.at(-currentThumb)->convertToNodeSpace(touch->getLocation());
-                cocos2d::Rect rect = cocos2d::Rect(0, 0, target->thumbs.at(-currentThumb)->getContentSize().width, target->thumbs.at(-currentThumb)->getContentSize().height);
+                auto displayPic = static_cast<GallaryContent*>(this->getParent())->getDisplayPic();
+                auto locationInNode = displayPic->convertToNodeSpace(touch->getLocation());
+                auto rect = cocos2d::Rect(0, 0, displayPic->getContentSize().width*displayPic->getScaleX(), displayPic->getContentSize().height*displayPic->getScaleY());
                 // open display mode
                 if (rect.containsPoint(locationInNode) && GallaryLayer::getGallaryState(-currentThumb)) {
-                    target->onPicClick(-currentThumb);
+//                    target->onPicClick(-currentThumb);
+                    this->onPicClick(-currentThumb);
                 }
             } else {
                 if (currentThumb >= 0) {
@@ -214,6 +222,10 @@ void GallaryContent::setDisplayPic(Sprite *pic) {
     
     picFrame->setOpacity(0);
     picFrame->runAction(FadeIn::create(0.5));
+}
+
+Sprite* GallaryContent::getDisplayPic() {
+    return currentPic;
 }
 
 /**************
