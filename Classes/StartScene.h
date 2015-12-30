@@ -22,8 +22,6 @@ private:
     Layer *backgroundLayer;
     MenuLayer *menuLayer;
     GallaryLayer *gallaryLayer;
-    
-    EventListenerTouchOneByOne *touchlListener;
 public:
     LayerColor *black;
 public:

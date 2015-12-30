@@ -78,7 +78,7 @@ void ListItem::setActive(bool active)
             deleteBtnChosen->setScale(2);
             deleteBtnChosen->setPosition(chosen->getPosition()+chosen->getContentSize()-deleteBtnChosen->getContentSize()*1.1);
             deleteBtnChosen->setCallbackFunc([&](){
-                log("delete data");
+//                log("delete data");
                 if (this->text != "No Data") {
                     static_cast<MenuLayer*>(this->getParent()->getParent())->deleteData(this->text);
                 }
@@ -546,7 +546,7 @@ void MenuLayer::gameSceneType()
     autoBtn->setAnchorPoint(Point(0, 0));
     autoBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.20));
     autoBtn->setCallbackFunc([&](){
-        log("auto");
+//        log("auto");
         this->runAction(Sequence::create(CallFunc::create([&]()
                                                           {
                                                               rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
@@ -566,7 +566,7 @@ void MenuLayer::gameSceneType()
     saveBtn->setAnchorPoint(Point(0, 0));
     saveBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.10));
     saveBtn->setCallbackFunc([&](){
-        log("save");
+//        log("save");
         this->runAction(Sequence::create(CallFunc::create([&]()
                                                           {
                                                               rightMenu->runAction(MoveTo::create(0.1, Vec2(0, 0)));
@@ -609,7 +609,7 @@ void MenuLayer::startSceneType()
     startBtn->setAnchorPoint(Point(0, 0));
     startBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.40));
     startBtn->setCallbackFunc([](){
-        log("start Game");
+//        log("start Game");
         GameController::getInstance()->enterGameScene();
     });
     auto stuffBtn = ButtonSprite::create("button/stuff.png");
@@ -618,7 +618,7 @@ void MenuLayer::startSceneType()
     stuffBtn->setAnchorPoint(Point(0, 0));
     stuffBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.30));
     stuffBtn->setCallbackFunc([](){
-        log("stuff");
+//        log("stuff");
     });
     auto extraBtn = ButtonSprite::create("button/extra.png");
     rightMenu->addChild(extraBtn);
@@ -626,7 +626,7 @@ void MenuLayer::startSceneType()
     extraBtn->setAnchorPoint(Point(0, 0));
     extraBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.20));
     extraBtn->setCallbackFunc([](){
-        log("extra");
+//        log("extra");
     });
     auto helpBtn = ButtonSprite::create("button/help.png");
     rightMenu->addChild(helpBtn);
@@ -634,7 +634,7 @@ void MenuLayer::startSceneType()
     helpBtn->setAnchorPoint(Point(0, 0));
     helpBtn->setPosition(Point(visibleSize.width, visibleSize.height*0.10));
     helpBtn->setCallbackFunc([&](){
-        log("help");
+//        log("help");
         auto temp = Sprite::create("HelloWorld.png");
         this->addChild(temp);
         temp->setOpacity(0);

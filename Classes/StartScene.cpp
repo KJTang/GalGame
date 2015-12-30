@@ -40,18 +40,9 @@ bool StartScene::init()
     this->addChild(black);
     black->setOpacity(0);
     
-    touchlListener = EventListenerTouchOneByOne::create();
-    touchlListener->setSwallowTouches(true);
-    touchlListener->onTouchBegan = [&](Touch *touch, Event *event) {
-        gallaryLayer = GallaryLayer::create();
-        this->addChild(gallaryLayer);
-        return true;
-    };
-    touchlListener->onTouchEnded = [&](Touch *touch, Event *event) {
-        return true;
-    };
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchlListener, this);
-    
+    gallaryLayer = GallaryLayer::create();
+    this->addChild(gallaryLayer);
+        
 //    // data test
 //    DataController::getInstance()->test();
     

@@ -374,8 +374,10 @@ void GameScene::enterSkipMode()
 
 void GameScene::enterAutoMode()
 {
-    gameMode = MODE_AUTO;
-    isMissionCompleted = true;
+    if (!ScriptController::getInstance()->isChoiceTableShowing) {
+        gameMode = MODE_AUTO;
+        isMissionCompleted = true;
+    }
 }
 
 /**
